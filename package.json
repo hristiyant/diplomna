@@ -4,7 +4,8 @@
   "description": "Final Project",
   "main": "\u001b[D\u001b[D\u001b[D\u001bserver.js)",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "server":"nodemon server.js"
   },
   "repository": {
     "type": "git",
