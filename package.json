@@ -2,7 +2,7 @@
   "name": "diplomna",
   "version": "1.0.0",
   "description": "Final Project",
-  "main": "\u001b[D\u001b[D\u001b[D\u001bserver.js)",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "server":"nodemon server.js"
