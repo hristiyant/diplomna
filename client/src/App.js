@@ -8,6 +8,7 @@ import Navbar from "./components/layout/Navbar";
 import Landing from "./components/layout/Landing";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
+import RecordList from "./components/events/RecordList";
 
 class App extends Component {
   render() {
@@ -19,6 +20,9 @@ class App extends Component {
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
             <Route exact path="/" component={Landing} />
+            <Route path="/events/get">
+              <RecordList />
+            </Route>
           </div>
         </Router>
       </Provider>
