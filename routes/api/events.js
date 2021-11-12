@@ -17,7 +17,8 @@ router.get("/get", (req, res) => {
 //@access Public
 router.post("/create", (req, res) => {
     const newEvent = new Event({
-        name: req.body.name
+        name: req.body.name,
+        eventType: req.body.eventType
     });
 
     newEvent.save()
