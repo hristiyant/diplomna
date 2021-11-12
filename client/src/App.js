@@ -9,23 +9,13 @@ import store from "./store";
 
 import Navbar from "./components/layout/Navbar";
 import Landing from "./components/layout/Landing";
+import Dashboard from "./components/dashboard/Dashboard";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/private-route/PrivateRoute";
-import RecordList from "./components/events/RecordList";
+// import RecordList from "./components/events/RecordList";
 
 import "./App.css";
-
-// const styles = {
-//     container: {
-//         backgroundImage: `url(${backgroundImage})`,
-//         backgroundPosition: 'center',
-//         backgroundSize: 'cover',
-//         backgroundRepeat: 'no-repeat',
-//         width: '100vw',
-//         height: '100vh'
-//     }
-// };
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -61,7 +51,7 @@ class App extends Component {
               <RecordList />
             </Route> */}
             <Switch>
-              <PrivateRoute exact path="/events/get" component={RecordList} />
+              <PrivateRoute exact path="/dashboard" component={Dashboard} />
             </Switch>
           </div>
         </Router>
