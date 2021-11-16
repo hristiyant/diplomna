@@ -1,0 +1,27 @@
+.input-fields {
+    color: white;
+}
+
+/* .input-field input[type=text]:focus {
+
+input[type=text].input-field:focus {
+    border-bottom: 10px solid #4ec632;
+    box-shadow: 0 10px 0 0 #4ec632;
+} */
+
+input[type=text]:not(.browser-default):focus {
+    border-bottom: 1px solid white !important;
+    -webkit-box-shadow: 0 1px 0 0 white !important;
+    box-shadow: 0 1px 0 0 white !important;
+    caret-color: white;
+    color: white;
+  }
+
+input[type=text]:not(.browser-default):focus:not([readonly])+label {
+    color: white;
+}
+
+navbar {
+    position: relative;
+    color: black;
+  }

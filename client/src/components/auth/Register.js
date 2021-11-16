@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import { registerUser } from "../../actions/authActions";
 import classnames from "classnames";
 
+import "../../App.css";
+
 class Register extends Component {
   constructor() {
     super();
@@ -24,7 +26,7 @@ class Register extends Component {
     }
   }
 
-  componentDidUpdate(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({
         errors: nextProps.errors
@@ -53,24 +55,29 @@ class Register extends Component {
     const { errors } = this.state;
 
     return (
-      <div className="container">
+      <div className="container" style={{ paddingTop: "30px" }}>
         <div className="row">
-          <div className="col s8 offset-s2">
-            <Link to="/" className="btn-flat waves-effect">
+          <div style={{
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            borderRadius: "20px",
+            // height: "225px",
+            position: "inherit"
+          }} className="col s8 offset-s2">
+            <Link to="/" className="btn-flat waves-effect" style={{ color: "white" }}>
               <i className="material-icons left">keyboard_backspace</i> Back to
               home
             </Link>
-            <div className="col s12" style={{ paddingLeft: "11.250px" }}>
+            <div className="col s12" style={{ paddingLeft: "11.250px", color: "white" }}>
               <h4>
                 <b>Register</b> below
               </h4>
-              <p className="grey-text text-darken-1">
-                Already have an account? <Link to="/login">Log in</Link>
+              <p className="white-text text-darken-1">
+                Already have an account? <Link to="/login" style={{ color: "tomato", fontSize: "19px", marginLeft: 5 }}>Log in</Link>
               </p>
             </div>
             <form noValidate onSubmit={this.onSubmit}>
               <div className="input-field col s12">
-                <input
+                <input class="validate"
                   onChange={this.onChange}
                   value={this.state.name}
                   error={errors.name}
@@ -80,11 +87,11 @@ class Register extends Component {
                     invalid: errors.name
                   })}
                 />
-                <label htmlFor="name">Name</label>
+                <label style={{ color: "white" }} htmlFor="name">Name</label>
                 <span className="red-text">{errors.name}</span>
               </div>
               <div className="input-field col s12">
-                <input
+                <input class="validate"
                   onChange={this.onChange}
                   value={this.state.email}
                   error={errors.email}
@@ -94,11 +101,11 @@ class Register extends Component {
                     invalid: errors.email
                   })}
                 />
-                <label htmlFor="email">Email</label>
+                <label style={{ color: "white" }} htmlFor="email">Email</label>
                 <span className="red-text">{errors.email}</span>
               </div>
               <div className="input-field col s12">
-                <input
+                <input class="validate"
                   onChange={this.onChange}
                   value={this.state.password}
                   error={errors.password}
@@ -108,11 +115,11 @@ class Register extends Component {
                     invalid: errors.password
                   })}
                 />
-                <label htmlFor="password">Password</label>
+                <label style={{ color: "white" }} htmlFor="password">Password</label>
                 <span className="red-text">{errors.password}</span>
               </div>
               <div className="input-field col s12">
-                <input
+                <input class="validate"
                   onChange={this.onChange}
                   value={this.state.password2}
                   error={errors.password2}
@@ -122,21 +129,21 @@ class Register extends Component {
                     invalid: errors.password2
                   })}
                 />
-                <label htmlFor="password2">Confirm Password</label>
+                <label style={{ color: "white" }} htmlFor="password2">Confirm Password</label>
                 <span className="red-text">{errors.password2}</span>
               </div>
               <div className="col s12" style={{ paddingLeft: "11.250px" }}>
                 <button
                   style={{
-                    width: "150px",
-                    borderRadius: "3px",
+                    width: "140px",
+                    borderRadius: "20px",
                     letterSpacing: "1.5px",
-                    marginTop: "1rem"
+                    backgroundColor: "tomato"
                   }}
                   type="submit"
-                  className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+                  className="btn btn-large waves-effect waves-light hoverable accent-3"
                 >
-                  Sign up
+                  <b>Sign up</b>
                 </button>
               </div>
             </form>
