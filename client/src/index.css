@@ -1,10 +1,8 @@
+* {
+  box-sizing: border-box;
+}
+
 body, html {
-  background-image: url("background1.jpeg");
-  background-size: cover;
-  background-position: top;
-  min-height: 100%;
-  height: 100vh;
-  position: relative;
   margin: 0;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
@@ -14,4 +12,135 @@ body, html {
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.my-logo{
+  height: 25px;
+  vertical-align: text-bottom;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ac5c54 ;
+  color: white;
+}
+ /*
+  colors:
+ #3b3a31 - main gray
+
+ #ac5c54 - pink - 	hsl(5, 35%, 50%)
+ #b08986 - light pink - hsl(4, 21%, 61%)
+ #cbc2b8 - dirty white - hsl(32, 15%, 76%)
+ #0f0906 - close to black - hsl(20, 43%, 4%)
+ #1b1809 - chocolate - hsl(50, 50%, 7%)
+ */
+
+.brand-title {
+  font-size: 1.5rem;
+  margin: .5rem;
+}
+
+.navbar-links {
+  font-family: monospace;
+  font-size: 1.3rem;
+  /* margin: .5rem; */
+}
+
+.navbar-links li {
+  list-style: none;
+}
+
+.navbar-links li a{
+  text-decoration: none;
+  color: white;
+  padding: 1rem;
+  display: block;
+}
+
+.navbar-links li:hover{
+  background-color: black;
+}
+
+.full-screen-container {
+  background-image: url("background1.jpeg");
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.create-event-container {
+  background-color: hsla(0, 0%, 0%, 0.7);
+  border-radius: 10px;
+  padding: 50px 30px;
+  min-width: 400px;
+  width: 50%;
+  max-width: 600px;
+}
+
+.create-event-title {
+  color: white;
+  text-align: center;
+  margin: 0;
+  margin-bottom: 40px;
+  font-size: 2.5em;
+  font-weight: normal;
+  font-family: monospace;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  color: white;
+  font-size: 1.5em;
+  margin-bottom: 7px;
+  font-weight: lighter;
+  font-family: monospace;
+}
+
+.input-group input {
+  font-size: 1.5em;
+  padding: .1em .25em;
+  background-color: hsla(54, 100%, 91%, 0.3);
+  border: 1px solid hsl(54, 100%, 6%);
+  outline: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: lighter;
+}
+
+.input-group input:focus {
+  border: 1px solid hsl(12, 100%, 76%);
+}
+
+.create-event-button {
+  padding: 10px 30px;
+  width: fit-content;
+  border-radius: 5px;
+  background-color: #96433c;
+  border: hsl(4, 100%, 30%);
+  outline: none;
+  font-size: 1.5em;
+  color: white;
+  font-weight: lighter;
+  margin-top: 20px;
+  cursor: pointer;
+  font-family: monospace;
+}
+
+.create-event-button:hover {
+  background-color: hsla(4, 93%, 74%, 0.3);
+}
+
+.create-event-button:focus {
+  background-color: hsla(5, 100%, 50%, 0.5);
 }
