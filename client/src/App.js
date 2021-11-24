@@ -12,8 +12,9 @@ import Landing from "./components/layout/Landing";
 import Dashboard from "./components/dashboard/Dashboard";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
+import CreateEvent from "./components/events/CreateEvent";
 import PrivateRoute from "./components/private-route/PrivateRoute";
-// import RecordList from "./components/events/RecordList";
+import RecordList from "./components/events/RecordList";
 
 import "./App.css";
 
@@ -47,9 +48,10 @@ class App extends Component {
             <Route exact path="/" component={Landing} />
             <Route exact path="/register" component={Register} />
             <Route exact path="/login" component={Login} />
-            {/* <Route path="/events/get">
+            <Route exact path="/create-event" component={CreateEvent} />
+            <Route path="/events">
               <RecordList />
-            </Route> */}
+            </Route>
             <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
             </Switch>

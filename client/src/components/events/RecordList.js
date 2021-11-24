@@ -177,7 +177,7 @@ function RecordList() {
 
   useEffect(() => {
     (async () => {
-      const result = await axios("http://localhost:3000/events/get");
+      const result = await axios("http://localhost:3000/api/events/get");
       setData(result.data);
     })();
   }, []);

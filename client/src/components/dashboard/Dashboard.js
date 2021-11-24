@@ -9,6 +9,11 @@ class Dashboard extends Component {
     this.props.logoutUser();
   };
 
+  onCreateEventClick = e => {
+    e.preventDefault();
+    this.props.history.push("/create-event");
+  }
+
   render() {
     const { user } = this.props.auth;
 
@@ -34,6 +39,18 @@ class Dashboard extends Component {
               className="btn btn-large waves-effect waves-light hoverable blue accent-3"
             >
               Logout
+            </button>
+            <button
+              style={{
+                width: "150px",
+                borderRadius: "3px",
+                letterSpacing: "1.5px",
+                marginTop: "1rem"
+              }}
+              onClick={this.onCreateEventClick}
+              className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+            >
+              Create Event
             </button>
           </div>
         </div>

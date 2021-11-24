@@ -1,9 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+// const eventTypes = {
+//     SOCCER: "soccer"
+// }
 // Create Schema
 const EventSchema = new Schema({
     name: {
+        type: String,
+        required: true
+    },
+    createdBy: {
         type: String,
         required: true
     },
@@ -19,9 +26,12 @@ const EventSchema = new Schema({
     participants: {
         // TODO: Add functinality to store users, registered for this event in an array,
         // then show participants out of max allowed (example: 10/12) change color when 12/12
+        type: Array,
+        default: []
     },
     quota: {
-        //TODO: total number of participants needed for the event
+        type: Number,
+        required: true
     }
 });
 

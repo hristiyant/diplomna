@@ -54,11 +54,11 @@ table {
     /* border-bottom: red; */
   }
   
-  .App {
+  /* .App {
     display: flex;
     flex-direction: column;
     padding: 20px;
-  }
+  } */
   .badge {
     background-color: #9ae6b4;
     color: #22543d;

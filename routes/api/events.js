@@ -18,7 +18,9 @@ router.get("/get", (req, res) => {
 router.post("/create", (req, res) => {
     const newEvent = new Event({
         name: req.body.name,
-        eventType: req.body.eventType
+        createdBy: req.body.createdBy,
+        eventType: req.body.eventType,
+        quota: req.body.quota
     });
 
     newEvent.save()
