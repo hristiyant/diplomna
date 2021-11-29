@@ -43,24 +43,28 @@ class Landing extends Component {
       //     </div>
       //   </div>
       // </div>
-      <div className="full-screen-container">
-        <div className="create-event-container">
-          <h4 className="create-event-title">
-            Welcome to <b>MySports</b>
-          </h4>
-          <p className="create-event-title">
-            Create or join sport events around you
-          </p>
-          <div className="test">
-            <form action="/register">
-              <button type="submit" className="create-event-button">Register</button>
-            </form>
-            <form action="/login">
-              <button type="submit" className="create-event-button">Log In</button>
-            </form>
-          </div>
+      <div className="create-event-container">
+        <h4 className="create-event-title">
+          Welcome to <b>MySports</b>
+        </h4>
+        <p className="create-event-title">
+          Create or join sport events around you
+        </p>
+        <div className="test" >
+          <ul className="nav-links">
+            <li>
+              <form action="/register">
+                <button type="submit" className="create-event-button">Register</button>
+              </form>
+            </li>
+            <li>
+              <form action="/login">
+                <button type="submit" className="create-event-button">Log In</button>
+              </form>
+            </li>
+          </ul>
         </div>
-      </div >
+      </div>
     );
   }
 }

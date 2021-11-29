@@ -7,7 +7,7 @@ import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { Provider } from "react-redux";
 import store from "./store";
 
-import Navbar from "./components/layout/Navbar";
+import Navbar from "./components/layout/navbar/Navbar";
 import Landing from "./components/layout/Landing";
 import Dashboard from "./components/dashboard/Dashboard";
 import Register from "./components/auth/Register";
@@ -15,6 +15,8 @@ import Login from "./components/auth/Login";
 import CreateEvent from "./components/events/CreateEvent";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import RecordList from "./components/events/RecordList";
+import SearchForUser from "./components/users/SearchForUser";
+import UserProfile from "./components/users/UserProfile";
 
 import "./App.css";
 
@@ -45,16 +47,18 @@ class App extends Component {
         <Router>
           <div className="App">
             <Navbar />
-            <Route exact path="/" component={Landing} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/create-event" component={CreateEvent} />
-            <Route path="/events">
-              <RecordList />
-            </Route>
-            <Switch>
-              <PrivateRoute exact path="/dashboard" component={Dashboard} />
-            </Switch>
+            <div className="full-screen-container">
+              <Route exact path="/" component={Landing} />
+              <Route exact path="/register" component={Register} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/create-event" component={CreateEvent} />
+              <Route exact path="/profile" component={UserProfile} />
+              <Route exact path="/users" component={SearchForUser} />
+              <Route exact path="/events" component={RecordList} />
+              <Switch>
+                <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              </Switch>
+            </div>
           </div>
         </Router>
       </Provider>

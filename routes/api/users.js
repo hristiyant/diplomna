@@ -12,6 +12,24 @@ const validateLoginInput = require("../../validation/login");
 //Load User model
 const User = require("../../models/User");
 
+//@route GET users/get-user-by-id
+//@desc Get user by id
+//@access Public
+router.get("/", (req, res) => {
+    const userID = req.query.id;
+    // console.log("ID FROM PARAMS: " + JSON.stringify(req.params.id));
+    User.findById(userID, function (err, user) { console.log(user) })
+        .then(user => res.json(user));
+});
+
+//@route GET users/get-all-users
+//@desc Get all users
+//@access Public
+router.get("/get-all-users", (req, res) => {
+    User.find()
+        .then(users => res.json(users));
+});
+
 //@route POST api/users/register
 //@desc Register user
 //@access Public

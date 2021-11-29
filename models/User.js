@@ -17,6 +17,11 @@ const UserSchema = new Schema({
   date: {
     type: Date,
     default: Date.now
-  }
+  },
+  friends: {
+    // TODO: Add functinality to store users, who are friends in an array,
+    type: Array,
+    default: []
+},
 });
 module.exports = User = mongoose.model("users", UserSchema);

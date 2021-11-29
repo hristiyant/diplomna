@@ -14,19 +14,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
-.my-logo{
+.my-logo {
   height: 25px;
   vertical-align: text-bottom;
 }
 
-.navbar {
+.test {
+  display: inline-block;
+}
+
+/* .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #ac5c54 ;
   color: white;
-}
- /*
+} */
+/*
   colors:
  #3b3a31 - main gray
 
@@ -36,31 +40,18 @@ code {
  #0f0906 - close to black - hsl(20, 43%, 4%)
  #1b1809 - chocolate - hsl(50, 50%, 7%)
  */
+ .nav-links {
+  list-style: none;
+}
+
+.nav-links li {
+  display: inline-block;
+  /* padding: 0px 20px; */
+}
 
 .brand-title {
   font-size: 1.5rem;
   margin: .5rem;
-}
-
-.navbar-links {
-  font-family: monospace;
-  font-size: 1.3rem;
-  /* margin: .5rem; */
-}
-
-.navbar-links li {
-  list-style: none;
-}
-
-.navbar-links li a{
-  text-decoration: none;
-  color: white;
-  padding: 1rem;
-  display: block;
-}
-
-.navbar-links li:hover{
-  background-color: black;
 }
 
 .full-screen-container {
@@ -68,7 +59,7 @@ code {
   background-size: cover;
   background-position: center;
   height: 100vh;
-  width: 100vw;
+  /* width: 100vw; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -127,7 +118,7 @@ code {
   width: fit-content;
   border-radius: 5px;
   background-color: #96433c;
-  border: hsl(4, 100%, 30%);
+  border: 1px solid hsla(0, 0%, 100%, 0.432);
   outline: none;
   font-size: 1.5em;
   color: white;
@@ -138,7 +129,9 @@ code {
 }
 
 .create-event-button:hover {
-  background-color: hsla(4, 93%, 74%, 0.3);
+  background-color: hsla(4, 25%, 31%, 0.3);
+  border: 1px solid white;
+  transition: all 0.3s ease 0s;
 }
 
 .create-event-button:focus {
