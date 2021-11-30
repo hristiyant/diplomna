@@ -28,7 +28,7 @@ export default function EventsTable({ columns, data }) {
 
   // Render the UI for your table
   return (
-    <div className="create-event-container">
+    <div>
       <input
         value={filterInput}
         onChange={handleFilterChange}

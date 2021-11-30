@@ -40,7 +40,7 @@ code {
  #0f0906 - close to black - hsl(20, 43%, 4%)
  #1b1809 - chocolate - hsl(50, 50%, 7%)
  */
- .nav-links {
+.nav-links {
   list-style: none;
 }
 
@@ -65,6 +65,12 @@ code {
   align-items: center;
 }
 
+.table-container {
+  width: 1000px;
+  background-color: hsla(0, 0%, 0%, 0.7);
+  margin: auto;
+}
+
 .create-event-container {
   background-color: hsla(0, 0%, 0%, 0.7);
   border-radius: 10px;
@@ -72,6 +78,7 @@ code {
   min-width: 400px;
   width: 50%;
   max-width: 600px;
+  margin: auto;
 }
 
 .create-event-title {
