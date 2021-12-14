@@ -1,0 +1,42 @@
+.profile {
+    align-self: baseline;
+    margin-top: 100px;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.637);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: top;
+    border-radius: 10px;
+}
+
+.loader {
+    top: 100%;
+    transform: "translate(-50%, -50%)";
+    /* align-self: center; */
+    /* margin: 0 auto; */
+    align-self: baseline;
+    align-content: center;
+    /*margin-top: 100px; */
+}
+
+.profileUserImage {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: scale-down;
+    left: 0;
+    right: 0;
+    margin: 15px;
+    top: 150px;
+    border: 5px solid white;
+}
+
+.profileInfo {
+    top: ;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}

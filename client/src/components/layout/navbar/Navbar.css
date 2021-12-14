@@ -1,8 +1,23 @@
 .my-navbar {
     box-sizing: border-box;
+    display: flex;
+    height: 50px;
     margin: 0;
-    padding: 5px;
+    margin-bottom: 0;
+    width: 100%;
+    padding: 0px;
     background-color: #ac5c54;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.my-logo {
+    height: 25px;
+    vertical-align: text-bottom;
+}
+a{
+    max-width:50px;
 }
 
 li, a, button {
@@ -21,6 +36,7 @@ header {
 
 .nav-links {
     list-style: none;
+    padding:0;
 }
 
 .nav-links li {

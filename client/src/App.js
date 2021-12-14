@@ -1,12 +1,14 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
+import io from "socket.io-client";
 
 import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { Provider } from "react-redux";
 import store from "./store";
 
+import FriendRequests from "./components/users/friend-requests/FriendRequests";
 import Navbar from "./components/layout/navbar/Navbar";
 import Landing from "./components/layout/Landing";
 import Dashboard from "./components/dashboard/Dashboard";
@@ -19,6 +21,8 @@ import SearchForUser from "./components/users/SearchForUser";
 import UserProfile from "./components/users/UserProfile";
 
 import "./App.css";
+
+const ENDPOINT = "http://localhost:4000";
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -40,29 +44,35 @@ if (localStorage.jwtToken) {
   }
 }
 
-class App extends Component {
-  render() {
-    return (
-      <Provider store={store}>
-        <Router>
-          <div className="App">
-            <Navbar />
-            <div className="full-screen-container">
-              <Route exact path="/" component={Landing} />
-              <Route exact path="/register" component={Register} />
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/create-event" component={CreateEvent} />
-              <Route exact path="/profile" component={UserProfile} />
-              <Route exact path="/users" component={SearchForUser} />
-              <Route exact path="/events" component={RecordList} />
-              <Switch>
-                <PrivateRoute exact path="/dashboard" component={Dashboard} />
-              </Switch>
-            </div>
-          </div>
-        </Router>
-      </Provider>
-    );
-  }
+export default function App() {
+
+  useEffect(() => {
+    const socket = io(ENDPOINT);
+    return () => {
+      return () => socket.disconnect();
+    }
+  }, [])
+
+  return (
+    <Provider store={store}>
+      <Router>
+        <Navbar />
+        <div className="App">
+          {/* <div className="full-screen-container"> */}
+          <Route exact path="/" component={Landing} />
+          <Route exact path="/register" component={Register} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/create-event" component={CreateEvent} />
+          <Route exact path="/profile" component={UserProfile} />
+          <Route exact path="/users" component={SearchForUser} />
+          <Route exact path="/friend-requests" component={FriendRequests} />
+          <Route exact path="/events" component={RecordList} />
+          <Switch>
+            <PrivateRoute exact path="/dashboard" component={Dashboard} />
+          </Switch>
+          {/* </div> */}
+        </div>
+      </Router>
+    </Provider>
+  );
 }
-export default App;

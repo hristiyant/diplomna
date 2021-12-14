@@ -1,30 +1,38 @@
 table {
+  display: block;
   border-spacing: 0;
+  height: 300px;
   border: 2px solid white;
   color: white;
   background-color: rgba(0, 0, 0, 0.6);
-  min-width: 100%;
+  overflow: auto;
 }
 
-.table-container {
-  max-height: 0px;
+.thead {
+  /* overflow: auto;
+  overflow-y: scroll; */
 }
+
+table tbody {
+  height: 200px;
+  overflow: auto;
+  overflow-y: scroll;
+}
+
+/* .tbody {
+  height: 200px;
+  overflow: auto;
+  overflow-y: scroll;
+} */
+
+/* .tbody {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 250px;
+} */
 
 table tr:last-child td {
   border-bottom: 1;
-}
-
-thead, tbody {
-  display: block;
-}
-
-tbody {
-  height: 100px;
-  /* Just for the demo          */
-  overflow-y: auto;
-  /* Trigger vertical scroll    */
-  overflow-x: hidden;
-  /* Hide the horizontal scroll */
 }
 
 table th,
@@ -79,7 +87,11 @@ tbody:hover>tr:hover td {
   /* border-bottom: red; */
 }
 
-
+/* .App {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+  } */
 .badge {
   background-color: #9ae6b4;
   color: #22543d;

@@ -5,22 +5,15 @@ import jwt_decode from "jwt-decode";
 import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING } from "./types";
 
 // Get User Info
-export const getUser = userID => dispatch => {
-  return axios
+export const getUser = async (userID) => {
+  const res = await axios
     .get("/api/users/", {
       params: {
         id: userID
       }
     })
-    .then(res => res.data);
-  // .post("/api/users/get-user-by-id", userID)
-  // // .then(res => )
-  // .catch(err =>
-  //   dispatch({
-  //     type: GET_ERRORS,
-  //     payload: err.response.data
-  //   })
-  // );
+
+  return res.data;
 };
 
 //Get List of All Users
@@ -92,3 +85,70 @@ export const logoutUser = () => dispatch => {
   // Set current user to empty object {} which will set isAuthenticated to false
   dispatch(setCurrentUser({}));
 };
+
+// Get all friend requests by user id
+export const getFriendRequests = userID => dispatch => {
+  return axios
+    .get("/api/users/get-friend-requests", {
+      params: {
+        id: userID
+      }
+    })
+    .then(res => res.data);
+}
+
+// Delete friend request by user id and request id
+export const deleteFriendRequest = async (userID, friendRequestID) => {
+  console.log("deleting request " + friendRequestID + " for user " + userID);
+  const res = await axios
+    .post("/api/users/delete-friend-request", {
+      params: {
+        userID: userID,
+        friendRequestID: friendRequestID
+      }
+    });
+
+  return res.data;
+}
+
+// Create friend request
+export const createFriendRequest = async (fromUserID, fromUserName, toUser) => {
+  // console.log("creating friend request from user " + fromUser + " to user " + toUser);
+  const res = await axios
+    .post("/api/users/create-friend-request", {
+      params: {
+        fromUserID: fromUserID,
+        fromUserName: fromUserName,
+        toUser: toUser
+      }
+    });
+
+  return res.data;
+}
+
+// Add users as friends
+export const addFriends = async (receiverID, requesterID) => {
+  const promise1 = await axios
+    .post("/api/users/add-friend", {
+      params: {
+        fromUserID: requesterID,
+        toUserID: receiverID
+      }
+    });
+  const promise2 = await axios
+    .post("/api/users/add-friend", {
+      params: {
+        fromUserID: receiverID,
+        toUserID: requesterID
+      }
+    });
+
+  const res = Promise.all([promise1, promise2])
+    .then((values) => {
+      console.log(values);
+    })
+
+    console.log(res);
+
+  return res;
+}

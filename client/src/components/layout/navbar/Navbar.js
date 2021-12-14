@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+
 import "./Navbar.css"
 
 class Navbar extends Component {
   render() {
     return (
-      <header className="my-navbar">
+      <header className="my-navbar" >
         <Link to="/">
           <b>My</b>
           <img className="my-logo" src="logo.png" alt="running man icon" />
@@ -28,9 +29,14 @@ class Navbar extends Component {
                 Home
               </Link>
             </li>
+            <li>
+              <Link to="/friend-requests">
+                Requests
+              </Link>
+            </li>
           </ul>
         </nav>
-        <Link to="/profile">
+        <Link style={{ }} to="/profile">
           Profile
         </Link>
       </header>

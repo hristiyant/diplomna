@@ -1,0 +1,17 @@
+.btn {
+    --reject-btn-color: tomato;
+    --color: hsl(123, 100%, 31%);
+    background: var(--color);
+    color: white;
+    border: none;
+    font-size: 1rem;
+    padding: .5em .75em;
+    border-radius: .25em;
+    cursor: pointer;
+}
+
+.btn.btn-outline {
+    background: none;
+    border: 1px solid var(--reject-btn-color);
+    color: var(--reject-btn-color);
+}

@@ -30,7 +30,7 @@ router.get("/get-all-users", (req, res) => {
         .then(users => res.json(users));
 });
 
-//@route POST api/users/register
+//@route POST users/register
 //@desc Register user
 //@access Public
 router.post("/register", (req, res) => {
@@ -68,7 +68,7 @@ router.post("/register", (req, res) => {
     });
 });
 
-//@route POST api/users/login
+//@route POST users/login
 //@desc Login user and return JWT token
 //@access Public
 router.post("/login", (req, res) => {
@@ -122,6 +122,97 @@ router.post("/login", (req, res) => {
             }
         });
     });
+});
+
+//@route POST users/create-friend-request
+//@desc Create a friend request
+//@access Public
+router.post("/create-friend-request/", (req, res) => {
+    var fromUserID = req.body.params.fromUserID;
+    var fromUserName = req.body.params.fromUserName;
+    var _id = req.body.params.toUser;
+
+    var newFriendRequest = {
+        fromUserID: fromUserID,
+        fromUserName: fromUserName
+    }
+
+    User.findOne({ _id })
+        .then(user => {
+            //Check if friend request exists
+            if (user.friendRequests.some(e => e.fromUser === fromUserID)) {
+                return res.status(400).json({ alreadyexists: "Friend request already exists" });
+            }
+
+            User.findOneAndUpdate(
+                { _id: _id },
+                { $push: { friendRequests: newFriendRequest } },
+                { new: true },
+                function (error, result) {
+                    if (error) {
+                        // console.log(error);
+                        res.send(error);
+                    } else {
+                        // console.log(success);
+                        res.send(result);
+                    }
+                }
+            );
+        });
+});
+
+//@route POST users/delete-friend-request
+//@desc Delete a friend request
+//@access Public
+router.post("/delete-friend-request/", (req, res) => {
+    // console.log(req.body.params);
+    User.findOneAndUpdate(
+        { _id: req.body.params.userID },
+        { $pull: { friendRequests: { _id: req.body.params.friendRequestID } } },
+        { new: true },
+        function (error, result) {
+            if (error) {
+                // console.log(error);
+                res.send(error);
+            } else {
+                // console.log(success);
+                res.send(result);
+            }
+        }
+    );
+});
+
+//@route GET users/get-friend-requests
+//@desc Get all friend requests for user
+//@access Public
+router.get("/get-friend-requests/", (req, res) => {
+    User.findById(req.query.id, function (err, user) { console.log(user) })
+        .then(user => res.json(user.friendRequests));
+});
+
+//@route POST users/add-friend
+//@desc Add one user to another one's friends list
+//@access Public
+router.post("/add-friend/", (req, res) => {
+    console.log("ADDING FRIENDS")
+    const fromUserID = req.body.params.fromUserID;
+    const toUserID = req.body.params.toUserID;
+    // console.log("ID FROM PARAMS: " + JSON.stringify(req.params.id));
+    console.log("FROM: " + fromUserID + " TO: " + toUserID);
+    User.findOneAndUpdate(
+        { _id: toUserID },
+        { $push: { friends: fromUserID } },
+        { new: true },
+        function (error, result) {
+            if (error) {
+                // console.log(error);
+                res.send(error);
+            } else {
+                // console.log(success);
+                res.send(result);
+            }
+        }
+    );
 });
 
 module.exports = router;
