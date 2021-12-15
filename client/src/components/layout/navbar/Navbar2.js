@@ -25,13 +25,19 @@ const Navbar2 = () => {
 
                 <ul className={click ? "nav-options active" : "nav-options"}>
                     <li className="option" onClick={closeMobileMenu}>
-                        <a href="/#">ABOUT</a>
+                        <Link to="/events">
+                            EVENTS
+                        </Link>
                     </li>
                     <li className="option" onClick={closeMobileMenu}>
-                        <a href="/#">CONTACT</a>
+                        <Link to="/users">
+                            USERS
+                        </Link>
                     </li>
                     <li className="option" onClick={closeMobileMenu}>
-                        <a href="/#">BLOG</a>
+                        <Link to="/friend-requests">
+                            REQUESTS
+                        </Link>
                     </li>
                     <li className="option mobile-option" onClick={closeMobileMenu}>
                         <a href="/#">SIGN-IN</a>
