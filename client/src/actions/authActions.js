@@ -98,9 +98,8 @@ export const getFriendRequests = userID => dispatch => {
 }
 
 // Delete friend request by user id and request id
-export const deleteFriendRequest = async (userID, friendRequestID) => {
-  console.log("deleting request " + friendRequestID + " for user " + userID);
-  const res = await axios
+export const deleteFriendRequest = (userID, friendRequestID) => {
+  let res = axios
     .post("/api/users/delete-friend-request", {
       params: {
         userID: userID,
@@ -108,13 +107,13 @@ export const deleteFriendRequest = async (userID, friendRequestID) => {
       }
     });
 
-  return res.data;
+  return res;
 }
 
 // Create friend request
-export const createFriendRequest = async (fromUserID, fromUserName, toUser) => {
+export const createFriendRequest = (fromUserID, fromUserName, toUser) => {
   // console.log("creating friend request from user " + fromUser + " to user " + toUser);
-  const res = await axios
+  const res = axios
     .post("/api/users/create-friend-request", {
       params: {
         fromUserID: fromUserID,
@@ -127,28 +126,15 @@ export const createFriendRequest = async (fromUserID, fromUserName, toUser) => {
 }
 
 // Add users as friends
-export const addFriends = async (receiverID, requesterID) => {
-  const promise1 = await axios
+export const addFriends = (requestSenderID, requestReceiverID, friendRequestID) => {
+  let res = axios
     .post("/api/users/add-friend", {
       params: {
-        fromUserID: requesterID,
-        toUserID: receiverID
+        requestSenderID: requestSenderID,
+        requestReceiverID: requestReceiverID,
+        friendRequestID: friendRequestID
       }
     });
-  const promise2 = await axios
-    .post("/api/users/add-friend", {
-      params: {
-        fromUserID: receiverID,
-        toUserID: requesterID
-      }
-    });
-
-  const res = Promise.all([promise1, promise2])
-    .then((values) => {
-      console.log(values);
-    })
-
-    console.log(res);
 
   return res;
 }

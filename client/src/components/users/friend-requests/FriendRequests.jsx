@@ -14,16 +14,14 @@ import "./FriendRequests.css"
 const FriendRequests = (props) => {
     const [data, setData] = useState([]);
 
-    function onAcceptClick(request, index) {
-        addFriends(request.fromUserID, props.auth.user.id);
-        onRejectClick(request, index);
+    async function onAcceptClick(request) {
+        let response = await addFriends(request.fromUserID, props.auth.user.id, request._id);
+        setData(response.data);
     }
 
-    function onRejectClick(request, index) {
-        deleteFriendRequest(props.auth.user.id, request._id);
-        let requestList = [...data]
-        requestList.splice(index, 1)
-        setData(requestList);
+    async function onRejectClick(request) {
+        let response = await deleteFriendRequest(props.auth.user.id, request._id);
+        setData(response.data);
     }
 
     useEffect(() => {
@@ -39,32 +37,32 @@ const FriendRequests = (props) => {
 
     return (
         // <div className="notifications-container">
-            <div className="cards-grid-requests">
-                {data.map((request, index) => (
-                    <div key={index} className="card">
-                        <div className="card-header">
-                            From: {request.fromUserName}
-                            {/* <img className="profileUserImage" src="logo.png" alt="" /> */}
-                        </div>
-                        <div className="card-body">
-                            <span>{getDisplayDate(request.date)}</span>
-                            {/* <div className="card__image"><img src={userData.picture.medium}/></div> */}
-                        </div>
-                        <div className="card-footer">
-                            <button className="btn-accept" onClick={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                onAcceptClick(request, index)
-                            }}>Accept</button>
-                            <button className="btn-accept btn-outline" onClick={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                onRejectClick(request, index)
-                            }}>Reject</button>
-                        </div>
+        <div className="cards-grid-requests">
+            {data.map((request, index) => (
+                <div key={index} className="card">
+                    <div className="card-header">
+                        From: {request.fromUserName}
+                        {/* <img className="profileUserImage" src="logo.png" alt="" /> */}
                     </div>
-                ))}
-            </div>
+                    <div className="card-body">
+                        <span>{getDisplayDate(request.date)}</span>
+                        {/* <div className="card__image"><img src={userData.picture.medium}/></div> */}
+                    </div>
+                    <div className="card-footer">
+                        <button className="btn-accept" onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            onAcceptClick(request)
+                        }}>Accept</button>
+                        <button className="btn-accept btn-outline" onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            onRejectClick(request)
+                        }}>Reject</button>
+                    </div>
+                </div>
+            ))}
+        </div>
         // </div>
     )
 }

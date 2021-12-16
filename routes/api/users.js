@@ -164,22 +164,17 @@ router.post("/create-friend-request/", (req, res) => {
 //@route POST users/delete-friend-request
 //@desc Delete a friend request
 //@access Public
-router.post("/delete-friend-request/", (req, res) => {
-    // console.log(req.body.params);
-    User.findOneAndUpdate(
-        { _id: req.body.params.userID },
-        { $pull: { friendRequests: { _id: req.body.params.friendRequestID } } },
-        { new: true },
-        function (error, result) {
-            if (error) {
-                // console.log(error);
-                res.send(error);
-            } else {
-                // console.log(success);
-                res.send(result);
-            }
-        }
+router.post("/delete-friend-request/", async (req, res) => {
+    const user = req.body.params.userID;
+    const request = req.body.params.friendRequestID;
+
+    let response = await User.findOneAndUpdate(
+        { _id: user },
+        { $pull: { friendRequests: { _id: request } } },
+        { new: true }
     );
+
+    res.send(response.friendRequests);
 });
 
 //@route GET users/get-friend-requests
@@ -193,26 +188,24 @@ router.get("/get-friend-requests/", (req, res) => {
 //@route POST users/add-friend
 //@desc Add one user to another one's friends list
 //@access Public
-router.post("/add-friend/", (req, res) => {
-    console.log("ADDING FRIENDS")
-    const fromUserID = req.body.params.fromUserID;
-    const toUserID = req.body.params.toUserID;
-    // console.log("ID FROM PARAMS: " + JSON.stringify(req.params.id));
-    console.log("FROM: " + fromUserID + " TO: " + toUserID);
-    User.findOneAndUpdate(
-        { _id: toUserID },
-        { $push: { friends: fromUserID } },
-        { new: true },
-        function (error, result) {
-            if (error) {
-                // console.log(error);
-                res.send(error);
-            } else {
-                // console.log(success);
-                res.send(result);
-            }
-        }
+router.post("/add-friend/", async (req, res) => {
+    const sender = req.body.params.requestSenderID;
+    const receiver = req.body.params.requestReceiverID;
+    const request = req.body.params.friendRequestID;
+
+    await User.findOneAndUpdate(
+        { _id: sender },
+        { $push: { friends: receiver } },
+        { new: true }
     );
+
+    let response = await User.findOneAndUpdate(
+        { _id: receiver },
+        { $push: { friends: sender }, $pull: { friendRequests: { _id: request } } },
+        { new: true }
+    );
+
+    res.send(response.friendRequests);
 });
 
 module.exports = router;
