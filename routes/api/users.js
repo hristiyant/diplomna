@@ -127,7 +127,7 @@ router.post("/login", (req, res) => {
 //@route POST users/create-friend-request
 //@desc Create a friend request
 //@access Public
-router.post("/create-friend-request/", (req, res) => {
+router.post("/create-friend-request", (req, res) => {
     var fromUserID = req.body.params.fromUserID;
     var fromUserName = req.body.params.fromUserName;
     var _id = req.body.params.toUser;
@@ -164,7 +164,7 @@ router.post("/create-friend-request/", (req, res) => {
 //@route POST users/delete-friend-request
 //@desc Delete a friend request
 //@access Public
-router.post("/delete-friend-request/", async (req, res) => {
+router.post("/delete-friend-request", async (req, res) => {
     const user = req.body.params.userID;
     const request = req.body.params.friendRequestID;
 
@@ -180,7 +180,7 @@ router.post("/delete-friend-request/", async (req, res) => {
 //@route GET users/get-friend-requests
 //@desc Get all friend requests for user
 //@access Public
-router.get("/get-friend-requests/", async (req, res) => {
+router.get("/get-friend-requests", async (req, res) => {
     let response = await User.findById(req.query.id);
     res.send(response.friendRequests);
 });
@@ -188,7 +188,7 @@ router.get("/get-friend-requests/", async (req, res) => {
 //@route POST users/add-friend
 //@desc Add one user to another one's friends list
 //@access Public
-router.post("/add-friend/", async (req, res) => {
+router.post("/add-friend", async (req, res) => {
     const sender = req.body.params.requestSenderID;
     const receiver = req.body.params.requestReceiverID;
     const request = req.body.params.friendRequestID;
