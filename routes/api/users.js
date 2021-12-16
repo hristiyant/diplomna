@@ -180,9 +180,9 @@ router.post("/delete-friend-request/", async (req, res) => {
 //@route GET users/get-friend-requests
 //@desc Get all friend requests for user
 //@access Public
-router.get("/get-friend-requests/", (req, res) => {
-    User.findById(req.query.id, function (err, user) { console.log(user) })
-        .then(user => res.json(user.friendRequests));
+router.get("/get-friend-requests/", async (req, res) => {
+    let response = await User.findById(req.query.id);
+    res.send(response.friendRequests);
 });
 
 //@route POST users/add-friend

@@ -87,14 +87,15 @@ export const logoutUser = () => dispatch => {
 };
 
 // Get all friend requests by user id
-export const getFriendRequests = userID => dispatch => {
-  return axios
+export const getFriendRequests = userID => {
+  let res = axios
     .get("/api/users/get-friend-requests", {
       params: {
         id: userID
       }
     })
-    .then(res => res.data);
+
+  return res;
 }
 
 // Delete friend request by user id and request id

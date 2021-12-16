@@ -25,13 +25,7 @@ const FriendRequests = (props) => {
     }
 
     useEffect(() => {
-        console.log(props);
-        axios
-            .get("/api/users/get-friend-requests", {
-                params: {
-                    id: props.auth.user.id
-                }
-            })
+        getFriendRequests(props.auth.user.id)
             .then(res => setData(res.data));
     }, [])
 
@@ -69,7 +63,7 @@ const FriendRequests = (props) => {
 
 FriendRequests.propTypes = {
     auth: PropTypes.object.isRequired,
-    getFriendRequests: PropTypes.func.isRequired
+    // getFriendRequests: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -78,5 +72,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    { getFriendRequests }
+    // { getFriendRequests }
 )(FriendRequests);
