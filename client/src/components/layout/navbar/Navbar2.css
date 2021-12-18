@@ -9,10 +9,11 @@ body {
 }
 
 .header {
+  width: 100%;
   display: flex;
   /* background: linear-gradient(#0b4628, tomato); */
   background: tomato;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-items: center;
   padding: 0px 10px;
   height: 60px;
@@ -20,10 +21,12 @@ body {
 
 .my-logo {
   height: 25px;
+  /* padding-left: 3px; */
   vertical-align: text-bottom;
 }
 
 .logo-nav {
+  padding-left: 20px;
   display: flex;
   align-items: baseline;
   justify-content: space-evenly;
@@ -31,9 +34,11 @@ body {
 
 .logo-container {
   width: 100px;
+  height: 50%;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
+  font-size: large;
 }
 
 .logo-container a {
@@ -47,11 +52,11 @@ body {
 }
 
 .nav-options {
-  padding-left: 25px;
   display: grid;
-  grid-template-columns: repeat(5, auto);
+  grid-template-columns: repeat(3, auto);
   grid-gap: 50px;
   list-style-type: none;
+  font-size: larger;
 }
 
 .nav-options li {
@@ -73,8 +78,10 @@ body {
 }
 
 .signin-up {
+  position: absolute;
+  right: 0px;
   display: flex;
-  padding: 0px 5px;
+  padding: 0px 10px;
   list-style-type: none;
   color: white;
   font-size: larger;
@@ -171,6 +178,9 @@ body {
   }
 
   .mobile-menu {
+    position: absolute;
+    right: 0px;
     display: block;
+    padding-right: 10px;
   }
 }

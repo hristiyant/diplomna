@@ -30,26 +30,20 @@ const Navbar2 = (props) => {
         menuOption =
             <ul className="signin-up">
                 <li className="sign-in" onClick={closeMobileMenu}>
-                    {/* <a href="/#">LOG OUT</a> */}
                     LOG OUT
                 </li>
                 <li onClick={closeMobileMenu}>
-                    {/* <a href="/" className="signup-btn"> */}
-                        PROFILE
-                    {/* </a> */}
+                    PROFILE
                 </li>
             </ul>
 
         menuOptionMobile =
             <>
                 <li className="option mobile-option" onClick={(e) => onLogoutClick(e)}>
-                    {/* <button onClick={(e) => onLogoutClick(e)}>LOG OUT</button> */}
                     LOG OUT
                 </li>
                 <li className="option mobile-option" onClick={closeMobileMenu}>
-                    {/* <a href="/" className="sign-up"> */}
-                        PROFILE
-                    {/* </a> */}
+                    PROFILE
                 </li>
             </>
     }
@@ -63,7 +57,7 @@ const Navbar2 = (props) => {
                 </li>
                 <li onClick={closeMobileMenu}>
                     {/* <a href="/" className="signup-btn"> */}
-                        SIGN-UP
+                    SIGN-UP
                     {/* </a> */}
                 </li>
             </ul>
@@ -76,7 +70,7 @@ const Navbar2 = (props) => {
                 </li>
                 <li className="option mobile-option" onClick={closeMobileMenu}>
                     {/* <a href="/" className="sign-up"> */}
-                        Log In
+                    Log In
                     {/* </a> */}
                 </li>
             </>
@@ -89,15 +83,14 @@ const Navbar2 = (props) => {
 
     return (
         <div className="header">
+            <div className="logo-container">
+                <Link to="/dashboard">
+                    <b>My</b>
+                    <img className="my-logo" src="logo.png" alt="running man icon" />
+                    <b>ports</b>
+                </Link>
+            </div>
             <div className="logo-nav">
-                <div className="logo-container">
-                    <Link to="/dashboard">
-                        <b>My</b>
-                        <img className="my-logo" src="logo.png" alt="running man icon" />
-                        <b>ports</b>
-                    </Link>
-                </div>
-
                 <ul className={click ? "nav-options active" : "nav-options"}>
                     <li className="option" onClick={closeMobileMenu}>
                         <Link to="/events">
@@ -114,28 +107,10 @@ const Navbar2 = (props) => {
                             REQUESTS
                         </Link>
                     </li>
-                    {/* <li className="option mobile-option" onClick={closeMobileMenu}>
-                        <a href="/#">SIGN-IN</a>
-                    </li> */}
                     {menuOptionMobile}
-                    {/* <li className="option mobile-option" onClick={closeMobileMenu}>
-                        <a href="/" className="sign-up">
-                            SIGN-UP
-                        </a>
-                    </li> */}
                 </ul>
             </div>
             {menuOption}
-            {/* <ul className="signin-up">
-                <li className="sign-in" onClick={closeMobileMenu}>
-                    <a href="/#">SIGN-IN</a>
-                </li>
-                <li onClick={closeMobileMenu}>
-                    <a href="/" className="signup-btn">
-                        SIGN-UP
-                    </a>
-                </li>
-            </ul> */}
             <div className="mobile-menu" onClick={handleClick}>
                 {click ? (
                     <CloseMenu className="menu-icon" />
