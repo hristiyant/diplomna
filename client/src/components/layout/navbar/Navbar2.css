@@ -74,6 +74,8 @@ body {
 }
 
 .option :hover {
+  background: black;
+  border-radius: 5px;
   color: white;
 }
 
