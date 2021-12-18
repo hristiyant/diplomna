@@ -1,10 +1,11 @@
-import "./FriendRequestCard.css";
 import React from "react";
 import { getDisplayDate } from "../../../utils/DateUtils";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { deleteFriendRequest } from "../../../actions/authActions"
 // import { createFriendRequest } from "../../actions/authActions";
+
+import "./FriendRequestCard.css";
 
 export default function FriendRequestCard({ requestData, loggedInUser, history }) {
 

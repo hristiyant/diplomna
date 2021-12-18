@@ -16,7 +16,7 @@ const Navbar2 = () => {
         <div className="header">
             <div className="logo-nav">
                 <div className="logo-container">
-                    <Link to="/">
+                    <Link to="/dashboard">
                         <b>My</b>
                         <img className="my-logo" src="logo.png" alt="running man icon" />
                         <b>ports</b>

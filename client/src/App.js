@@ -58,19 +58,19 @@ export default function App() {
       <Router>
         <Navbar />
         <div className="App">
-          {/* <div className="full-screen-container"> */}
-          <Route exact path="/" component={Landing} />
-          <Route exact path="/register" component={Register} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/create-event" component={CreateEvent} />
-          <Route exact path="/profile" component={UserProfile} />
-          <Route exact path="/users" component={SearchForUser} />
-          <Route exact path="/friend-requests" component={FriendRequests} />
-          <Route exact path="/events" component={RecordList} />
-          <Switch>
-            <PrivateRoute exact path="/dashboard" component={Dashboard} />
-          </Switch>
-          {/* </div> */}
+          <div className="full-screen-container">
+            <Route exact path="/" component={Landing} />
+            <Route exact path="/register" component={Register} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/create-event" component={CreateEvent} />
+            <Route exact path="/profile" component={UserProfile} />
+            <Route exact path="/users" component={SearchForUser} />
+            <Route exact path="/friend-requests" component={FriendRequests} />
+            <Route exact path="/events" component={RecordList} />
+            <Switch>
+              <PrivateRoute exact path="/dashboard" component={Dashboard} />
+            </Switch>
+          </div>
         </div>
       </Router>
     </Provider>

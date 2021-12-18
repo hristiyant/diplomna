@@ -1,5 +1,4 @@
 import React, { useMemo, useState, useEffect } from "react";
-import axios from "axios";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import "./SearchForUser.css"
@@ -134,8 +133,7 @@ function SearchForUser(props) {
 }
 
 SearchForUser.propTypes = {
-    auth: PropTypes.object.isRequired,
-    // getFriendRequests: PropTypes.func.isRequired
+    auth: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -143,6 +141,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(
-    mapStateToProps,
-    // { getFriendRequests }
+    mapStateToProps
 )(SearchForUser);
