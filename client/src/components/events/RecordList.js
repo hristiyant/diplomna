@@ -184,7 +184,7 @@ function RecordList() {
 
   return (
     <div className="RecordList">
-      <Table columns={columns} data={data} />
+      <Table columns={columns} data={data} defaultPageSize={20} />
     </div>
   );
 }

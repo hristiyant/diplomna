@@ -1,0 +1,46 @@
+
+
+.card {
+    background-color: rgba(0, 0, 0, 0.644);
+    /* --padding: 1rem; */
+    /* margin: 1rem; */
+    /* min-width: 640px; */
+    background: white;
+    border: 1px solid #777;
+    border-radius: .25rem;
+    /* overflow: hidden; */
+    transition: transform .3s ease;
+    /* border-radius: 10px;
+    border: 1px solid tomato;
+    background-color: rgba(0, 0, 0, 0.8);
+    margin: 2rem 2rem 2rem 0;
+    padding: 1.5rem;
+    height: 200px;
+    width: 250px;
+    font-weight: 100;
+    color: white;
+    box-shadow: 0 0 28px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer; */
+}
+
+.card:hover {
+    transform: scale(1.1);
+}
+
+.btn {
+    --reject-btn-color: tomato;
+    --color: hsl(123, 100%, 31%);
+    background: var(--color);
+    color: white;
+    border: none;
+    font-size: 1rem;
+    padding: .5em .75em;
+    border-radius: .25em;
+    cursor: pointer;
+}
+
+.btn.btn-outline {
+    background: none;
+    border: 1px solid var(--reject-btn-color);
+    color: var(--reject-btn-color);
+}

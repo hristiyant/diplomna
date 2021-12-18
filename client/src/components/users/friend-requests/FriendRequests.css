@@ -1,0 +1,67 @@
+.friend-requests {
+    align-self: flex-start;
+}
+
+.search-box {
+    padding-left: 1rem;
+    margin-left: 1rem;
+    margin-top: 2rem;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #777;
+    border-radius: .25rem;
+}
+
+.cards-grid-requests {
+    display: block;
+    width: 80%;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    align-items: center;
+}
+
+.card-requests {
+    --padding: 1rem;
+    margin: 1rem;
+    min-width: 640px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    /* background: rgba(0, 0, 0, 0.644); */
+    border: 1px solid #777;
+    border-radius: .25rem;
+    /* overflow: hidden; */
+    transition: transform .3s ease;
+    /* border-radius: 10px;
+    border: 1px solid tomato;
+    background-color: rgba(0, 0, 0, 0.8);
+    margin: 2rem 2rem 2rem 0;
+    padding: 1.5rem;
+    height: 200px;
+    width: 250px;
+    font-weight: 100;
+    color: white;
+    box-shadow: 0 0 28px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer; */
+}
+
+.card-requests:hover {
+    transform: scale(1.1);
+}
+
+.btn-accept {
+    --reject-btn-color: tomato;
+    --color: hsl(123, 100%, 31%);
+    background: var(--color);
+    color: white;
+    border: none;
+    font-size: 1rem;
+    padding: .5em .75em;
+    border-radius: .25em;
+    cursor: pointer;
+}
+
+.btn-accept.btn-outline {
+
+    background: none;
+    border: none;
+    color: var(--reject-btn-color);
+}

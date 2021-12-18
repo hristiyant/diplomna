@@ -28,7 +28,7 @@ export default function EventsTable({ columns, data }) {
 
   // Render the UI for your table
   return (
-    <>
+    <div>
       <input
         value={filterInput}
         onChange={handleFilterChange}
@@ -70,6 +70,6 @@ export default function EventsTable({ columns, data }) {
           })}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
