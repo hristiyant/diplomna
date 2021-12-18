@@ -1,16 +1,91 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { logoutUser } from "../../../actions/authActions";
+
 import { ReactComponent as CloseMenu } from "../../../assets/x.svg";
 import { ReactComponent as MenuIcon } from "../../../assets/menu.svg";
-import { ReactComponent as Logo } from "../../../assets/x.svg";
-import { Link } from "react-router-dom";
+// import { ReactComponent as Logo } from "../../../assets/x.svg";
 
 import "./Navbar2.css";
 
-const Navbar2 = () => {
+const Navbar2 = (props) => {
     const [click, setClick] = useState(false);
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
+    const options = props.auth.isAuthenticated ? showAuthenticatedOptions() : showDefaultOptions();
+
+    var menuOption;
+    var menuOptionMobile;
+
+    useEffect(() => {
+        return () => {
+
+        }
+    }, [props.auth.isAuthenticated])
+
+    function showAuthenticatedOptions() {
+        menuOption =
+            <ul className="signin-up">
+                <li className="sign-in" onClick={closeMobileMenu}>
+                    {/* <a href="/#">LOG OUT</a> */}
+                    LOG OUT
+                </li>
+                <li onClick={closeMobileMenu}>
+                    {/* <a href="/" className="signup-btn"> */}
+                        PROFILE
+                    {/* </a> */}
+                </li>
+            </ul>
+
+        menuOptionMobile =
+            <>
+                <li className="option mobile-option" onClick={(e) => onLogoutClick(e)}>
+                    {/* <button onClick={(e) => onLogoutClick(e)}>LOG OUT</button> */}
+                    LOG OUT
+                </li>
+                <li className="option mobile-option" onClick={closeMobileMenu}>
+                    {/* <a href="/" className="sign-up"> */}
+                        PROFILE
+                    {/* </a> */}
+                </li>
+            </>
+    }
+
+    function showDefaultOptions() {
+        menuOption =
+            <ul className="signin-up">
+                <li className="sign-in" onClick={closeMobileMenu}>
+                    {/* <a href="/#">SIGN-IN</a> */}
+                    SIGN IN
+                </li>
+                <li onClick={closeMobileMenu}>
+                    {/* <a href="/" className="signup-btn"> */}
+                        SIGN-UP
+                    {/* </a> */}
+                </li>
+            </ul>
+
+        menuOptionMobile =
+            <>
+                <li className="option mobile-option" onClick={(e) => onLogoutClick(e)}>
+                    {/* <button onClick={(e) => onLogoutClick(e)}>Register</button> */}
+                    REGISTER
+                </li>
+                <li className="option mobile-option" onClick={closeMobileMenu}>
+                    {/* <a href="/" className="sign-up"> */}
+                        Log In
+                    {/* </a> */}
+                </li>
+            </>
+    }
+
+    function onLogoutClick(e) {
+        e.preventDefault()
+        props.logoutUser()
+    }
 
     return (
         <div className="header">
@@ -39,17 +114,19 @@ const Navbar2 = () => {
                             REQUESTS
                         </Link>
                     </li>
-                    <li className="option mobile-option" onClick={closeMobileMenu}>
+                    {/* <li className="option mobile-option" onClick={closeMobileMenu}>
                         <a href="/#">SIGN-IN</a>
-                    </li>
-                    <li className=" option mobile-option" onClick={closeMobileMenu}>
+                    </li> */}
+                    {menuOptionMobile}
+                    {/* <li className="option mobile-option" onClick={closeMobileMenu}>
                         <a href="/" className="sign-up">
                             SIGN-UP
                         </a>
-                    </li>
+                    </li> */}
                 </ul>
             </div>
-            <ul className="signin-up">
+            {menuOption}
+            {/* <ul className="signin-up">
                 <li className="sign-in" onClick={closeMobileMenu}>
                     <a href="/#">SIGN-IN</a>
                 </li>
@@ -58,7 +135,7 @@ const Navbar2 = () => {
                         SIGN-UP
                     </a>
                 </li>
-            </ul>
+            </ul> */}
             <div className="mobile-menu" onClick={handleClick}>
                 {click ? (
                     <CloseMenu className="menu-icon" />
@@ -70,4 +147,17 @@ const Navbar2 = () => {
     );
 };
 
-export default Navbar2;
+Navbar2.propTypes = {
+    logoutUser: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+
+export default connect(
+    mapStateToProps,
+    { logoutUser }
+)(Navbar2);
+// export default Navbar2;
