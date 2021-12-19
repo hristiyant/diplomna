@@ -14,7 +14,7 @@ import Landing from "./components/layout/Landing";
 import Dashboard from "./components/dashboard/Dashboard";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
-import CreateEvent from "./components/events/CreateEvent";
+import CreateEvent from "./components/events/create/CreateEvent";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import RecordList from "./components/events/RecordList";
 import SearchForUser from "./components/users/SearchForUser";

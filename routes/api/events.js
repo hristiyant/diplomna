@@ -7,9 +7,10 @@ const Event = require("../../models/Event");
 //@route GET events/get
 //@desc Get all events
 //@access Public
-router.get("/get", (req, res) => {
-    Event.find()
-        .then(events => res.json(events));
+router.get("/get-all", async (req, res) => {
+    let response = await Event.find();
+    // .then(events => res.json(events));
+    res.send(response);
 });
 
 //@route POST events/create
@@ -25,6 +26,24 @@ router.post("/create", (req, res) => {
 
     newEvent.save()
         .then(event => res.json(event));
+});
+
+//@route POST events/subscribe
+//@desc Subscribe to an event
+//@access Public
+router.post("/subscribe", async (req, res) => {
+    const eventID = "";
+    const subscriberID = "";
+
+    await Event.findOneAndUpdate(
+        { _id: eventID },
+        { $push: { participants: subscriberID } },
+        { new: true }
+    );
+
+    let response = await Event.find();
+
+    res.send(response);
 });
 
 module.exports = router;

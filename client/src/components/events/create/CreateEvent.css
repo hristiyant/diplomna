@@ -1,0 +1,73 @@
+.create-event-container {
+    background-color: hsla(0, 0%, 0%, 0.7);
+    border-radius: 10px;
+    padding: 50px 30px;
+    min-width: 400px;
+    width: 50%;
+    max-width: 600px;
+    margin: auto;
+}
+
+.create-event-title {
+    color: white;
+    text-align: center;
+    margin: 0;
+    margin-bottom: 40px;
+    font-size: 2.5em;
+    font-weight: normal;
+    font-family: monospace;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    color: white;
+    font-size: 1.5em;
+    margin-bottom: 7px;
+    font-weight: lighter;
+    font-family: monospace;
+}
+
+.input-group input {
+    font-size: 1.5em;
+    padding: .1em .25em;
+    background-color: hsla(54, 100%, 91%, 0.3);
+    border: 1px solid hsl(54, 100%, 6%);
+    outline: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: lighter;
+}
+
+.input-group input:focus {
+    border: 1px solid hsl(12, 100%, 76%);
+}
+
+.create-event-button {
+    padding: 10px 30px;
+    width: fit-content;
+    border-radius: 5px;
+    background-color: #96433c;
+    border: 1px solid hsla(0, 0%, 100%, 0.432);
+    outline: none;
+    font-size: 1.5em;
+    color: white;
+    font-weight: lighter;
+    margin-top: 20px;
+    cursor: pointer;
+    font-family: monospace;
+}
+
+.create-event-button:hover {
+    background-color: hsla(4, 25%, 31%, 0.3);
+    border: 1px solid white;
+    transition: all 0.3s ease 0s;
+}
+
+.create-event-button:focus {
+    background-color: hsla(5, 100%, 50%, 0.5);
+}

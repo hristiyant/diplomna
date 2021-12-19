@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { createEvent } from "../../actions/eventActions";
+import { createEvent } from "../../../actions/eventActions";
 import classnames from "classnames";
+
+import "./CreateEvent.css";
 
 class CreateEvent extends Component {
     constructor() {
