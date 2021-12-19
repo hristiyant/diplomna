@@ -32,9 +32,21 @@ export const getEvents = () => {
 };
 
 // Subscribe for Event
-export const subscribeForEvent = (userID, eventID) => {
+export const subscribeToEvent = (userID, eventID) => {
   let res = axios
-    .post("api/events/subscribe")
+    .post("api/events/subscribe");
+
+  return res;
+}
+
+// Delet an Event
+export const deleteEvent = (eventID) => {
+  let res = axios
+    .post("api/events/delete-event", {
+      params: {
+        eventID: eventID
+      }
+    });
 
   return res;
 }

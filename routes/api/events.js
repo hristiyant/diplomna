@@ -46,4 +46,17 @@ router.post("/subscribe", async (req, res) => {
     res.send(response);
 });
 
+//@route POST events/delete-event
+//@desc Delete an event
+//@access Public
+router.post("/delete-event", async (req, res) => {
+    const eventID = req.body.params.eventID;
+
+    await Event.findOneAndDelete({ _id: eventID });
+
+    let response = await Event.find();
+
+    res.send(response);
+});
+
 module.exports = router;
