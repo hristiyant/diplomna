@@ -3,8 +3,12 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Loader from "react-loader-spinner";
 
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
 import { getEvents, subscribeToEvent, deleteEvent } from "../../actions/eventActions";
 import { getDisplayDate } from "../../utils/DateUtils";
+
 
 import "../../utils/EventsTable.css";
 
@@ -44,12 +48,33 @@ const RecordList = (props) => {
 
   function filterCards() { }
 
-  function onDeleteClick(event) {
-    // loading = true
-    console.log(event._id);
-    deleteEvent(event._id)
-      .then(res => setData(res.data));
-    //loading = false
+  async function onDeleteClick(event) {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className='custom-ui'>
+            <h1>Cancel event</h1>
+            <p>Are you sure you want to cancel this event?</p>
+            <div className="alert-buttons">
+              <button
+                onClick={() => {
+                  setIsLoading(true)
+                  deleteEvent(event._id)
+                    .then(res => {
+                      setData(res.data)
+                      setIsLoading(false);
+                    });
+                  onClose();
+                }}
+              >
+                Yes
+              </button>
+              <button onClick={onClose}>No</button>
+            </div>
+          </div>
+        );
+      }
+    });
   }
 
   function onSubscribeClick(event) {
