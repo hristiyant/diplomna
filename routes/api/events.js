@@ -19,10 +19,11 @@ router.get("/get-all", async (req, res) => {
 router.post("/create", (req, res) => {
     const newEvent = new Event({
         name: req.body.name,
-        createdBy: req.body.createdBy,
+        createdByID: req.body.createdByID,
+        createdByName: req.body.createdByName,
         eventType: req.body.eventType,
         quota: req.body.quota,
-        participants:[req.body.createdBy]
+        participants:[req.body.createdByID]
     });
 
     newEvent.save()
@@ -33,8 +34,8 @@ router.post("/create", (req, res) => {
 //@desc Subscribe to an event
 //@access Public
 router.post("/subscribe", async (req, res) => {
-    const eventID = "";
-    const subscriberID = "";
+    const eventID = req.body.params.eventID;
+    const subscriberID = req.body.params.userID;
 
     await Event.findOneAndUpdate(
         { _id: eventID },

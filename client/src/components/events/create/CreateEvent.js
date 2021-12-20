@@ -12,7 +12,7 @@ class CreateEvent extends Component {
         super();
         this.state = {
             name: "",
-            createdBy: "",
+            createdByID: "",
             type: "",
             quota: "",
             errors: {}
@@ -40,7 +40,8 @@ class CreateEvent extends Component {
 
         const eventData = {
             name: this.state.name,
-            createdBy: this.props.auth.user.id,
+            createdByID: this.props.auth.user.id,
+            createdByName: this.props.auth.user.name,
             eventType: this.state.type,
             quota: this.state.quota
         };

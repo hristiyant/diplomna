@@ -39,7 +39,7 @@ const RecordList = (props) => {
   }
 
   function showSubscribeButton(event) {
-    if (showCancelEventButton(event) || event.participants.length === event.quota) {
+    if (showCancelEventButton(event) || event.participants.length === event.quota || event.participants.includes(props.auth.user.id)) {
       return false;
     }
 
@@ -47,7 +47,7 @@ const RecordList = (props) => {
   }
 
   function showCancelEventButton(event) {
-    if (props.auth.user.id === event.createdBy) {
+    if (props.auth.user.id === event.createdByID) {
       return true;
     }
 
@@ -100,13 +100,13 @@ const RecordList = (props) => {
           {data.map((event, index) => (
             <div key={index} className="card-requests">
               <div className="card-header">
-                From: {event.name}
+                {event.name}
                 {/* <img className="profileUserImage" src="logo.png" alt="" /> */}
               </div>
               <div className="card-body">
-                <span>{getDisplayDate(event.date)}</span>
-                <span>{event.createdBy}</span>
-                <div>{event.participants.length} / {event.quota}</div>
+                <span>Date: {getDisplayDate(event.date)}</span>
+                <div>Created by: {event.createdByName}</div>
+                <div>Participants: {event.participants.length} / {event.quota}</div>
                 {/* <div className="card__image"><img src={userData.picture.medium}/></div> */}
               </div>
               <div className="card-footer">

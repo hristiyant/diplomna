@@ -10,7 +10,11 @@ const EventSchema = new Schema({
         type: String,
         required: true
     },
-    createdBy: {
+    createdByID: {
+        type: String,
+        required: true
+    },
+    createdByName: {
         type: String,
         required: true
     },

@@ -34,7 +34,12 @@ export const getEvents = () => {
 // Subscribe for Event
 export const subscribeToEvent = (userID, eventID) => {
   let res = axios
-    .post("api/events/subscribe");
+    .post("api/events/subscribe", {
+      params: {
+        eventID: eventID,
+        userID: userID
+      }
+    });
 
   return res;
 }
