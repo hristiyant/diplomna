@@ -21,7 +21,8 @@ router.post("/create", (req, res) => {
         name: req.body.name,
         createdBy: req.body.createdBy,
         eventType: req.body.eventType,
-        quota: req.body.quota
+        quota: req.body.quota,
+        participants:[req.body.createdBy]
     });
 
     newEvent.save()

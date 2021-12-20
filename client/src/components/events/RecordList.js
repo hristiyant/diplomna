@@ -38,7 +38,15 @@ const RecordList = (props) => {
     />)
   }
 
-  function showButton(event) {
+  function showSubscribeButton(event) {
+    if (showCancelEventButton(event) || event.participants.length === event.quota) {
+      return false;
+    }
+
+    return true;
+  }
+
+  function showCancelEventButton(event) {
     if (props.auth.user.id === event.createdBy) {
       return true;
     }
@@ -102,12 +110,12 @@ const RecordList = (props) => {
                 {/* <div className="card__image"><img src={userData.picture.medium}/></div> */}
               </div>
               <div className="card-footer">
-                {!showButton(event) && <button className="btn-accept" onClick={(e) => {
+                {showSubscribeButton(event) && <button className="btn-accept" onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
                   onSubscribeClick(event);
                 }}>SUBSCRIBE</button>}
-                {showButton(event) && <button className="btn-accept btn-outline" onClick={(e) => {
+                {showCancelEventButton(event) && <button className="btn-accept btn-outline" onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
                   onDeleteClick(event)
