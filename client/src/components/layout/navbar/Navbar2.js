@@ -1,10 +1,11 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../../actions/authActions";
 
+
+import { ReactComponent as ProfileIcon } from "../../../assets/profile-icon.svg";
 import { ReactComponent as CloseMenu } from "../../../assets/x.svg";
 import { ReactComponent as MenuIcon } from "../../../assets/menu.svg";
 // import { ReactComponent as Logo } from "../../../assets/x.svg";
@@ -15,27 +16,60 @@ const Navbar2 = (props) => {
     const [click, setClick] = useState(false);
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
-    const options = props.auth.isAuthenticated ? showAuthenticatedOptions() : showDefaultOptions();
+
+    //profile menu
+    const [clickProfile, setClickProfile] = useState(false);
+    const handleClickProfile = () => setClickProfile(!clickProfile);
+    const closeProfileMenu = () => setClickProfile(false);
+    const options = props.auth.isAuthenticated ? showAuthenticatedOptions(clickProfile) : showDefaultOptions();
 
     var menuOption;
     var menuOptionMobile;
 
     useEffect(() => {
-        return () => {
+        function handleEvent(e) {
+            const isDropdownButton = e.target.matches("[data-dropdown-button]")
+            if (!isDropdownButton) {
+                closeProfileMenu()
+            }
+        };
 
+        window.addEventListener("click", handleEvent);
+
+        return () => {
+            window.removeEventListener("click", handleEvent)
         }
     }, [props.auth.isAuthenticated])
 
-    function showAuthenticatedOptions() {
+
+
+    function showAuthenticatedOptions(clickProfilee) {
         menuOption =
-            <ul className="signin-up">
-                <li className="sign-in" onClick={closeMobileMenu}>
-                    LOG OUT
-                </li>
-                <li onClick={closeMobileMenu}>
-                    PROFILE
-                </li>
-            </ul>
+            <div className="signin-up">
+                <div className="dropdown">
+                    {/* <div className="profile-button"> */}
+                    <div className="profile-button" data-dropdown-button onClick={() => {
+                        console.log(clickProfile);
+                        handleClickProfile();
+                    }}>
+                        {/* <img className="my-logo" src="logo.png" alt="running man icon" /> */}
+                        <ProfileIcon className="profile-button-icon" data-dropdown-button />
+                        <div className="profile-button-name" data-dropdown-button>{props.auth.user.name.split(" ")[0]}</div>
+                    </div>
+                    <div className={clickProfilee ? "dropdown-menu active" : "dropdown-menu"}>
+                        <Link className="option-profile" to="/profile" onClick={closeProfileMenu}>
+                            PROFILE
+                        </Link>
+                        <Link to="#" onClick={(e) => {
+                            closeProfileMenu();
+                            onLogoutClick(e);
+                        }}>
+                            LOG OUT
+                        </Link>
+                    </div>
+                    {/* </div> */}
+                </div>
+            </div>
 
         menuOptionMobile =
             <>
@@ -70,7 +104,7 @@ const Navbar2 = (props) => {
                 </li>
                 <li className="option mobile-option" onClick={closeMobileMenu}>
                     {/* <a href="/" className="sign-up"> */}
-                    Log In
+                    LOG IN
                     {/* </a> */}
                 </li>
             </>
@@ -135,4 +169,3 @@ export default connect(
     mapStateToProps,
     { logoutUser }
 )(Navbar2);
-// export default Navbar2;

@@ -14,19 +14,24 @@ import { getDisplayDate } from "../../utils/DateUtils";
 import "../../utils/EventsTable.css";
 
 const RecordList = (props) => {
+  const [allEvents, setAllEvents] = useState([]);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const content = isLoading ? showLoader() : showContent();
-
   useEffect(() => {
-    console.log("user: " + props.auth.user.id)
     getEvents()
       .then(res => {
         setData(res.data);
+        setAllEvents(res.data);
         setIsLoading(false);
       })
   }, []);
+
+  const filterEvents = event => {
+    const value = event.target.value.toLowerCase();
+    const filteredEvents = allEvents.filter(event => (`${event.name}`.toLowerCase().includes(value)));
+    setData(filteredEvents);
+  }
 
   function showLoader() {
     return (<Loader
@@ -54,8 +59,6 @@ const RecordList = (props) => {
 
     return false;
   }
-
-  function filterCards() { }
 
   async function onDeleteClick(event) {
     confirmAlert({
@@ -96,7 +99,7 @@ const RecordList = (props) => {
   function showContent() {
     return (
       <div className="friend-requests" >
-        <input className="search-box" onInput={filterCards} placeholder="Search..." />
+        <input className="search-box" onInput={filterEvents} placeholder="Search..." />
         <div className="cards-grid-requests">
           <Scrollbars className="my-scrollbar" style={{ width: "100%", height: "100%" }}
             renderTrackVertical={props => <div {...props} className="track-vertical" />}
@@ -135,8 +138,10 @@ const RecordList = (props) => {
     );
   }
 
+  const content = isLoading ? showLoader() : showContent();
+
   return (
-    <div>{content}</div>
+    <div style={{ height: "100%", width: "100%" }}>{content}</div>
   );
 }
 

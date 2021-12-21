@@ -56,8 +56,8 @@ export default function App() {
   return (
     <Provider store={store}>
       <Router>
-        <Navbar />
         <div className="App">
+        <Navbar />
           <div className="full-screen-container">
             <Route exact path="/" component={Landing} />
             <Route exact path="/register" component={Register} />

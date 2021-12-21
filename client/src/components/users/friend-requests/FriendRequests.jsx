@@ -37,6 +37,7 @@ const FriendRequests = (props) => {
 
     const filterCards = event => {
         const value = event.target.value.toLowerCase();
+        console.log(value)
         const filteredUsers = allRequests.filter(request => (`${request.fromUserName}`.toLowerCase().includes(value)));
         setData(filteredUsers);
     }

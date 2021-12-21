@@ -3,30 +3,27 @@
      font-family: 'Quicksand', sans-serif;
  }
 
- /*html {
-    margin: 0px;
-    height: 100%;
-    width: 100%;
+ html, body {
+     margin: 0;
+     padding: 0;
+     height: 100%;
  }
- */
 
  .App {
-     /* text-align: center; */
      background-image: url("background1.jpeg");
      background-size: cover;
      background-position: center;
      position: fixed;
-     min-width: 100%;
-     height: 94%;
+     width: 100vw;
+     height: 100vh;
+     display: flex;
+     flex-direction: column;
+
+     /* min-width: 100%; */
+     /* height: 94%; */
+     /* box-sizing: content-box; */
  }
 
- body {
-     margin: 0;
-     padding: 0;
-     /* background-image: url("background1.jpeg"); 
-    background-size: contain; */
-     /* overflow: hidden; */
- }
 
  .full-screen-container {
      /* padding: 5rem; */
@@ -34,10 +31,10 @@
      /* background-image: url("background1.jpeg");
     background-size: cover;
     background-position: center;  */
-     height: 100%;
-     width: 100%;
+     height: 100vh;
+     width: 100vw;
      /* padding-top: 55px; */
-     padding-bottom: 50px;
+     /* padding-bottom: 50px; */
      /* margin: 2rem 10% 0 10%; */
      max-width: 100%;
      box-sizing: border-box;
