@@ -1,88 +1,11 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import "./SearchForUser.css"
 
 import UserCard from "../ui-cards/UserCard";
 import { getAllUsers } from "../../actions/authActions"
 
-import Table from "../../utils/EventsTable";
-import "../../utils/EventsTable.css";
-// import { getAllUsers } from "../../actions/authActions";
-
-// function SearchForUser() {
-//     const columns = useMemo(
-//         () => [
-//             {
-//                 Header: "User",
-//                 columns: [
-//                     {
-//                         Header: "Name",
-//                         accessor: "name"
-//                     },
-//                     {
-//                         Header: "Email",
-//                         accessor: "email"
-//                     }
-//                 ]
-//             },
-//             // {
-//             //     Header: "Details",
-//             //     columns: [
-//             //         {
-//             //             Header: "Date",
-//             //             accessor: "date",
-//             //             Cell: ({ cell: { value } }) => {
-//             //                 return getDisplayDate(value);
-//             //             }
-//             //         }
-//             //         // ,{
-//             //         //   Header: "Genre(s)",
-//             //         //   accessor: "show.genres",
-//             //         //   Cell: ({ cell: { value } }) => <Genres values={value} />
-//             //         // },
-//             //         // {
-//             //         //   Header: "Runtime",
-//             //         //   accessor: "show.runtime",
-//             //         //   Cell: ({ cell: { value } }) => {
-//             //         //     const hour = Math.floor(value / 60);
-//             //         //     const min = Math.floor(value % 60);
-//             //         //     return (
-//             //         //       <>
-//             //         //         {hour > 0 ? `${hour} hr${hour > 1 ? "s" : ""} ` : ""}
-//             //         //         {min > 0 ? `${min} min${min > 1 ? "s" : ""}` : ""}
-//             //         //       </>
-//             //         //     );
-//             //         //   }
-//             //         // },
-//             //         // {
-//             //         //   Header: "Status",
-//             //         //   accessor: "show.status"
-//             //         // }
-//             //     ]
-//             // }
-//         ],
-//         []
-//     );
-
-//     const [data, setData] = useState([]);
-
-//     useEffect(() => {
-//         (async () => {
-//             const result = await axios("http://localhost:3000/api/users/get-all-users", { params: { answer: 42 } });
-//             setData(result.data);
-//             console.log(result.data);
-//         })();
-//     }, []);
-
-//     return (
-//         <div className="RecordList">
-//             <Table columns={columns} data={data} />
-//         </div>
-//     );
-// }
-
-// export default SearchForUser;
+import "./SearchForUser.css"
 
 function SearchForUser(props) {
     const [clickedUser, setClickedUser] = useState({});

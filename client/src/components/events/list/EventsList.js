@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import Loader from "react-loader-spinner";
 
@@ -17,6 +18,7 @@ const EventsList = (props) => {
   const [initialEventsData, setInitialEventsData] = useState([]);
   const [eventsData, setEventsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isChecked, setIsChecked] = useState(true);
 
   useEffect(() => {
     getEvents()
@@ -37,8 +39,8 @@ const EventsList = (props) => {
   }
 
   const onInputChanged = event => {
+    setIsChecked(false);
     const value = event.target.value;
-    console.log(value)
     var filteredEvents;
 
     switch (value) {
@@ -53,6 +55,7 @@ const EventsList = (props) => {
         );
         break;
       default: // case "ALL"
+        setIsChecked(true);
         filteredEvents = initialEventsData;
         break;
     }
@@ -136,13 +139,22 @@ const EventsList = (props) => {
     return (
       <div className="container-events" >
         <div className="side-bar">
-          <input className="search-box" onInput={filterEvents} placeholder="Search..." />
+          <Link to="/create-event" className="link-create-new-event">CREATE NEW EVENT</Link>
+          <input className="search-box-events" onInput={filterEvents} placeholder="Search..." />
           <div className="filter">
-            Show:
-            <div className="input-group" onChange={onInputChanged}>
-              <div><input type="radio" value="ALL" name="event-filter" /> All</div>
-              <div><input type="radio" value="CREATED" name="event-filter" /> Created by me</div>
-              <div><input type="radio" value="GOING" name="event-filter" /> Going</div>
+            <div className="input-group-events" onChange={onInputChanged}>
+              <div className="radio-item">
+                <input id="all" type="radio" value="ALL" name="event-filter" checked={isChecked} />
+                <label for="all">All</label>
+              </div>
+              <div className="radio-item">
+                <input id="created" type="radio" value="CREATED" name="event-filter" />
+                <label for="created">Created by me</label>
+              </div>
+              <div className="radio-item">
+                <input id="going" type="radio" value="GOING" name="event-filter" />
+                <label for="going">Going</label>
+              </div>
             </div>
           </div>
         </div>

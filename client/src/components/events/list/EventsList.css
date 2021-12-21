@@ -1,44 +1,110 @@
 .container-events {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: center;
     height: 100%;
     width: 100%;
 }
 
 .side-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
     background: rgba(0, 0, 0, 0.7);
 }
 
-.search-box {
+.link-create-new-event {
+    --reject-btn-color: #ac5c54;
+    --color: #ac5c54;
+    margin: 15px;
+    width: 200px;
+    /* min-width: 200px; */
+    background: var(--color);
+    color: white;
+    border: none;
+    padding: .5em .75em;
+    border-radius: .25rem;
+    text-align: center;
+    cursor: pointer;
+    font-size: medium;
+    text-decoration: none;
+}
+
+.link-create-new-event:hover {
+    text-decoration: underline;
+}
+
+.search-box-events {
     height: 50px;
+    width: 30%;
+    min-width: 200px;
+    margin: 5px;
     padding-left: 1rem;
     background: rgba(0, 0, 0, 0.7);
     border: 1px solid #777;
     border-radius: .25rem;
+    color: white;
+    font-size: small;
 }
 
 .filter {
-    height: 150;
+    margin: 5px;
     color: white;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 }
 
-.input-group {
-    height: 150px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+.input-group-events {}
+
+.radio-item {
+    display: inline-block;
+    position: relative;
+    padding: 0 6px;
+    margin: 0 10px 0;
+}
+
+.radio-item label {
+    color: white;
+    font-weight: normal;
+    font-size: small;
+}
+
+.radio-item input[type='radio'] {
+    display: none;
+}
+
+.radio-item label:before {
+    content: " ";
+    display: inline-block;
+    position: relative;
+    top: 3px;
+    margin: 0 5px 0 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 11px;
+    border: 2px solid white;
+    background-color: transparent;
+}
+
+.radio-item input[type=radio]:checked+label:after {
+    border-radius: 11px;
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    top: 7px;
+    left: 10px;
+    content: " ";
+    display: block;
+    background: #ac5c54;
 }
 
 .container-events.cards-grid {
     height: 100%;
     overflow: auto;
-    border: 3px solid #ac5c54;
+    /* border: 3px solid #ac5c54; */
     display: block;
     width: 100%;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
