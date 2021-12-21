@@ -1,0 +1,205 @@
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import Loader from "react-loader-spinner";
+
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { Scrollbars } from "react-custom-scrollbars";
+
+import { getEvents, subscribeToEvent, deleteEvent } from "../../../actions/eventActions";
+import { getDisplayDate } from "../../../utils/DateUtils";
+import { ReactComponent as GoingIcon } from "../../../assets/tick.svg";
+
+import "./EventsList.css";
+
+const EventsList = (props) => {
+  const [initialEventsData, setInitialEventsData] = useState([]);
+  const [eventsData, setEventsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    getEvents()
+      .then(res => {
+        setEventsData(res.data);
+        setInitialEventsData(res.data);
+        setIsLoading(false);
+      })
+  }, []);
+
+  const filterEvents = event => {
+    const value = event.target.value.toLowerCase();
+    const filteredEvents = initialEventsData.filter(event =>
+      (`${event.name}`.toLowerCase().includes(value))
+    );
+
+    setEventsData(filteredEvents);
+  }
+
+  const onInputChanged = event => {
+    const value = event.target.value;
+    console.log(value)
+    var filteredEvents;
+
+    switch (value) {
+      case "CREATED":
+        filteredEvents = initialEventsData.filter(event =>
+          (`${event.createdByID}` === props.auth.user.id)
+        );
+        break;
+      case "GOING":
+        filteredEvents = initialEventsData.filter(event =>
+          (`${event.participants}`.includes(props.auth.user.id))
+        );
+        break;
+      default: // case "ALL"
+        filteredEvents = initialEventsData;
+        break;
+    }
+
+    setEventsData(filteredEvents);
+  }
+
+  function showLoader() {
+    return (<Loader
+      type="MutatingDots"
+      color="tomato"
+      secondaryColor="white"
+      height={100}
+      width={100}
+      timeout={3000} //3 secs
+    />)
+  }
+
+  function showCancelEventButton(event) {
+    if (props.auth.user.id === event.createdByID) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function showGoing(event) {
+    if (showCancelEventButton(event) || event.participants.includes(props.auth.user.id)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function showSubscribeButton(event) {
+    if (showGoing(event) || event.participants.length === event.quota) {
+      return false;
+    }
+
+    return true;
+  }
+
+  async function onCancelClick(event) {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className='custom-ui'>
+            <h1>Cancel event</h1>
+            <p>Are you sure you want to cancel this event?</p>
+            <div className="alert-buttons">
+              <button
+                onClick={() => {
+                  setIsLoading(true)
+                  deleteEvent(event._id)
+                    .then(res => {
+                      setEventsData(res.data);
+                      setInitialEventsData(res.data);
+                      setIsLoading(false);
+                    });
+                  onClose();
+                }}
+              >
+                Yes
+              </button>
+              <button onClick={onClose}>No</button>
+            </div>
+          </div>
+        );
+      }
+    });
+  }
+
+  function onSubscribeClick(event) {
+    // loading = true
+    subscribeToEvent(props.auth.user.id, event._id)
+      .then(res => setEventsData(res.data))
+    // loading = false
+  }
+
+  function showContent() {
+    return (
+      <div className="container-events" >
+        <div className="side-bar">
+          <input className="search-box" onInput={filterEvents} placeholder="Search..." />
+          <div className="filter">
+            Show:
+            <div className="input-group" onChange={onInputChanged}>
+              <div><input type="radio" value="ALL" name="event-filter" /> All</div>
+              <div><input type="radio" value="CREATED" name="event-filter" /> Created by me</div>
+              <div><input type="radio" value="GOING" name="event-filter" /> Going</div>
+            </div>
+          </div>
+        </div>
+        <div className="container-events cards-grid">
+          <Scrollbars className="my-scrollbar" style={{ width: "100%", height: "100%" }}
+            renderTrackVertical={props => <div {...props} className="track-vertical" />}
+            renderThumbVertical={props => <div {...props} className="thumb-vertical" />}
+            renderView={props => <div {...props} className="view" />}
+          >
+            {eventsData.map((event, index) => (
+              <div key={index} className="card-event">
+                <div className="card-header">
+                  {event.name}
+                  {/* <img className="profileUserImage" src="logo.png" alt="" /> */}
+                </div>
+                <div className="card-body">
+                  <span>Date: {getDisplayDate(event.date)}</span>
+                  <div>Created by: {event.createdByName}</div>
+                  <div>Participants: {event.participants.length} / {event.quota}
+                  </div>
+                  <progress id="participants" className="progress-participants" value={event.participants.length} max={event.quota}></progress>
+                  {/* <div className="card__image"><img src={userData.picture.medium}/></div> */}
+                </div>
+                <div className="card-footer">
+                  {showGoing(event) && <div className="going"><GoingIcon className="going-icon" /><span>Going</span></div>}
+                  {showSubscribeButton(event) && <button className="btn-subscribe" onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onSubscribeClick(event);
+                  }}>SUBSCRIBE</button>}
+                  {showCancelEventButton(event) && <button className="btn-subscribe btn-outline" onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onCancelClick(event)
+                  }}>CANCEL EVENT</button>}
+                </div>
+              </div>
+            ))}
+          </Scrollbars>
+        </div>
+      </div >
+    );
+  }
+
+  return (
+    isLoading ? showLoader() : showContent()
+  );
+}
+
+EventsList.propTypes = {
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(
+  mapStateToProps
+)(EventsList);

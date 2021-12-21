@@ -16,7 +16,7 @@ import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import CreateEvent from "./components/events/create/CreateEvent";
 import PrivateRoute from "./components/private-route/PrivateRoute";
-import RecordList from "./components/events/RecordList";
+import RecordList from "./components/events/list/EventsList";
 import SearchForUser from "./components/users/SearchForUser";
 import UserProfile from "./components/users/UserProfile";
 
