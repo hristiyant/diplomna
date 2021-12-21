@@ -85,12 +85,9 @@ const FriendRequests = (props) => {
         </div >)
     }
 
-    const content = isLoading ? showLoader() : showContent();
-
-    return (<div>{content}</div>
-        // <div className="notifications-container">
-
-    )
+    return (
+        isLoading ? showLoader() : showContent()
+    );
 }
 
 FriendRequests.propTypes = {

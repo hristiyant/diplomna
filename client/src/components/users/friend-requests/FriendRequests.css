@@ -4,14 +4,12 @@
     justify-content: flex-start;
     align-items: flex-start;
     height: 100%;
-    /* width: 100vw; */
-    /* align-self: flex-start; */
+    width: 100%;
 }
 
 .search-box {
     height: 50px;
     padding-left: 1rem;
-    /* margin-top: 2rem; */
     background: rgba(0, 0, 0, 0.7);
     border: 1px solid #777;
     border-radius: .25rem;
@@ -35,22 +33,9 @@
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
     width: 250px;
-    /* background: rgba(0, 0, 0, 0.644); */
     border: 1px solid #777;
     border-radius: .25rem;
-    /* overflow: hidden; */
     transition: transform .3s ease;
-    /* border-radius: 10px;
-    border: 1px solid tomato;
-    background-color: rgba(0, 0, 0, 0.8);
-    margin: 2rem 2rem 2rem 0;
-    padding: 1.5rem;
-    height: 200px;
-    width: 250px;
-    font-weight: 100;
-    color: white;
-    box-shadow: 0 0 28px 4px rgba(0, 0, 0, 0.1);
-    cursor: pointer; */
 }
 
 .card-requests:hover {
@@ -70,7 +55,6 @@
 }
 
 .btn-accept.btn-outline {
-
     background: none;
     border: none;
     color: var(--reject-btn-color);

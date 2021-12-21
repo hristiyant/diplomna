@@ -138,10 +138,8 @@ const RecordList = (props) => {
     );
   }
 
-  const content = isLoading ? showLoader() : showContent();
-
   return (
-    <div style={{ height: "100%", width: "100%" }}>{content}</div>
+    isLoading ? showLoader() : showContent()
   );
 }
 

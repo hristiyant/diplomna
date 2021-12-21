@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getUser } from "../../actions/authActions";
@@ -6,75 +6,46 @@ import Loader from "react-loader-spinner";
 
 import "./userProfile.css"
 
-class UserProfile extends Component {
-    constructor() {
-        super();
-        this.state = {
-            name: "",
-            email: "",
-            // friends: [],
-            errors: {},
-            isLoading: true
-        };
-    }
+const UserProfile = (props) => {
+    const [user, setUser] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
 
-    componentDidMount() {
-        //fetch user by id from db
-        this.props.getUser(this.props.auth.user.id)
-            .then(data => {
-                console.log("RESULT: " + JSON.stringify(data));
-                this.setState({
-                    isLoading: false,
-                    name: data.name,
-                    email: data.email,
-                    friends: data.friends
-                })
+    useEffect(() => {
+        getUser(props.auth.user.id)
+            .then(res => {
+                setUser(res);
+                setIsLoading(false);
             });
-    }
+    }, [])
 
-    render() {
+    function showLoader() {
         return (
-            this.state.isLoading ? showLoader() : displayUserCard(this.state.name, this.state.email)
-
-            // <div style={{ height: "75vh" }} className="container valign-wrapper">
-            //     <div className="row">
-            //         <div className="landing-copy col s12 center-align">
-            //             <h4>
-            //                 {this.state.name}
-            //             </h4>
-            //             <h4>
-            //                 {this.state.email}
-            //             </h4>
-            //         </div>
-            //     </div>
-            // </div>
+            <Loader className="loader"
+                type="MutatingDots"
+                color="white"
+                secondaryColor="tomato"
+                height={100}
+                width={100}
+                timeout="50000"
+                radius="10"
+            />
         );
     }
-}
 
-function showLoader() {
-    return (
-        <Loader className="loader"
-            type="MutatingDots"
-            color="white"
-            secondaryColor="tomato"
-            height={100}
-            width={100}
-            timeout="50000"
-            radius="10"
-        />
-    );
-}
-
-function displayUserCard(name, email) {
-    return (
-        <div className="profile">
-            <div className="profileInfo">
-                <img className="profileUserImage" src="logo.png" alt="" />
-                <h4 className="profileInfoName">{name}</h4>
-                <span className="profileInfoEmail">{email}</span>
+    function displayUserCard(name, email) {
+        return (
+            <div className="profile">
+                <div className="profileInfo">
+                    <img className="profileUserImage" src="logo.png" alt="" />
+                    <h4 className="profileInfoName">{name}</h4>
+                    <span className="profileInfoEmail">{email}</span>
+                </div>
             </div>
-        </div>
+        );
+    }
+
+    return (
+        isLoading ? showLoader() : displayUserCard(user.name, user.email)
     );
 }
 
@@ -87,6 +58,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(
-    mapStateToProps,
-    { getUser }
+    mapStateToProps
 )(UserProfile);
