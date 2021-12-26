@@ -139,3 +139,18 @@ export const addFriends = (requestSenderID, requestReceiverID, friendRequestID) 
 
   return res;
 }
+
+// Set profile pic url from firebase storage
+export const setProfileImage = async (userID, imageUrl) => {
+  console.log("userID :" + JSON.stringify(userID))
+  console.log("imageUrl :" + JSON.stringify(imageUrl))
+  let res = await axios
+    .post("api/users/set-profile-pic", {
+      params: {
+        userID: userID,
+        imageUrl: imageUrl
+      }
+    });
+
+  return res;
+}

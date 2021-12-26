@@ -124,6 +124,26 @@ router.post("/login", (req, res) => {
     });
 });
 
+router.post("/set-profile-pic", (req, res) => {
+    var userID = req.body.params.userID;
+    var imageUrl = req.body.params.imageUrl;
+
+    User.findOneAndUpdate(
+        { _id: userID },
+        { $set: { imageUrl: imageUrl } },
+        { new: true },
+        function (error, result) {
+            if (error) {
+                // console.log(error);
+                res.send(error);
+            } else {
+                // console.log(success);
+                res.send(result);
+            }
+        }
+    );
+})
+
 //@route POST users/create-friend-request
 //@desc Create a friend request
 //@access Public

@@ -42,6 +42,9 @@ const UserSchema = new Schema({
   friendRequests: {
     type: [FriendRequestSchema],
     default: [] // was undefined!!!
+  },
+  imageUrl: {
+    type: String
   }
 });
 
