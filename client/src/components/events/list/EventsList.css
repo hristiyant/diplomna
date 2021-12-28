@@ -80,10 +80,10 @@
     content: " ";
     display: inline-block;
     position: relative;
-    top: 3px;
+    top: 2px;
     margin: 0 5px 0 0;
-    width: 12px;
-    height: 12px;
+    width: 15px;
+    height: 15px;
     border-radius: 11px;
     border: 2px solid white;
     background-color: transparent;
@@ -91,11 +91,11 @@
 
 .radio-item input[type=radio]:checked+label:after {
     border-radius: 11px;
-    width: 8px;
-    height: 8px;
+    width: 9px;
+    height: 9px;
     position: absolute;
-    top: 7px;
-    left: 10px;
+    top: 5px;
+    left: 9px;
     content: " ";
     display: block;
     background: #ac5c54;
@@ -113,6 +113,8 @@
 }
 
 .card-event {
+    display: flex;
+    flex-direction: column;
     --padding: 1rem;
     margin: 1rem;
     min-width: 640px;
@@ -126,6 +128,44 @@
 
 .card-event:hover {
     transform: scale(1.1);
+}
+
+.card-event-header {
+    margin: 0.5rem;
+    padding-left: 1rem;
+    /* text-align: center; */
+    font-size: x-large;
+    /* font-weight: 00; */
+}
+
+.card-event-body {
+    padding: 1rem;
+    display: flex;
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.card-event-left {
+    /* margin: 1rem; */
+    border-right: 1px solid white;
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    /* margin: 1rem; */
+}
+
+.avatar-created-by {
+    border: 1px solid white;
+}
+
+.card-event-right {
+    /* margin: 1rem */
+    padding-left: 1rem;
 }
 
 .progress-participants[value] {
@@ -151,23 +191,35 @@
     background-color: #ac5c54;
 }
 
-.btn-subscribe {
+.card-event-footer {
+    margin: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    padding-left: 1rem;
+}
+
+.btn-event-subscribe {
+    /* margin: 0.5rem; */
+    padding: .3em .75em;
     --reject-btn-color: #ac5c54;
     --color: hsl(123, 100%, 31%);
     background: var(--color);
     color: white;
     border: none;
-    padding: .5em .75em;
     border-radius: .25em;
     cursor: pointer;
+    font-size: medium;
+    /* font-weight: 600; */
+    /* padding: 0.25rem; */
 }
 
-.btn-subscribe.btn-outline {
+.btn-event-subscribe.btn-outline {
     color: var(--reject-btn-color);
     background: none;
-    border: 1px solid #ac5c54;
-    padding: .5em .5em;
-    margin-top: 0.75rem;
+    /* border: 1px solid #ac5c54; */
+    /* padding: .5em .5em; */
+    /* margin-top: 0.75rem; */
 }
 
 .going {

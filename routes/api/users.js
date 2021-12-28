@@ -10,7 +10,7 @@ const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 
 //Load User model
-const User = require("../../models/User");
+const { userModel } = require("../../models/User");
 
 //@route GET users/get-user-by-id
 //@desc Get user by id
@@ -18,7 +18,7 @@ const User = require("../../models/User");
 router.get("/", (req, res) => {
     const userID = req.query.id;
     // console.log("ID FROM PARAMS: " + JSON.stringify(req.params.id));
-    User.findById(userID, function (err, user) { console.log(user) })
+    userModel.findById(userID, function (err, user) { console.log(user) })
         .then(user => res.json(user));
 });
 
@@ -26,7 +26,7 @@ router.get("/", (req, res) => {
 //@desc Get all users
 //@access Public
 router.get("/get-all-users", (req, res) => {
-    User.find()
+    userModel.find()
         .then(users => res.json(users));
 });
 
@@ -43,11 +43,11 @@ router.post("/register", (req, res) => {
         return res.status(400).json(errors);
     }
 
-    User.findOne({ email: req.body.email }).then(user => {
+    userModel.findOne({ email: req.body.email }).then(user => {
         if (user) {
             return res.status(400).json({ email: "Email already exists" });
         } else {
-            const newUser = new User({
+            const newUser = new userModel({
                 name: req.body.name,
                 email: req.body.email,
                 password: req.body.password
@@ -85,7 +85,7 @@ router.post("/login", (req, res) => {
     const password = req.body.password;
 
     //Find user by email
-    User.findOne({ email }).then(user => {
+    userModel.findOne({ email }).then(user => {
         //Check if user exists
         if (!user) {
             return res.status(400).json({ emailnotfound: "Email not found" });
@@ -128,7 +128,7 @@ router.post("/set-profile-pic", (req, res) => {
     var userID = req.body.params.userID;
     var imageUrl = req.body.params.imageUrl;
 
-    User.findOneAndUpdate(
+    userModel.findOneAndUpdate(
         { _id: userID },
         { $set: { imageUrl: imageUrl } },
         { new: true },
@@ -157,14 +157,14 @@ router.post("/create-friend-request", (req, res) => {
         fromUserName: fromUserName
     }
 
-    User.findOne({ _id })
+    userModel.findOne({ _id })
         .then(user => {
             //Check if friend request exists
             if (user.friendRequests.some(e => e.fromUser === fromUserID)) {
                 return res.status(400).json({ alreadyexists: "Friend request already exists" });
             }
 
-            User.findOneAndUpdate(
+            userModel.findOneAndUpdate(
                 { _id: _id },
                 { $push: { friendRequests: newFriendRequest } },
                 { new: true },
@@ -188,7 +188,7 @@ router.post("/delete-friend-request", async (req, res) => {
     const user = req.body.params.userID;
     const request = req.body.params.friendRequestID;
 
-    let response = await User.findOneAndUpdate(
+    let response = await userModel.findOneAndUpdate(
         { _id: user },
         { $pull: { friendRequests: { _id: request } } },
         { new: true }
@@ -201,7 +201,7 @@ router.post("/delete-friend-request", async (req, res) => {
 //@desc Get all friend requests for user
 //@access Public
 router.get("/get-friend-requests", async (req, res) => {
-    let response = await User.findById(req.query.id);
+    let response = await userModel.findById(req.query.id);
     res.send(response.friendRequests);
 });
 
@@ -213,13 +213,13 @@ router.post("/add-friend", async (req, res) => {
     const receiver = req.body.params.requestReceiverID;
     const request = req.body.params.friendRequestID;
 
-    await User.findOneAndUpdate(
+    await userModel.findOneAndUpdate(
         { _id: sender },
         { $push: { friends: receiver } },
         { new: true }
     );
 
-    let response = await User.findOneAndUpdate(
+    let response = await userModel.findOneAndUpdate(
         { _id: receiver },
         { $push: { friends: sender }, $pull: { friendRequests: { _id: request } } },
         { new: true }

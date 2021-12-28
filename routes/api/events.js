@@ -3,12 +3,16 @@ const router = express.Router();
 
 //Load Event model
 const Event = require("../../models/Event");
+const { userModel } = require("../../models/User");
 
 //@route GET events/get
 //@desc Get all events
 //@access Public
 router.get("/get-all", async (req, res) => {
-    let response = await Event.find();
+    let response = await Event.find()
+        .populate({
+            path: "createdBy"
+        })
     // .then(events => res.json(events));
     res.send(response);
 });
@@ -16,17 +20,16 @@ router.get("/get-all", async (req, res) => {
 //@route POST events/create
 //@desc Create an event
 //@access Public
-router.post("/create", (req, res) => {
-    const newEvent = new Event({
+router.post("/create", async (req, res) => {
+    const newEvent = await new Event({
         name: req.body.name,
-        createdByID: req.body.createdByID,
-        createdByName: req.body.createdByName,
+        createdBy: req.body.createdByID,
         eventType: req.body.eventType,
         quota: req.body.quota,
-        participants:[req.body.createdByID]
+        participants: [req.body.createdByID]
     });
 
-    newEvent.save()
+    await newEvent.save()
         .then(event => res.json(event));
 });
 

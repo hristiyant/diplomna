@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import Loader from "react-loader-spinner";
+import { Avatar } from 'antd'
+import { UserOutlined } from '@ant-design/icons';
 
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -23,6 +25,7 @@ const EventsList = (props) => {
   useEffect(() => {
     getEvents()
       .then(res => {
+        console.log(res.data)
         setEventsData(res.data);
         setInitialEventsData(res.data);
         setIsLoading(false);
@@ -46,7 +49,7 @@ const EventsList = (props) => {
     switch (value) {
       case "CREATED":
         filteredEvents = initialEventsData.filter(event =>
-          (`${event.createdByID}` === props.auth.user.id)
+          (`${event.createdBy._id}` === props.auth.user.id)
         );
         break;
       case "GOING":
@@ -75,11 +78,12 @@ const EventsList = (props) => {
   }
 
   function showCancelEventButton(event) {
-    if (props.auth.user.id === event.createdByID) {
+    if (props.auth.user.id === event.createdBy._id) {
       return true;
     }
 
     return false;
+    // return true;
   }
 
   function showGoing(event) {
@@ -96,6 +100,7 @@ const EventsList = (props) => {
     }
 
     return true;
+    // return true;
   }
 
   async function onCancelClick(event) {
@@ -166,30 +171,35 @@ const EventsList = (props) => {
           >
             {eventsData.map((event, index) => (
               <div key={index} className="card-event">
-                <div className="card-header">
+                <div className="card-event-header">
                   {event.name}
-                  {/* <img className="profileUserImage" src="logo.png" alt="" /> */}
                 </div>
-                <div className="card-body">
-                  <span>Date: {getDisplayDate(event.date)}</span>
-                  <div>Created by: {event.createdByName}</div>
-                  <div>Participants: {event.participants.length} / {event.quota}
+                <div className="card-event-body">
+                  <div className="card-event-left">
+                    <div>Created by:</div>
+                    <Avatar className="avatar-created-by" shape="circle" src={event.createdBy.imageUrl} size="large" icon={<UserOutlined />} />
+                    <div>{event.createdBy.name}</div>
                   </div>
-                  <progress id="participants" className="progress-participants" value={event.participants.length} max={event.quota}></progress>
-                  {/* <div className="card__image"><img src={userData.picture.medium}/></div> */}
+                  <div className="card-event-right">
+                    <span>Date: {getDisplayDate(event.date)}</span>
+                    <div>Participants: {event.participants.length} / {event.quota}
+                    </div>
+                    <progress id="participants" className="progress-participants" value={event.participants.length} max={event.quota}></progress>
+                    {/* <div className="card__image"><img src={userData.picture.medium}/></div> */}
+                    {showGoing(event) && <div className="going"><GoingIcon className="going-icon" /><span>Going</span></div>}
+                  </div>
                 </div>
-                <div className="card-footer">
-                  {showGoing(event) && <div className="going"><GoingIcon className="going-icon" /><span>Going</span></div>}
-                  {showSubscribeButton(event) && <button className="btn-subscribe" onClick={(e) => {
+                <div className="card-event-footer">
+                  {showSubscribeButton(event) && <div className="btn-event-subscribe" onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     onSubscribeClick(event);
-                  }}>SUBSCRIBE</button>}
-                  {showCancelEventButton(event) && <button className="btn-subscribe btn-outline" onClick={(e) => {
+                  }}>SUBSCRIBE</div>}
+                  {showCancelEventButton(event) && <div className="btn-event-subscribe btn-outline" onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     onCancelClick(event)
-                  }}>CANCEL EVENT</button>}
+                  }}>CANCEL EVENT</div>}
                 </div>
               </div>
             ))}
