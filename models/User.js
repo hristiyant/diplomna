@@ -42,7 +42,13 @@ const UserSchema = new Schema({
   friendRequests: {
     type: [FriendRequestSchema],
     default: [] // was undefined!!!
+  },
+  imageUrl: {
+    type: String
   }
 });
 
-module.exports = User = mongoose.model("users", UserSchema);
+module.exports = {
+  userSchema: UserSchema,
+  userModel: mongoose.model("users", UserSchema)
+}

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const { userSchema } = require("../models/User")
 
 // const eventTypes = {
 //     SOCCER: "soccer"
@@ -11,9 +12,10 @@ const EventSchema = new Schema({
         required: true
     },
     createdBy: {
-        type: String,
-        required: true
+        type: Schema.Types.ObjectId,
+        ref: "users"
     },
+
     eventType: {
         type: String,
         required: true

@@ -14,12 +14,12 @@ import Landing from "./components/layout/Landing";
 import Dashboard from "./components/dashboard/Dashboard";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
-import CreateEvent from "./components/events/CreateEvent";
+import CreateEvent from "./components/events/create/CreateEvent";
 import PrivateRoute from "./components/private-route/PrivateRoute";
-import RecordList from "./components/events/RecordList";
+import RecordList from "./components/events/list/EventsList";
 import SearchForUser from "./components/users/SearchForUser";
 import UserProfile from "./components/users/UserProfile";
-
+import UploadProfileImage from "./components/users/profile/UploadProfileImage";
 import "./App.css";
 
 const ENDPOINT = "http://localhost:4000";
@@ -56,14 +56,15 @@ export default function App() {
   return (
     <Provider store={store}>
       <Router>
-        <Navbar />
         <div className="App">
+          <Navbar />
           <div className="full-screen-container">
             <Route exact path="/" component={Landing} />
             <Route exact path="/register" component={Register} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/create-event" component={CreateEvent} />
             <Route exact path="/profile" component={UserProfile} />
+            {/* <Route exact path="/profile" component={UploadProfileImage} /> */}
             <Route exact path="/users" component={SearchForUser} />
             <Route exact path="/friend-requests" component={FriendRequests} />
             <Route exact path="/events" component={RecordList} />

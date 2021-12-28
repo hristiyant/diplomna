@@ -1,80 +1,88 @@
-import React, { Component } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getUser } from "../../actions/authActions";
 import Loader from "react-loader-spinner";
+import { Avatar } from 'antd'
+
+import { getUser, setProfileImage } from "../../actions/authActions";
+import { storage } from "../../firebase/firebase"
 
 import "./userProfile.css"
 
-class UserProfile extends Component {
-    constructor() {
-        super();
-        this.state = {
-            name: "",
-            email: "",
-            // friends: [],
-            errors: {},
-            isLoading: true
-        };
-    }
+const UserProfile = (props) => {
+    const [user, setUser] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
+    const [visible, setVisible] = useState(false);
+    const [file, setFile] = useState(null);
 
-    componentDidMount() {
-        //fetch user by id from db
-        this.props.getUser(this.props.auth.user.id)
-            .then(data => {
-                console.log("RESULT: " + JSON.stringify(data));
-                this.setState({
-                    isLoading: false,
-                    name: data.name,
-                    email: data.email,
-                    friends: data.friends
-                })
+    useEffect(() => {
+        getUser(props.auth.user.id)
+            .then(res => {
+                setUser(res);
+                setIsLoading(false);
             });
-    }
+    }, [props.auth.user.id])
 
-    render() {
+    function showLoader() {
         return (
-            this.state.isLoading ? showLoader() : displayUserCard(this.state.name, this.state.email)
-
-            // <div style={{ height: "75vh" }} className="container valign-wrapper">
-            //     <div className="row">
-            //         <div className="landing-copy col s12 center-align">
-            //             <h4>
-            //                 {this.state.name}
-            //             </h4>
-            //             <h4>
-            //                 {this.state.email}
-            //             </h4>
-            //         </div>
-            //     </div>
-            // </div>
+            <Loader className="loader"
+                type="MutatingDots"
+                color="white"
+                secondaryColor="tomato"
+                height={100}
+                width={100}
+                timeout="50000"
+                radius="10"
+            />
         );
     }
-}
 
-function showLoader() {
-    return (
-        <Loader className="loader"
-            type="MutatingDots"
-            color="white"
-            secondaryColor="tomato"
-            height={100}
-            width={100}
-            timeout="50000"
-            radius="10"
-        />
-    );
-}
+    const onImageClick = (e) => {
+        e.preventDefault();
+        setVisible(!visible);
+    }
 
-function displayUserCard(name, email) {
-    return (
-        <div className="profile">
-            <div className="profileInfo">
-                <img className="profileUserImage" src="logo.png" alt="" />
-                <h4 className="profileInfoName">{name}</h4>
-                <span className="profileInfoEmail">{email}</span>
+    function handleChange(e) {
+        setFile(e.target.files[0]);
+    }
+
+    function handleUpload(e) {
+        e.preventDefault();
+        setIsLoading(true)
+        const ref = storage.ref(`/images/${props.auth.user.id}`);
+        const uploadTask = ref.put(file);
+        uploadTask.on("state_changed", console.log, console.error, () => {
+            ref
+                .getDownloadURL()
+                .then((url) => {
+                    setFile(null);
+                    setProfileImage(props.auth.user.id, url)
+                        .then(res => {
+                            setUser(res.data)
+                            setIsLoading(false)
+                        })
+                });
+        });
+    }
+
+    function displayUserCard() {
+        return (
+            <div className="profile">
+                <div className="profileInfo">
+                    <img className="profileUserImage" src={user.imageUrl} onClick={onImageClick} alt="" />
+                    {visible && <form onSubmit={handleUpload}>
+                        <input type="file" onChange={handleChange} />
+                        <button disabled={!file}>upload to firebase</button>
+                    </form>}
+                    <h4 className="profileInfoName">{user.name}</h4>
+                    <span className="profileInfoEmail">{user.email}</span>
+                </div>
             </div>
-        </div>
+        );
+    }
+
+    return (
+        isLoading ? showLoader() : displayUserCard(user.name, user.email)
     );
 }
 
@@ -87,6 +95,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(
-    mapStateToProps,
-    { getUser }
+    mapStateToProps
 )(UserProfile);
