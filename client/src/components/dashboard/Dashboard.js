@@ -1,62 +1,45 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 
-class Dashboard extends Component {
-  onLogoutClick = e => {
+import "./Dashboard.css"
+
+const Dashboard = (props) => {
+  const { user } = props.auth;
+
+  const onLogoutClick = e => {
     e.preventDefault();
-    this.props.logoutUser();
+    props.logoutUser();
   };
 
-  onCreateEventClick = e => {
+  const onCreateEventClick = e => {
     e.preventDefault();
-    this.props.history.push("/create-event");
+    props.history.push("/create-event");
   }
 
-  render() {
-    const { user } = this.props.auth;
-
-    return (
-      <div style={{ height: "75vh" }} className="container valign-wrapper">
-        <div className="row">
-          <div className="landing-copy col s12 center-align">
-            <h4>
-              <b>Hey there,</b> {user.name.split(" ")[0]}
-              <p className="flow-text grey-text text-darken-1">
-                You are logged into a full-stack{" "}
-                <span style={{ fontFamily: "monospace" }}>MERN</span> app 👏
-              </p>
-            </h4>
-            <button
-              style={{
-                width: "150px",
-                borderRadius: "3px",
-                letterSpacing: "1.5px",
-                marginTop: "1rem"
-              }}
-              onClick={this.onLogoutClick}
-              className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-            >
-              Logout
-            </button>
-            <button
-              style={{
-                width: "150px",
-                borderRadius: "3px",
-                letterSpacing: "1.5px",
-                marginTop: "1rem"
-              }}
-              onClick={this.onCreateEventClick}
-              className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-            >
-              Create Event
-            </button>
-          </div>
-        </div>
+  return (
+    <div className="dashboard-container">
+      <h4>
+        Hey there, {user.name.split(" ")[0]}
+        <p>
+          You are logged into MySports
+        </p>
+      </h4>
+      <div className="buttons">
+        <button className="btn-dashboard"
+          onClick={onLogoutClick}
+        >
+          LOGOUT
+        </button>
+        <button className="btn-dashboard"
+          onClick={onCreateEventClick}
+        >
+          CREATE EVENT
+        </button>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 Dashboard.propTypes = {
