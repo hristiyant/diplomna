@@ -70,7 +70,6 @@ class Login extends Component {
         </div>
         <form noValidate onSubmit={this.onSubmit}>
           <div className="input-field">
-            {/* <label htmlFor="email">Email</label> */}
             <Input
               placeholder="Email"
               onChange={this.onChange}
@@ -88,7 +87,6 @@ class Login extends Component {
             </span>
           </div>
           <div className="input-field">
-            {/* <label htmlFor="password">Password</label> */}
             <Input.Password
               placeholder="Password"
               onChange={this.onChange}
