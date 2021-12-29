@@ -59,10 +59,6 @@ class Register extends Component {
     return (
       <div className="register-container">
         <div className="register-container-header" style={{ paddingLeft: "11.250px" }}>
-          {/* <Link to="/" style={{ display: "flex" }}>
-            <i className="material-icons left">keyboard_backspace</i> Back to
-            home
-          </Link> */}
           <h4 style={{ color: "white" }}>
             <b>Register</b> below
           </h4>
