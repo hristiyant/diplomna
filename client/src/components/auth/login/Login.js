@@ -23,7 +23,6 @@ class Login extends Component {
     // If logged in and user navigates to Login page, should redirect them to dashboard
     if (this.props.auth.isAuthenticated) {
       this.props.history.push("/dashboard");
-      console.log(this.props.auth.user);
     }
   }
 
@@ -59,7 +58,6 @@ class Login extends Component {
 
     return (
       <div className="login-container">
-
         <div className="login-container-header">
           <h4 style={{ color: "white" }}>
             <b>Login</b> below
@@ -102,8 +100,6 @@ class Login extends Component {
               {errors.password}
               {errors.passwordincorrect}
             </span>
-          </div>
-          <div className="col s12" style={{ paddingLeft: "11.250px" }}>
           </div>
         </form>
         <button
