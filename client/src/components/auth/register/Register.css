@@ -1,0 +1,55 @@
+.register-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    height: 70%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 5px;
+}
+
+.register-container-header {
+    width: fit-content;
+    text-align: center;
+    font-size: large;
+}
+
+.register-container label, p {
+    color: white;
+}
+
+.register-container a {
+    color: tomato;
+}
+
+.register-container a:hover {
+    text-decoration: underline;
+    color: tomato;
+}
+
+.red-text {
+    color: #ac5c54;
+}
+
+.input-field {
+    height: 40px;
+    margin: 25px;
+    width: 300px;
+}
+
+.button-sign-up {
+    width: 150px;
+    cursor: pointer;
+    border-style: none;
+    border-radius: 3px;
+    letter-spacing: 1.5px;
+    font-size: large;
+    color: white;
+    background: #ac5c54;
+}
+
+.button-sign-up:hover {
+    background: tomato;
+}
