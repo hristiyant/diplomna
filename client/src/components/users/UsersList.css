@@ -1,4 +1,4 @@
-.container-friend-requests {
+.container-users {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -15,7 +15,7 @@
     background: rgba(0, 0, 0, 0.7);
 }
 
-.search-box-requests {
+.search-box-users {
     height: 50px;
     width: 30%;
     min-width: 200px;
@@ -28,7 +28,15 @@
     font-size: small;
 }
 
-.container-friend-requests.cards-grid {
+.filter-users {
+    margin: 5px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.container-users.cards-grid {
     height: 100%;
     overflow: auto;
     display: block;
@@ -38,7 +46,7 @@
     align-items: center;
 }
 
-.card-requests {
+.card-user {
     display: flex;
     flex-direction: column;
     --padding: 1rem;
@@ -51,15 +59,15 @@
     transition: transform .3s ease;
 }
 
-.card-requests:hover {
+.card-user:hover {
     transform: scale(1.1);
 }
 
-.card-requests-header {
+.card-user-header {
     font-size: x-large;
 }
 
-.card-requests-body {
+.card-user-body {
     padding: 1rem;
     border-bottom: 1px solid white;
     display: flex;
@@ -68,20 +76,24 @@
     align-items: center;
 }
 
-.card-requests-body-left {
+.card-user-body-left {
     padding: 0 20px;
     border-right: 1px solid white;
 }
 
-.card-requests-body-right {
+.card-user-body-right {
     padding: 0 20px;
 }
 
-.avatar-from {
+.avatar {
     border: 1px solid white;
 }
 
-.card-requests-footer {
+.card-user-right {
+    padding-left: 1rem;
+}
+
+.card-user-footer {
     margin: 0.5rem;
     display: flex;
     flex-direction: row;
@@ -89,7 +101,7 @@
     padding-left: 1rem;
 }
 
-.btn-accept {
+.btn-user-add-friend {
     padding: .3em .75em;
     margin-right: 10px;
     --reject-btn-color: tomato;
@@ -102,16 +114,30 @@
     font-size: medium;
 }
 
-.btn-accept:hover {
+.btn-user-add-friend:hover {
     border: 1px solid white;
 }
 
-.btn-accept.btn-outline {
-    border: 1px solid tomato;
+.btn-user-add-friend.btn-outline {
     color: var(--reject-btn-color);
+    background: none;
+    border: 1px solid tomato;
+}
+
+.btn-user-add-friend.btn-outline:hover {
+    border: 1px solid white;
     background: none;
 }
 
-.btn-accept.btn-outline:hover {
-    border: 1px solid white;
+.friends {
+    /* display: flex; */
+    /* flex-direction: row; */
+    /* justify-content: flex-start; */
+    /* align-items: flex-start; */
+}
+
+.friends-icon {
+    margin-right: 5px;
+    height: 15xp;
+    width: 15px;
 }

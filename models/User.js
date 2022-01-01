@@ -7,12 +7,9 @@ const FriendRequestSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  fromUserID: {
-    type: String,
-    required: true
-  },
-  fromUserName: {
-    type: String,
+  fromUser: {
+    type: Schema.Types.ObjectId,
+    ref: "users",
     required: true
   }
 })
@@ -36,12 +33,13 @@ const UserSchema = new Schema({
     default: Date.now
   },
   friends: {
-    type: Array,
+    type: [Schema.Types.ObjectId],
+    ref: "users",
     default: []
   },
   friendRequests: {
     type: [FriendRequestSchema],
-    default: [] // was undefined!!!
+    default: []
   },
   imageUrl: {
     type: String

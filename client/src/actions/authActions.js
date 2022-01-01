@@ -87,8 +87,8 @@ export const logoutUser = () => dispatch => {
 };
 
 // Get all friend requests by user id
-export const getFriendRequests = userID => {
-  let res = axios
+export const getFriendRequests = async userID => {
+  let res = await axios
     .get("/api/users/get-friend-requests", {
       params: {
         id: userID
@@ -99,12 +99,12 @@ export const getFriendRequests = userID => {
 }
 
 // Delete friend request by user id and request id
-export const deleteFriendRequest = (userID, friendRequestID) => {
-  let res = axios
+export const deleteFriendRequest = async (toUserID, fromUserID) => {
+  let res = await axios
     .post("/api/users/delete-friend-request", {
       params: {
-        userID: userID,
-        friendRequestID: friendRequestID
+        toUserID: toUserID,
+        fromUserID: fromUserID
       }
     });
 
@@ -112,13 +112,12 @@ export const deleteFriendRequest = (userID, friendRequestID) => {
 }
 
 // Create friend request
-export const createFriendRequest = (fromUserID, fromUserName, toUser) => {
+export const createFriendRequest = async (fromUser, toUser) => {
   // console.log("creating friend request from user " + fromUser + " to user " + toUser);
-  const res = axios
+  const res = await axios
     .post("/api/users/create-friend-request", {
       params: {
-        fromUserID: fromUserID,
-        fromUserName: fromUserName,
+        fromUser: fromUser,
         toUser: toUser
       }
     });
@@ -127,13 +126,26 @@ export const createFriendRequest = (fromUserID, fromUserName, toUser) => {
 }
 
 // Add users as friends
-export const addFriends = (requestSenderID, requestReceiverID, friendRequestID) => {
-  let res = axios
+export const addFriends = async (requestSenderID, requestReceiverID, friendRequestID) => {
+  let res = await axios
     .post("/api/users/add-friend", {
       params: {
         requestSenderID: requestSenderID,
         requestReceiverID: requestReceiverID,
         friendRequestID: friendRequestID
+      }
+    });
+
+  return res;
+}
+
+// Remove user from friends
+export const removeFriends = (userID, friendID) => {
+  let res = axios
+    .post("/api/users/remove-friend", {
+      params: {
+        userID: userID,
+        friendID: friendID
       }
     });
 

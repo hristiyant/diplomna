@@ -25,7 +25,6 @@ const EventsList = (props) => {
   useEffect(() => {
     getEvents()
       .then(res => {
-        console.log(res.data)
         setEventsData(res.data);
         setInitialEventsData(res.data);
         setIsLoading(false);
@@ -103,6 +102,13 @@ const EventsList = (props) => {
     // return true;
   }
 
+  function onSubscribeClick(event) {
+    // loading = true
+    subscribeToEvent(props.auth.user.id, event._id)
+      .then(res => setEventsData(res.data))
+    // loading = false
+  }
+
   async function onCancelClick(event) {
     confirmAlert({
       customUI: ({ onClose }) => {
@@ -133,12 +139,6 @@ const EventsList = (props) => {
     });
   }
 
-  function onSubscribeClick(event) {
-    // loading = true
-    subscribeToEvent(props.auth.user.id, event._id)
-      .then(res => setEventsData(res.data))
-    // loading = false
-  }
 
   function showContent() {
     return (
