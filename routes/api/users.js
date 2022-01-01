@@ -148,19 +148,17 @@ router.post("/set-profile-pic", (req, res) => {
 //@desc Create a friend request
 //@access Public
 router.post("/create-friend-request", (req, res) => {
-    var fromUserID = req.body.params.fromUserID;
-    var fromUserName = req.body.params.fromUserName;
+    var fromUser = req.body.params.fromUser;
     var _id = req.body.params.toUser;
 
     var newFriendRequest = {
-        fromUserID: fromUserID,
-        fromUserName: fromUserName
+        fromUser: fromUser
     }
 
     userModel.findOne({ _id })
         .then(user => {
             //Check if friend request exists
-            if (user.friendRequests.some(e => e.fromUser === fromUserID)) {
+            if (user.friendRequests.some(e => e.fromUser == fromUser)) {
                 return res.status(400).json({ alreadyexists: "Friend request already exists" });
             }
 
@@ -185,23 +183,28 @@ router.post("/create-friend-request", (req, res) => {
 //@desc Delete a friend request
 //@access Public
 router.post("/delete-friend-request", async (req, res) => {
-    const user = req.body.params.userID;
-    const request = req.body.params.friendRequestID;
+    const toUserID = req.body.params.toUserID;
+    const fromUserID = req.body.params.fromUserID;
 
     let response = await userModel.findOneAndUpdate(
-        { _id: user },
-        { $pull: { friendRequests: { _id: request } } },
+        { _id: toUserID },
+        { $pull: { friendRequests: { fromUser: fromUserID } } },
         { new: true }
     );
 
-    res.send(response.friendRequests);
+    res.send(response);
 });
 
 //@route GET users/get-friend-requests
 //@desc Get all friend requests for user
 //@access Public
 router.get("/get-friend-requests", async (req, res) => {
-    let response = await userModel.findById(req.query.id);
+    let response = await userModel.findById(req.query.id)
+        .populate({
+            path: "friendRequests.fromUser"
+        });
+
+
     res.send(response.friendRequests);
 });
 
@@ -212,6 +215,8 @@ router.post("/add-friend", async (req, res) => {
     const sender = req.body.params.requestSenderID;
     const receiver = req.body.params.requestReceiverID;
     const request = req.body.params.friendRequestID;
+
+    // const receiver = await userModel.findById(req.body.params.requestReceiverID);
 
     await userModel.findOneAndUpdate(
         { _id: sender },
@@ -226,6 +231,28 @@ router.post("/add-friend", async (req, res) => {
     );
 
     res.send(response.friendRequests);
+});
+
+//@route POST users/remove-friend
+//@desc Remove one user from another one's friends list
+//@access Public
+router.post("/remove-friend", async (req, res) => {
+    const user = req.body.params.userID;
+    const friend = req.body.params.friendID;
+
+    await userModel.findOneAndUpdate(
+        { _id: user },
+        { $pull: { friends: friend } },
+        { new: true }
+    );
+
+    let response = await userModel.findOneAndUpdate(
+        { _id: friend },
+        { $pull: { friends: user } },
+        { new: true }
+    );
+
+    res.send(response);
 });
 
 module.exports = router;

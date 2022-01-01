@@ -17,7 +17,7 @@ import Login from "./components/auth/login/Login";
 import CreateEvent from "./components/events/create/CreateEvent";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import RecordList from "./components/events/list/EventsList";
-import SearchForUser from "./components/users/SearchForUser";
+import UsersList from "./components/users/UsersList";
 import UserProfile from "./components/users/UserProfile";
 import UploadProfileImage from "./components/users/profile/UploadProfileImage";
 import "./App.css";
@@ -65,7 +65,7 @@ export default function App() {
             <Route exact path="/create-event" component={CreateEvent} />
             <Route exact path="/profile" component={UserProfile} />
             {/* <Route exact path="/profile" component={UploadProfileImage} /> */}
-            <Route exact path="/users" component={SearchForUser} />
+            <Route exact path="/users" component={UsersList} />
             <Route exact path="/friend-requests" component={FriendRequests} />
             <Route exact path="/events" component={RecordList} />
             <Switch>
