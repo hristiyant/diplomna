@@ -1,97 +1,180 @@
-import React, { useState } from "react";
-import { ReactComponent as CloseMenu } from "../../../assets/x.svg";
-import { ReactComponent as MenuIcon } from "../../../assets/x.svg";
-import { ReactComponent as Logo } from "../../../assets/x.svg";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { getUser, logoutUser } from "../../../actions/authActions";
+import { UserOutlined, ImportOutlined, ExportOutlined, UnorderedListOutlined, TeamOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 
-import "./Navbar.css"
+import { ReactComponent as CloseMenu } from "../../../assets/x.svg";
+import { ReactComponent as MenuIcon } from "../../../assets/menu.svg";
+import DownIcon from "../../../assets/down.svg";
 
-const Navbar = () => {
-  // const [click, setClick] = useState(false);
-  // const handleClick = () => setClick(!click);
-  // const closeMobileMenu = () => setClick(false);
+import "./Navbar.css";
 
-  // const toggleButton = document.getElementsByClassName("toggle-button")[0];
-  // const navbarLinks = document.getElementsByClassName("navbar-links")[0];
+const Navbar = (props) => {
+    const [user, setUser] = useState({});
+    const [click, setClick] = useState(false);
+    const handleClick = () => setClick(!click);
+    const closeMobileMenu = () => setClick(false);
 
-  // toggleButton.addEventListener("click", () => {
-  //   navbarLinks.classList.toggle("active");
-  // })
+    //profile menu
+    const [clickProfile, setClickProfile] = useState(false);
+    const handleClickProfile = () => setClickProfile(!clickProfile);
+    const closeProfileMenu = () => setClickProfile(false);
+    const options = props.auth.isAuthenticated ? showAuthenticatedOptions(clickProfile) : showDefaultOptions();
 
-  return (
-    <nav className="navbar">
-      <div className="brand-title">Title</div>
-      <a href="/#" className="toggle-button">
-        <span className="bar"></span>
-        <span className="bar"></span>
-        <span className="bar"></span>
-      </a>
-      <div className="navbar-links">
-        <ul>
-          <li>
-            <Link to="/profile">
-              Profile
-            </Link>
-          </li>
-          <li>
-            <Link to="/events">
-              Events
-            </Link>
-          </li>
-          <li>
-            <Link to="/users">
-              Users
-            </Link>
-          </li>
-          <li>
-            <Link to="/">
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/friend-requests">
-              Requests
-            </Link>
-          </li>
-        </ul>
-      </div>
-    </nav>
+    var menuOption;
+    var menuOptionMobile;
 
-    // <header className="my-navbar" >
-    //   <Link to="/">
-    //     <b>My</b>
-    //     <img className="my-logo" src="logo.png" alt="running man icon" />
-    //     <b>ports</b>
-    //   </Link>
-    //   <nav>
-    //     <ul className="nav-links">
-    //       <li>
-    //         <Link to="/events">
-    //           Events
-    //         </Link>
-    //       </li>
-    //       <li>
-    //         <Link to="/users">
-    //           Users
-    //         </Link>
-    //       </li>
-    //       <li>
-    //         <Link to="/">
-    //           Home
-    //         </Link>
-    //       </li>
-    //       <li>
-    //         <Link to="/friend-requests">
-    //           Requests
-    //         </Link>
-    //       </li>
-    //     </ul>
-    //   </nav>
-    //   <Link style={{ }} to="/profile">
-    //     Profile
-    //   </Link>
-    // </header>
-  );
-}
+    useEffect(() => {
+        (async () => {
+            await getUser(props.auth.user.id)
+                .then(res => {
+                    setUser(res)
+                });
+        })();
 
-export default Navbar;
+        function handleEvent(e) {
+            const isDropdownButton = e.target.matches("[data-dropdown-button]")
+            if (!isDropdownButton) {
+                closeProfileMenu()
+            }
+        };
+
+        window.addEventListener("click", handleEvent);
+
+        return () => {
+            window.removeEventListener("click", handleEvent)
+        }
+    }, [props.auth])
+
+    function onLogoutClick(e) {
+        e.preventDefault()
+        props.logoutUser()
+    }
+
+    function showAuthenticatedOptions(clickProfilee) {
+        menuOption =
+            <div className="nav-profile-options" data-dropdown-button>
+                <div className="dropdown">
+                    <button className="profile-button" data-dropdown-button onClick={() => {
+                        console.log(clickProfile);
+                        handleClickProfile();
+                    }}>
+                        <div className="profile-button-name" data-dropdown-button>{props.auth.user.name.split(" ")[0]}</div>
+                        <img className="dropdown-icon" src={DownIcon} alt="" data-dropdown-button style={clickProfile ? { opacity: "0" } : { opacity: "1" }} />
+                    </button>
+                    <div className={clickProfilee ? "dropdown-menu active" : "dropdown-menu"}>
+                        <Link className="option-profile" to="/profile" onClick={closeProfileMenu}>
+                            <UserOutlined style={{ fontSize: "large" }} /> PROFILE
+                        </Link>
+                        <Link to="#" onClick={(e) => {
+                            closeProfileMenu();
+                            onLogoutClick(e);
+                        }}>
+                            <ExportOutlined style={{ fontSize: "large" }} /> LOG OUT
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
+        menuOptionMobile =
+            <>
+                <hr className="option mobile-option" style={{ backgroundColor: "white", width: "80%", height: ".5px", padding: "0px" }} />
+                <li className="option mobile-option" onClick={closeMobileMenu}>
+                    <Link className="option-profile" to="/profile" onClick={closeProfileMenu}>
+                        <UserOutlined style={{ fontSize: "large" }} /> PROFILE
+                    </Link>
+                </li>
+                <li className="option mobile-option" onClick={(e) => onLogoutClick(e)}>
+                    <Link to="#" onClick={(e) => {
+                        closeProfileMenu();
+                        onLogoutClick(e);
+                    }}>
+                        <ExportOutlined style={{ fontSize: "large" }} /> LOG OUT
+                    </Link>
+                </li>
+            </>
+    }
+
+    function showDefaultOptions() {
+        menuOption =
+            <div className="nav-profile-options">
+                <Link className="option-profile" to="/login">
+                    <ImportOutlined style={{ fontSize: "large" }} /> LOG IN
+                </Link>
+                <Link to="/register">
+                    REGISTER
+                </Link>
+            </div >
+
+        menuOptionMobile =
+            <>
+                <hr className="option mobile-option" style={{ backgroundColor: "white", width: "80%", height: ".5px", padding: "0px" }} />
+                <li className="option mobile-option" onClick={closeMobileMenu}>
+                    <Link to="/login">
+                        <ImportOutlined style={{ fontSize: "large" }} /> LOG IN
+                    </Link>
+                </li>
+                <li className="option mobile-option" onClick={closeMobileMenu}>
+                    <Link to="/register">
+                        REGISTER
+                    </Link>
+                </li>
+            </>
+    }
+
+    return (
+        <div className="header">
+            <div className="logo-container">
+                <Link to="/dashboard">
+                    <b>My</b>
+                    <img className="my-logo" src="logo.png" alt="running man icon" />
+                    <b>ports</b>
+                </Link>
+            </div>
+            <div className="nav">
+                <ul className={click ? "nav-options active" : "nav-options"}>
+                    <li className="option" onClick={closeMobileMenu}>
+                        <Link to="/events">
+                            <UnorderedListOutlined style={{ fontSize: "large" }} /> EVENTS
+                        </Link>
+                    </li>
+                    <li className="option" onClick={closeMobileMenu}>
+                        <Link to="/users">
+                            <TeamOutlined style={{ fontSize: "large" }} /> USERS
+                        </Link>
+                    </li>
+                    <li className="option" onClick={closeMobileMenu}>
+                        <Link to="/friend-requests">
+                            <UsergroupAddOutlined style={{ fontSize: "large" }} /> REQUESTS
+                        </Link>
+                    </li>
+                    {menuOptionMobile}
+                </ul>
+            </div>
+            {menuOption}
+            <div className="mobile-menu" onClick={handleClick}>
+                {click ? (
+                    <CloseMenu className="menu-icon" />
+                ) : (
+                    <MenuIcon className="menu-icon" />
+                )}
+            </div>
+        </div>
+    );
+};
+
+Navbar.propTypes = {
+    logoutUser: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+
+export default connect(
+    mapStateToProps,
+    { logoutUser }
+)(Navbar);

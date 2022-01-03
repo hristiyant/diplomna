@@ -44,18 +44,18 @@ const port = process.env.PORT || 5000; // process.env.port is Heroku's port if I
 app.listen(port, () => console.log(`Server up and running on port ${port} !`));
 
 // Socket.io server
-const io = new Server({
-  cors: {
-    origin: "http://localhost:3000",
-  },
-});
+// const io = new Server({
+//   cors: {
+//     origin: "http://localhost:3000",
+//   },
+// });
 
-io.on("connection", (socket) => {
-  console.log("someone has connected!")
+// io.on("connection", (socket) => {
+//   console.log("someone has connected!")
 
-  socket.on("disconnect", () => {
-    console.log("someone has left")
-  })
-});
+//   socket.on("disconnect", () => {
+//     console.log("someone has left")
+//   })
+// });
 
-io.listen(4000);
+// io.listen(4000);

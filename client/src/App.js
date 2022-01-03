@@ -9,7 +9,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 
 import FriendRequests from "./components/users/friend-requests/FriendRequests";
-import Navbar from "./components/layout/navbar/Navbar2";
+import Navbar from "./components/layout/navbar/Navbar";
 import Landing from "./components/layout/Landing";
 import Dashboard from "./components/dashboard/Dashboard";
 import Register from "./components/auth/register/Register";
@@ -47,10 +47,10 @@ if (localStorage.jwtToken) {
 export default function App() {
 
   useEffect(() => {
-    const socket = io(ENDPOINT);
-    return () => {
-      return () => socket.disconnect();
-    }
+    // const socket = io(ENDPOINT);
+    // return () => {
+    //   return () => socket.disconnect();
+    // }
   }, [])
 
   return (

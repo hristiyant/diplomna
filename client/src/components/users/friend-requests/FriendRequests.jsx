@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import Loader from "react-loader-spinner";
 import { Scrollbars } from "react-custom-scrollbars";
-import { Avatar } from 'antd'
+import { Avatar } from 'antd';
 import { UserOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { getFriendRequests, deleteFriendRequest, addFriends } from "../../../actions/authActions";
