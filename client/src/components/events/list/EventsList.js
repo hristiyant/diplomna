@@ -43,6 +43,7 @@ const EventsList = (props) => {
   const onInputChanged = event => {
     setIsChecked(false);
     const value = event.target.value;
+    console.log(value)
     var filteredEvents;
 
     switch (value) {
@@ -149,16 +150,16 @@ const EventsList = (props) => {
           <div className="filter">
             <div className="input-group-events" onChange={onInputChanged}>
               <div className="radio-item">
-                <input id="all" type="radio" value="ALL" name="event-filter" checked={isChecked} />
-                <label for="all">All</label>
+                <input id="all" type="radio" value="ALL" name="event-filter" defaultChecked={isChecked} />
+                <label htmlFor="all">All</label>
               </div>
               <div className="radio-item">
                 <input id="created" type="radio" value="CREATED" name="event-filter" />
-                <label for="created">Created by me</label>
+                <label htmlFor="created">Created by me</label>
               </div>
               <div className="radio-item">
                 <input id="going" type="radio" value="GOING" name="event-filter" />
-                <label for="going">Going</label>
+                <label htmlFor="going">Going</label>
               </div>
             </div>
           </div>

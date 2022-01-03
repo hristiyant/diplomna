@@ -97,7 +97,7 @@
     margin: 0.5rem;
     display: flex;
     flex-direction: row;
-    justify-content: start;
+    justify-content: flex-start;
     padding-left: 1rem;
 }
 

@@ -16,11 +16,15 @@ const UserProfile = (props) => {
     const [file, setFile] = useState(null);
 
     useEffect(() => {
-        getUser(props.auth.user.id)
-            .then(res => {
-                setUser(res);
-                setIsLoading(false);
-            });
+        if (!props.auth.isAuthenticated) {
+            props.history.push("/login");
+        } else {
+            getUser(props.auth.user.id)
+                .then(res => {
+                    setUser(res);
+                    setIsLoading(false);
+                });
+        }
     }, [props.auth.user.id])
 
     function showLoader() {
