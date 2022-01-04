@@ -1,9 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-//Load input validation
-const validateCreateEventInput = require("../../validation/createEvent");
-
 //Load Event model
 const Event = require("../../models/Event");
 
@@ -25,14 +22,6 @@ router.get("/get-all", async (req, res) => {
 //@desc Create an event
 //@access Public
 router.post("/create", async (req, res) => {
-    //Form validation
-    const { errors, isValid } = validateCreateEventInput(req.body);
-
-    //Check validation
-    if (!isValid) {
-        return res.status(400).json(errors);
-    }
-
     const newEvent = new Event({
         name: req.body.name,
         createdBy: req.body.createdBy,
