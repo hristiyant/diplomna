@@ -1,9 +1,12 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { createEvent } from "../../../actions/eventActions";
 import classnames from "classnames";
+import { Input, Select, InputNumber, DatePicker, TimePicker } from "antd"
+import moment from 'moment';
+import { createEvent } from "../../../actions/eventActions";
+import { BADMINTON, BASKETBALL, BOX, FOOTBALL, GOLF, HANDBALL, HOCKEY, RUGBY, RUNNING, SWIMMING, TABLE_TENNIS, TENNIS, TRIATHLON, VOLLEYBALL } from "../eventTypes";
 
 import "./CreateEvent.css";
 
@@ -12,27 +15,43 @@ class CreateEvent extends Component {
         super();
         this.state = {
             name: "",
-            createdByID: "",
+            createdBy: "",
             type: "",
             quota: "",
+            date: "",
+            time: "",
             errors: {}
         };
     }
 
-    componentDidMount() {
-
-    }
-
     componentWillReceiveProps(nextProps) {
-        // if (nextProps.errors) {
-        //     this.setState({
-        //         errors: nextProps.errors
-        //     });
-        // }
+        if (nextProps.errors) {
+            this.setState({
+                errors: nextProps.errors
+            });
+        }
     }
 
     onChange = e => {
         this.setState({ [e.target.id]: e.target.value });
+    };
+
+    onTypeChange = e => {
+        console.log(e)
+        this.setState({ type: e });
+    };
+
+    onQuotaChange = e => {
+        // console.log(typeof e.toString())
+        this.setState({ quota: e.toString() });
+    };
+
+    onDateChange = e => {
+        this.setState({ date: moment(e).format('DD/MM/YYYY') });
+    };
+
+    onTimeChange = e => {
+        this.setState({ time: moment(e).format('HH:mm') });
     };
 
     onSubmit = e => {
@@ -40,10 +59,11 @@ class CreateEvent extends Component {
 
         const eventData = {
             name: this.state.name,
-            createdByID: this.props.auth.user.id,
-            createdByName: this.props.auth.user.name,
-            eventType: this.state.type,
-            quota: this.state.quota
+            createdBy: this.props.auth.user.id,
+            type: this.state.type,
+            quota: this.state.quota,
+            date: this.state.date,
+            time: this.state.time
         };
         console.log(JSON.stringify(eventData));
 
@@ -53,14 +73,74 @@ class CreateEvent extends Component {
     render() {
         const { errors } = this.state;
 
+        const options = [
+            {
+                value: BADMINTON,
+                label: "Badminton"
+            },
+            {
+                value: BASKETBALL,
+                label: "Basketball"
+            },
+            {
+                value: BOX,
+                label: "Box"
+            },
+            {
+                value: FOOTBALL,
+                label: "Football"
+            },
+            {
+                value: GOLF,
+                label: "Golf"
+            },
+            {
+                value: HANDBALL,
+                label: "Handball"
+            },
+            {
+                value: HOCKEY,
+                label: "Hockey"
+            },
+            {
+                value: RUGBY,
+                label: "Rugby"
+            },
+            {
+                value: RUNNING,
+                label: "Running"
+            },
+            {
+                value: SWIMMING,
+                label: "Swimming"
+            },
+            {
+                value: TABLE_TENNIS,
+                label: "Table Tennis"
+            },
+            {
+                value: TENNIS,
+                label: "Tennis"
+            },
+            {
+                value: TRIATHLON,
+                label: "Triathlon"
+            },
+            {
+                value: VOLLEYBALL,
+                label: "Volleyball"
+            }
+        ]
+
         return (
             <div className="full-screen-container">
                 <div className="create-event-container">
                     <h3 className="create-event-title">Please enter event details</h3>
                     <form onSubmit={this.onSubmit} autoComplete="off">
                         <div className="input-group">
-                            <label>Name</label>
-                            <input
+                            <Input
+                                size="large"
+                                placeholder="Name"
                                 onChange={this.onChange}
                                 value={this.state.name}
                                 error={errors.name}
@@ -70,34 +150,86 @@ class CreateEvent extends Component {
                                     invalid: errors.name
                                 })}
                             />
+                            <span className="red-text" style={{ height: "10px" }}>
+                                {errors.name}
+                            </span>
                         </div>
                         <div className="input-group">
-                            <label>Type</label>
-                            <input
-                                onChange={this.onChange}
+                            <Select
+                                size="large"
+                                showSearch
+                                placeholder="Type"
+                                options={options}
+                                onChange={this.onTypeChange}
                                 value={this.state.type}
-                                error={errors.type}
                                 id="type"
-                                type="text"
                                 className={classnames("", {
                                     invalid: errors.type
                                 })}
                             />
+                            <span className="red-text" style={{ height: "10px" }}>
+                                {errors.type}
+                            </span>
                         </div>
                         <div className="input-group">
-                            <label>Quota</label>
-                            <input
-                                onChange={this.onChange}
+                            {/* <label>Quota</label> */}
+                            <InputNumber
+                                size="large"
+                                placeholder="Quota"
+                                onChange={this.onQuotaChange}
                                 value={this.state.quota}
                                 error={errors.quota}
                                 id="quota"
-                                type="number"
-                                min="1"
-                                max="22"
+                                min={1}
+                                max={22}
                                 className={classnames("", {
                                     invalid: errors.quota
                                 })}
                             />
+                            <span className="red-text" style={{ height: "10px" }}>
+                                {errors.quota}
+                            </span>
+                        </div>
+                        <div className="input-group">
+                            {/* <label>Date</label>
+                            <input
+                                onChange={this.onChange}
+                                value={this.state.date}
+                                error={errors.date}
+                                id="date"
+                                type="datetime-local"
+                                className={classnames("", {
+                                    invalid: errors.date
+                                })}
+                            /> */}
+                            <Input.Group compact>
+                                <DatePicker
+                                    size="large"
+                                    format="DD/MM/YYYY"
+                                    onChange={this.onDateChange}
+                                    value={this.state.date && moment(this.state.date, "DD/MM/YYYY")}
+                                    error={errors.date}
+                                    id="date"
+                                    className={classnames("", {
+                                        invalid: errors.date
+                                    })}
+                                />
+                                <TimePicker
+                                    size="large"
+                                    format="HH:mm"
+                                    minuteStep={15}
+                                    onChange={this.onTimeChange}
+                                    value={this.state.time && moment(this.state.time, "HH:mm")}
+                                    error={errors.time}
+                                    id="time"
+                                    className={classnames("", {
+                                        invalid: errors.time
+                                    })}
+                                />
+                            </Input.Group>
+                            <span className="red-text" style={{ height: "10px" }}>
+                                {errors.dateTime}
+                            </span>
                         </div>
                         <button type="submit" className="create-event-button">Submit</button>
                     </form>
@@ -108,7 +240,6 @@ class CreateEvent extends Component {
 }
 
 CreateEvent.propTypes = {
-    //   loginUser: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     errors: PropTypes.object.isRequired
 };

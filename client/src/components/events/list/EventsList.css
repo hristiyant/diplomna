@@ -138,6 +138,11 @@
     /* font-weight: 00; */
 }
 
+.icon-event-type{
+    margin-right: 20px;
+    height: 50px;
+}
+
 .card-event-body {
     padding: 1rem;
     display: flex;

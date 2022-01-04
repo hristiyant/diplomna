@@ -1,11 +1,20 @@
 .create-event-container {
-    background-color: hsla(0, 0%, 0%, 0.7);
+    /* background-color: hsla(0, 0%, 0%, 0.7);
     border-radius: 10px;
     padding: 50px 30px;
     min-width: 400px;
     width: 50%;
     max-width: 600px;
-    margin: auto;
+    margin: auto; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    height: 70%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 5px;
 }
 
 .create-event-title {
@@ -18,32 +27,45 @@
 }
 
 .input-group {
+    height: 80px;
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
-.input-group label {
+/* .input-group label {
     color: white;
     font-size: 1.5em;
     margin-bottom: 7px;
     font-weight: lighter;
-}
+} */
 
-.input-group input {
-    font-size: 1.5em;
+/* .ant-select-selector:hover {
+    border: 1px solid #ac5c54 !important;
+} */
+
+/* .ant-select-selector::after {
+    border: 1px solid tomato !important;
+} */
+
+.input-group input::placeholder {
+    /* font-size: 1.5em;
     padding: .1em .25em;
     background-color: hsla(54, 100%, 91%, 0.3);
     border: 1px solid hsl(54, 100%, 6%);
     outline: none;
     border-radius: 5px;
     color: white;
-    font-weight: lighter;
+    font-weight: lighter; */
+}
+
+/* .input-group input:hover {
+    border: 1px solid #ac5c54;
 }
 
 .input-group input:focus {
-    border: 1px solid hsl(12, 100%, 76%);
-}
+    border: 1px solid tomato;
+} */
 
 .create-event-button {
     padding: 10px 30px;

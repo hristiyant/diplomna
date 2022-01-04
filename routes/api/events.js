@@ -1,19 +1,23 @@
 const express = require("express");
 const router = express.Router();
 
+//Load input validation
+const validateCreateEventInput = require("../../validation/createEvent");
+
 //Load Event model
 const Event = require("../../models/Event");
-const { userModel } = require("../../models/User");
 
 //@route GET events/get
 //@desc Get all events
 //@access Public
 router.get("/get-all", async (req, res) => {
     let response = await Event.find()
-        .populate({
-            path: "createdBy"
-        })
-    // .then(events => res.json(events));
+        .populate([
+            { path: "createdBy", select: "name imageUrl" },
+            { path: "participants", select: "name imageUrl" }
+        ])
+        .exec();
+
     res.send(response);
 });
 
@@ -21,16 +25,27 @@ router.get("/get-all", async (req, res) => {
 //@desc Create an event
 //@access Public
 router.post("/create", async (req, res) => {
-    const newEvent = await new Event({
+    //Form validation
+    const { errors, isValid } = validateCreateEventInput(req.body);
+
+    //Check validation
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+
+    const newEvent = new Event({
         name: req.body.name,
-        createdBy: req.body.createdByID,
-        eventType: req.body.eventType,
+        createdBy: req.body.createdBy,
+        type: req.body.type,
         quota: req.body.quota,
-        participants: [req.body.createdByID]
+        date: req.body.date,
+        time: req.body.time,
+        participants: [req.body.createdBy]
     });
 
-    await newEvent.save()
-        .then(event => res.json(event));
+    let response = await newEvent.save()
+
+    res.send(response);
 });
 
 //@route POST events/subscribe
@@ -59,7 +74,10 @@ router.post("/delete-event", async (req, res) => {
 
     await Event.findOneAndDelete({ _id: eventID });
 
-    let response = await Event.find();
+    let response = await Event.find()
+        .populate({
+            path: "createdBy"
+        });
 
     res.send(response);
 });

@@ -6,21 +6,21 @@ import { GET_ERRORS } from "./types";
 export const createEvent = (eventData, history) => dispatch => {
   axios
     .post("/api/events/create", eventData)
-    .then(res => history.push("/events"));
-  // .catch(err =>
-  //   dispatch({
-  //     type: GET_ERRORS,
-  //     payload: err.response.data
-  //   })
-  // );
+    .then(res => history.push("/events"))
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    );
 };
 
 // Get List of All Events
 export const getEvents = () => {
-  let res = axios
-    .get("/api/events/get-all");
-  // .then(console.log())
-  // .then(res => history.push("/events"));
+  return axios
+    .get("/api/events/get-all")
+
+
   // .catch(err =>
   //   dispatch({
   //     type: GET_ERRORS,
@@ -28,7 +28,7 @@ export const getEvents = () => {
   //   })
   // );
 
-  return res;
+  // return res;
 };
 
 // Subscribe for Event
