@@ -73,7 +73,6 @@ router.post("/register", (req, res) => {
 //@access Public
 router.post("/login", (req, res) => {
     //Form validation
-
     const { errors, isValid } = validateLoginInput(req.body);
 
     //Check validation
@@ -98,7 +97,8 @@ router.post("/login", (req, res) => {
                 //Create JWT payload
                 const payload = {
                     id: user.id,
-                    name: user.name
+                    name: user.name,
+                    imageUrl: user.imageUrl
                 };
 
                 //Sign token

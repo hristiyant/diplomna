@@ -11,6 +11,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { Scrollbars } from "react-custom-scrollbars";
 
 import { getEvents, subscribeToEvent, deleteEvent } from "../../../actions/eventActions";
+import { getEventTypeIcon } from "../../../utils/EventTypeIconSelector"
 import { getDisplayDate } from "../../../utils/DateUtils";
 import { ReactComponent as GoingIcon } from "../../../assets/tick.svg";
 
@@ -23,12 +24,23 @@ const EventsList = (props) => {
   const [isChecked, setIsChecked] = useState(true);
 
   useEffect(() => {
-    getEvents()
-      .then(res => {
-        setEventsData(res.data);
-        setInitialEventsData(res.data);
-        setIsLoading(false);
-      })
+
+    getEvents().then(res => {
+      setEventsData(res.data);
+      setInitialEventsData(res.data);
+      setIsLoading(false);
+    }).catch(err => onFailedToFetch())
+
+
+    // setEventsData(res.data);
+    // setInitialEventsData(res.data);
+    // setIsLoading(false);
+
+    //   .then(res => {
+    //   setEventsData(res.data);
+    //   setInitialEventsData(res.data);
+    //   setIsLoading(false);
+    // })
   }, []);
 
   const filterEvents = event => {
@@ -110,6 +122,56 @@ const EventsList = (props) => {
     // loading = false
   }
 
+  async function onFailedToFetch() {
+    setIsLoading(false);
+
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className='custom-ui'>
+            <h1 style={{ color: "white" }}>Failed to connect to server!</h1>
+
+            <div className="alert-buttons">
+              <button onClick={() => {
+                setIsLoading(true);
+
+                getEvents().then(res => {
+                  setEventsData(res.data);
+                  setInitialEventsData(res.data);
+                  setIsLoading(false);
+                }).catch(err => onFailedToFetch())
+
+                onClose();
+              }}>RETRY</button>
+            </div>
+            <div className="alert-buttons">
+              <button onClick={onClose}>Dashboard</button>
+            </div>
+          </div >
+        );
+      }
+    });
+  }
+  async function onViewParticipantsClick(event) {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className='custom-ui'>
+            <h1>Participants:</h1>
+            {event.participants.map((user, index) => (
+              <div key={index} className="">
+                {user.name}
+              </div>
+            ))}
+            <div className="alert-buttons">
+              <button onClick={onClose}>Close</button>
+            </div>
+          </div>
+        );
+      }
+    });
+  }
+
   async function onCancelClick(event) {
     confirmAlert({
       customUI: ({ onClose }) => {
@@ -173,6 +235,7 @@ const EventsList = (props) => {
             {eventsData.map((event, index) => (
               <div key={index} className="card-event">
                 <div className="card-event-header">
+                  <img className="icon-event-type" src={getEventTypeIcon(event.type)} alt="" />
                   {event.name}
                 </div>
                 <div className="card-event-body">
@@ -182,8 +245,12 @@ const EventsList = (props) => {
                     <div>{event.createdBy.name}</div>
                   </div>
                   <div className="card-event-right">
-                    <span>Date: {getDisplayDate(event.date)}</span>
-                    <div>Participants: {event.participants.length} / {event.quota}
+                    <span>Date: {getDisplayDate(event.date)} @ {event.time}</span>
+                    <div>Participants: {event.participants.length} / {event.quota} <button onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onViewParticipantsClick(event)
+                    }}>View List</button>
                     </div>
                     <progress id="participants" className="progress-participants" value={event.participants.length} max={event.quota}></progress>
                     {/* <div className="card__image"><img src={userData.picture.medium}/></div> */}

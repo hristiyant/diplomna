@@ -1,114 +1,253 @@
-import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import React, { useEffect } from "react";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { createEvent } from "../../../actions/eventActions";
-import classnames from "classnames";
+import { Form, Input, Select, InputNumber, DatePicker, TimePicker } from "antd"
+import moment from 'moment';
+import { BADMINTON, BASKETBALL, BOX, FOOTBALL, GOLF, HANDBALL, HOCKEY, RUGBY, RUNNING, SWIMMING, TABLE_TENNIS, TENNIS, TRIATHLON, VOLLEYBALL } from "../eventTypes";
 
+import { createEvent } from "../../../actions/eventActions";
+import { showAlert } from "../../custom/CustomAlertBox";
 import "./CreateEvent.css";
 
-class CreateEvent extends Component {
-    constructor() {
-        super();
-        this.state = {
-            name: "",
-            createdByID: "",
-            type: "",
-            quota: "",
-            errors: {}
-        };
-    }
+const CreateEvent = (props) => {
+    useEffect(() => {
+        if (!props.auth.user.id) {
+            props.history.push("/dashboard")
+        }
+    }, [props.auth.user.id, props.history]);
 
-    componentDidMount() {
-
-    }
-
-    componentWillReceiveProps(nextProps) {
-        // if (nextProps.errors) {
-        //     this.setState({
-        //         errors: nextProps.errors
-        //     });
-        // }
-    }
-
-    onChange = e => {
-        this.setState({ [e.target.id]: e.target.value });
-    };
-
-    onSubmit = e => {
-        e.preventDefault();
-
+    const onFinish = (values) => {
         const eventData = {
-            name: this.state.name,
-            createdByID: this.props.auth.user.id,
-            createdByName: this.props.auth.user.name,
-            eventType: this.state.type,
-            quota: this.state.quota
+            name: values.name,
+            createdBy: props.auth.user.id,
+            type: values.type,
+            quota: values.quota,
+            date: moment(values.date).format('DD/MM/YYYY'),
+            time: moment(values.time).format('HH:mm'),
+            location: values.location
         };
-        console.log(JSON.stringify(eventData));
 
-        this.props.createEvent(eventData, this.props.history);
+        submit(eventData);
     };
 
-    render() {
-        const { errors } = this.state;
+    const submit = (eventData) => {
+        createEvent(eventData)
+            .then(props.history.push("/events"))
+            .catch(err => {
+                onCreateEvenetFailed(eventData)
+            });
+    }
+
+    const onCreateEvenetFailed = (eventData) => {
+        const alertProps = {
+            message: "Failed to create event \"" + eventData.name + "\".",
+            buttonPrimaryText: "RETRY",
+            buttonSecondaryText: "DASHBOARD"
+        }
 
         return (
-            <div className="full-screen-container">
-                <div className="create-event-container">
-                    <h3 className="create-event-title">Please enter event details</h3>
-                    <form onSubmit={this.onSubmit} autoComplete="off">
-                        <div className="input-group">
-                            <label>Name</label>
-                            <input
-                                onChange={this.onChange}
-                                value={this.state.name}
-                                error={errors.name}
-                                id="name"
-                                type="text"
-                                className={classnames("", {
-                                    invalid: errors.name
-                                })}
-                            />
-                        </div>
-                        <div className="input-group">
-                            <label>Type</label>
-                            <input
-                                onChange={this.onChange}
-                                value={this.state.type}
-                                error={errors.type}
-                                id="type"
-                                type="text"
-                                className={classnames("", {
-                                    invalid: errors.type
-                                })}
-                            />
-                        </div>
-                        <div className="input-group">
-                            <label>Quota</label>
-                            <input
-                                onChange={this.onChange}
-                                value={this.state.quota}
-                                error={errors.quota}
-                                id="quota"
-                                type="number"
-                                min="1"
-                                max="22"
-                                className={classnames("", {
-                                    invalid: errors.quota
-                                })}
-                            />
-                        </div>
-                        <button type="submit" className="create-event-button">Submit</button>
-                    </form>
-                </div>
-            </div>
+            showAlert(
+                alertProps,
+                function () { submit(eventData) },
+                function () { props.history.push("/events") }
+            )
         );
     }
+
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
+
+    const options = [
+        {
+            value: BADMINTON,
+            label: "Badminton"
+        },
+        {
+            value: BASKETBALL,
+            label: "Basketball"
+        },
+        {
+            value: BOX,
+            label: "Box"
+        },
+        {
+            value: FOOTBALL,
+            label: "Football"
+        },
+        {
+            value: GOLF,
+            label: "Golf"
+        },
+        {
+            value: HANDBALL,
+            label: "Handball"
+        },
+        {
+            value: HOCKEY,
+            label: "Hockey"
+        },
+        {
+            value: RUGBY,
+            label: "Rugby"
+        },
+        {
+            value: RUNNING,
+            label: "Running"
+        },
+        {
+            value: SWIMMING,
+            label: "Swimming"
+        },
+        {
+            value: TABLE_TENNIS,
+            label: "Table Tennis"
+        },
+        {
+            value: TENNIS,
+            label: "Tennis"
+        },
+        {
+            value: TRIATHLON,
+            label: "Triathlon"
+        },
+        {
+            value: VOLLEYBALL,
+            label: "Volleyball"
+        }
+    ]
+
+    return (
+        <div className="create-event-container">
+            <h3 className="create-event-title">Please enter event details</h3>
+            <Form
+                className="form"
+                name="basic"
+                labelAlign="right"
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 14 }}
+                initialValues={{
+                    remember: true,
+                }}
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
+                autoComplete="off"
+            >
+                <Form.Item
+                    className="form-item"
+                    label="Name"
+                    labelAlign="right"
+                    name="name"
+                    colon={false}
+                    rules={[
+                        {
+                            required: true,
+                            message: "Please enter event name",
+                        },
+                    ]}
+                >
+                    <Input
+                        className="form-item-input"
+                        placeholder="Enter name"
+                    />
+                </Form.Item>
+                <Form.Item
+                    className="form-item"
+                    label="Type"
+                    name="type"
+                    colon={false}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please select type',
+                        },
+                    ]}
+                >
+                    <Select
+                        className="form-item-input"
+                        showSearch
+                        placeholder="Select from dropdown"
+                        options={options} />
+                </Form.Item>
+                <Form.Item
+                    className="form-item"
+                    label="Quota"
+                    name="quota"
+                    colon={false}
+                    initialValue={2}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please enter quota',
+                        },
+                    ]}
+                >
+                    <InputNumber
+                        className="form-item-quota"
+                        min={2}
+                        max={22}
+                    />
+                </Form.Item>
+                <Form.Item
+                    className="form-item"
+                    label="Date"
+                    name="date"
+                    colon={false}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please select date',
+                        },
+                    ]}
+                >
+                    <DatePicker
+                        className="form-item-input"
+                        format="DD/MM/YYYY"
+                    />
+                </Form.Item>
+                <Form.Item
+                    className="form-item"
+                    label="Time"
+                    name="time"
+                    colon={false}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please select time',
+                        },
+                    ]}
+                >
+                    <TimePicker
+                        className="form-item-input"
+                        format="HH:mm"
+                        minuteStep={15}
+                    />
+                </Form.Item>
+                <Form.Item
+                    className="form-item"
+                    label="Location"
+                    name="location"
+                    colon={false}
+                    rules={[
+                        {
+                            required: true,
+                            message: "Please enter event location",
+                        },
+                    ]}
+                >
+                    <Input
+                        className="form-item-input"
+                        placeholder="Enter location"
+                    />
+                </Form.Item>
+                <button type="submit" >SUBMIT</button>
+            </Form>
+        </div>
+    );
 }
 
 CreateEvent.propTypes = {
-    //   loginUser: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     errors: PropTypes.object.isRequired
 };
@@ -119,6 +258,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(
-    mapStateToProps,
-    { createEvent }
+    mapStateToProps
 )(withRouter(CreateEvent));
