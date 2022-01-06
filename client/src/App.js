@@ -20,7 +20,9 @@ import RecordList from "./components/events/list/EventsList";
 import UsersList from "./components/users/UsersList";
 import UserProfile from "./components/users/UserProfile";
 import UploadProfileImage from "./components/users/profile/UploadProfileImage";
+
 import "./App.css";
+import "./styles/css/antd.css"
 
 const ENDPOINT = "http://localhost:4000";
 

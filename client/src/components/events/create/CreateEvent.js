@@ -1,30 +1,59 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Form, Input, Select, InputNumber, DatePicker, TimePicker } from "antd"
 import moment from 'moment';
-import { createEvent } from "../../../actions/eventActions";
 import { BADMINTON, BASKETBALL, BOX, FOOTBALL, GOLF, HANDBALL, HOCKEY, RUGBY, RUNNING, SWIMMING, TABLE_TENNIS, TENNIS, TRIATHLON, VOLLEYBALL } from "../eventTypes";
 
+import { createEvent } from "../../../actions/eventActions";
+import { showAlert } from "../../custom/CustomAlertBox";
 import "./CreateEvent.css";
 
 const CreateEvent = (props) => {
-    const onFinish = (values) => {
-        console.log('Success:', values);
+    useEffect(() => {
+        if (!props.auth.user.id) {
+            props.history.push("/dashboard")
+        }
+    }, [props.auth.user.id, props.history]);
 
+    const onFinish = (values) => {
         const eventData = {
             name: values.name,
             createdBy: props.auth.user.id,
             type: values.type,
             quota: values.quota,
             date: moment(values.date).format('DD/MM/YYYY'),
-            time: moment(values.time).format('HH:mm')
+            time: moment(values.time).format('HH:mm'),
+            location: values.location
         };
 
-        console.log(eventData)
-        props.createEvent(eventData, props.history);
+        submit(eventData);
     };
+
+    const submit = (eventData) => {
+        createEvent(eventData)
+            .then(props.history.push("/events"))
+            .catch(err => {
+                onCreateEvenetFailed(eventData)
+            });
+    }
+
+    const onCreateEvenetFailed = (eventData) => {
+        const alertProps = {
+            message: "Failed to create event \"" + eventData.name + "\".",
+            buttonPrimaryText: "RETRY",
+            buttonSecondaryText: "DASHBOARD"
+        }
+
+        return (
+            showAlert(
+                alertProps,
+                function () { submit(eventData) },
+                function () { props.history.push("/events") }
+            )
+        );
+    }
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -95,6 +124,9 @@ const CreateEvent = (props) => {
             <Form
                 className="form"
                 name="basic"
+                labelAlign="right"
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 14 }}
                 initialValues={{
                     remember: true,
                 }}
@@ -105,11 +137,13 @@ const CreateEvent = (props) => {
                 <Form.Item
                     className="form-item"
                     label="Name"
+                    labelAlign="right"
                     name="name"
+                    colon={false}
                     rules={[
                         {
                             required: true,
-                            message: "Please enter event name!",
+                            message: "Please enter event name",
                         },
                     ]}
                 >
@@ -122,10 +156,11 @@ const CreateEvent = (props) => {
                     className="form-item"
                     label="Type"
                     name="type"
+                    colon={false}
                     rules={[
                         {
                             required: true,
-                            message: 'Please select type!',
+                            message: 'Please select type',
                         },
                     ]}
                 >
@@ -139,11 +174,12 @@ const CreateEvent = (props) => {
                     className="form-item"
                     label="Quota"
                     name="quota"
+                    colon={false}
                     initialValue={2}
                     rules={[
                         {
                             required: true,
-                            message: 'Please enter quota!',
+                            message: 'Please enter quota',
                         },
                     ]}
                 >
@@ -157,10 +193,11 @@ const CreateEvent = (props) => {
                     className="form-item"
                     label="Date"
                     name="date"
+                    colon={false}
                     rules={[
                         {
                             required: true,
-                            message: 'Please select date!',
+                            message: 'Please select date',
                         },
                     ]}
                 >
@@ -173,10 +210,11 @@ const CreateEvent = (props) => {
                     className="form-item"
                     label="Time"
                     name="time"
+                    colon={false}
                     rules={[
                         {
                             required: true,
-                            message: 'Please select time!',
+                            message: 'Please select time',
                         },
                     ]}
                 >
@@ -186,8 +224,24 @@ const CreateEvent = (props) => {
                         minuteStep={15}
                     />
                 </Form.Item>
-
-                <button type="primary" htmlType="submit" >SUBMIT</button>
+                <Form.Item
+                    className="form-item"
+                    label="Location"
+                    name="location"
+                    colon={false}
+                    rules={[
+                        {
+                            required: true,
+                            message: "Please enter event location",
+                        },
+                    ]}
+                >
+                    <Input
+                        className="form-item-input"
+                        placeholder="Enter location"
+                    />
+                </Form.Item>
+                <button type="submit" >SUBMIT</button>
             </Form>
         </div>
     );
@@ -204,6 +258,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(
-    mapStateToProps,
-    { createEvent }
+    mapStateToProps
 )(withRouter(CreateEvent));

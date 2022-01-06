@@ -7,7 +7,7 @@
     align-self: center;
     height: auto;
     width: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.75);
 }
 
 .create-event-title {
@@ -22,19 +22,15 @@
 }
 
 .form {
+    width: 50%;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    /* gap: 15px; */
-}
-
-.ant-btn.ant-btn-primary.ant-btn-sm:enabled {
-    background: tomato !important;
 }
 
 .form .form-item {
     padding: 5px;
-    padding-right: 40px;
+    display: flex;
+    justify-content: center;
 }
 
 .form .form-item .ant-form-item-control-input .form-item-input {
@@ -42,25 +38,14 @@
     max-width: 300px;
 }
 
-.form .form-item .ant-form-item-control-input .form-item-input::placeholder {
-    /* color: rgba(0, 0, 0, 0.4); */
-}
-
 .form .form-item .ant-form-item-control-input .form-item-quota {
     max-width: 70px;
 }
 
-/* .form .form-item .ant-form-item-control-input .form-item-quota::after {
-    color: red;
-} */
-
 .form .form-item .ant-form-item-label label {
     color: white;
-    font-size: medium;
-    width: 80px;
-    margin-right: 10px;
-    display: flex;
-    justify-content: flex-end;
+    font-size: large;
+    padding-right: 5px;
 }
 
 .form button {
@@ -73,27 +58,19 @@
     color: white;
     font-size: larger;
     letter-spacing: 2px;
+    cursor: pointer;
+    border: 2px solid transparent;
 }
 
-/* .create-event-button:hover {
-    background-color: hsla(4, 25%, 31%, 0.3);
-    border: 1px solid white;
-    transition: all 0.3s ease 0s;
+.form button:hover {
+    border: 2px solid rgba(245, 245, 245, 0.541);
+    background: #ac5b54;
 }
-
-.create-event-button:focus {
-    background-color: hsla(5, 100%, 50%, 0.5);
-} */
 
 @media (max-width: 800px) {
-    .form .form-item .ant-form-item-label label {
-        color: white;
-        font-size: large;
-        width: 80px;
-        /* right: 1; */
-        margin-right: 10px;
+    .form {
+        width: 70%;
         display: flex;
-        /* align-self: center; */
-        justify-content: flex-start;
+        flex-direction: column;
     }
 }

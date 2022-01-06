@@ -23,6 +23,10 @@ const EventSchema = new Schema({
         type: String,
         required: true
     },
+    location: {
+        type: String,
+        required: true
+    },
     participants: {
         type: [Schema.Types.ObjectId],
         ref: "users"

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getUser, logoutUser } from "../../../actions/authActions";
+import { logoutUser } from "../../../actions/authActions";
+import { Avatar } from "antd"
 import { UserOutlined, ImportOutlined, ExportOutlined, UnorderedListOutlined, TeamOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 
 import { ReactComponent as CloseMenu } from "../../../assets/x.svg";
@@ -12,7 +13,6 @@ import DownIcon from "../../../assets/down.svg";
 import "./Navbar.css";
 
 const Navbar = (props) => {
-    const [user, setUser] = useState({});
     const [click, setClick] = useState(false);
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
@@ -27,12 +27,12 @@ const Navbar = (props) => {
     var menuOptionMobile;
 
     useEffect(() => {
-        (async () => {
-            await getUser(props.auth.user.id)
-                .then(res => {
-                    setUser(res)
-                });
-        })();
+        // console.log(props.auth.user)
+        // getUser(props.auth.user.id)
+        //     .then(res => {
+        //         setUser(res)
+        //     });
+
 
         function handleEvent(e) {
             const isDropdownButton = e.target.matches("[data-dropdown-button]")
@@ -61,6 +61,7 @@ const Navbar = (props) => {
                         console.log(clickProfile);
                         handleClickProfile();
                     }}>
+                        <Avatar size="large" className="profile-button-avatar" src={props.auth.user.imageUrl} alt="" />
                         <div className="profile-button-name" data-dropdown-button>{props.auth.user.name.split(" ")[0]}</div>
                         <img className="dropdown-icon" src={DownIcon} alt="" data-dropdown-button style={clickProfile ? { opacity: "0" } : { opacity: "1" }} />
                     </button>

@@ -27,7 +27,7 @@ mongoose
     { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
   )
   .then(() => console.log("MongoDB successfully connected"))
-  .catch(err => console.log(err));
+  .catch(err => console.log("Server error: " + err));
 
 // Passport middleware
 app.use(passport.initialize());
