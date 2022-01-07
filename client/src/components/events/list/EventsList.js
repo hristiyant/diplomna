@@ -24,12 +24,21 @@ const EventsList = (props) => {
   const [isChecked, setIsChecked] = useState(true);
 
   useEffect(() => {
+    let isSubscribed = true;
+    // setIsLoading(true);
+
     getEvents().then(res => {
-      setEventsData(res.data);
-      setInitialEventsData(res.data);
-      setIsLoading(false);
+      if (isSubscribed) {
+        setEventsData(res.data);
+        setInitialEventsData(res.data);
+        setIsLoading(false);
+      }
     }).catch(err => onFailedToFetch());
-  });
+
+    return () => {
+      isSubscribed = false;
+    }
+  }, [onFailedToFetch]);
 
   const filterEvents = event => {
     const value = event.target.value.toLowerCase();
@@ -74,6 +83,7 @@ const EventsList = (props) => {
       secondaryColor="white"
       height={100}
       width={100}
+      timeout={10000}
     />)
   }
 
@@ -120,6 +130,8 @@ const EventsList = (props) => {
       buttonSecondaryText: "DASHBOARD",
       actionPrimary: () => {
         getEvents().then(res => {
+          setIsLoading(true);
+
           setEventsData(res.data);
           setInitialEventsData(res.data);
           setIsLoading(false);
