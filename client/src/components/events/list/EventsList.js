@@ -3,14 +3,14 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import Loader from "react-loader-spinner";
-import { Avatar } from 'antd'
-import { UserOutlined } from '@ant-design/icons';
-
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import { Scrollbars } from "react-custom-scrollbars";
 
-import { getEvents, subscribeToEvent, deleteEvent } from "../../../actions/eventActions";
+import { Avatar } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
+
+import { HEADER_REQUEST_FAILED_TEXT, MESSAGE_UNABLE_TO_FETCH_TEXT, showConfirmAlert, showUnableToFetchAlert, showUsersListAlert, TITLE_OOPS_TEXT } from "../../custom/CustomAlertBox";
+
+import { getEvents, subscribeToEvent, unsubscribeToEvent, deleteEvent } from "../../../actions/eventActions";
 import { getEventTypeIcon } from "../../../utils/EventTypeIconSelector"
 import { getDisplayDate } from "../../../utils/DateUtils";
 import { ReactComponent as GoingIcon } from "../../../assets/tick.svg";
@@ -24,24 +24,12 @@ const EventsList = (props) => {
   const [isChecked, setIsChecked] = useState(true);
 
   useEffect(() => {
-
     getEvents().then(res => {
       setEventsData(res.data);
       setInitialEventsData(res.data);
       setIsLoading(false);
-    }).catch(err => onFailedToFetch())
-
-
-    // setEventsData(res.data);
-    // setInitialEventsData(res.data);
-    // setIsLoading(false);
-
-    //   .then(res => {
-    //   setEventsData(res.data);
-    //   setInitialEventsData(res.data);
-    //   setIsLoading(false);
-    // })
-  }, []);
+    }).catch(err => onFailedToFetch());
+  });
 
   const filterEvents = event => {
     const value = event.target.value.toLowerCase();
@@ -54,6 +42,7 @@ const EventsList = (props) => {
 
   const onInputChanged = event => {
     setIsChecked(false);
+
     const value = event.target.value;
     console.log(value)
     var filteredEvents;
@@ -85,123 +74,89 @@ const EventsList = (props) => {
       secondaryColor="white"
       height={100}
       width={100}
-      timeout={3000} //3 secs
     />)
   }
 
   function showCancelEventButton(event) {
-    if (props.auth.user.id === event.createdBy._id) {
-      return true;
-    }
-
-    return false;
-    // return true;
+    return (props.auth.user.id === event.createdBy._id);
   }
 
   function showGoing(event) {
-    if (showCancelEventButton(event) || event.participants.includes(props.auth.user.id)) {
-      return true;
-    }
-
-    return false;
+    return (event.participants.some(e => e._id === props.auth.user.id));
   }
 
   function showSubscribeButton(event) {
-    if (showGoing(event) || event.participants.length === event.quota) {
-      return false;
-    }
-
-    return true;
-    // return true;
+    return !(showGoing(event) || event.participants.length === event.quota);
   }
 
   function onSubscribeClick(event) {
-    // loading = true
+    setIsLoading(true);
+
     subscribeToEvent(props.auth.user.id, event._id)
-      .then(res => setEventsData(res.data))
-    // loading = false
+      .then(res => {
+        setEventsData(res.data);
+        setIsLoading(false);
+      });
   }
 
-  async function onFailedToFetch() {
-    setIsLoading(false);
+  function onUnsubscribeClick(event) {
+    setIsLoading(true);
 
-    confirmAlert({
-      customUI: ({ onClose }) => {
-        return (
-          <div className='custom-ui'>
-            <h1 style={{ color: "white" }}>Failed to connect to server!</h1>
+    unsubscribeToEvent(props.auth.user.id, event._id)
+      .then(res => {
+        setEventsData(res.data);
+        setIsLoading(false);
+      });
+  }
 
-            <div className="alert-buttons">
-              <button onClick={() => {
-                setIsLoading(true);
+  function onFailedToFetch() {
+    setIsLoading(true);
 
-                getEvents().then(res => {
-                  setEventsData(res.data);
-                  setInitialEventsData(res.data);
-                  setIsLoading(false);
-                }).catch(err => onFailedToFetch())
+    const alertProps = {
+      header: HEADER_REQUEST_FAILED_TEXT,
+      title: TITLE_OOPS_TEXT,
+      message: MESSAGE_UNABLE_TO_FETCH_TEXT,
+      buttonPrimaryText: "RETRY",
+      buttonSecondaryText: "DASHBOARD",
+      actionPrimary: () => {
+        getEvents().then(res => {
+          setEventsData(res.data);
+          setInitialEventsData(res.data);
+          setIsLoading(false);
+        }).catch(err => onFailedToFetch());
+      },
+      actionSecondary: () => props.history.push("/dashboard")
+    }
 
-                onClose();
-              }}>RETRY</button>
-            </div>
-            <div className="alert-buttons">
-              <button onClick={onClose}>Dashboard</button>
-            </div>
-          </div >
-        );
+    showUnableToFetchAlert(alertProps);
+  }
+
+  function onViewParticipantsClick(participants) {
+    const alertProps = {
+      data: participants,
+      title: "Participants"
+    }
+
+    showUsersListAlert(alertProps);
+  }
+
+  function onCancelClick(event) {
+    const alertProps = {
+      message: "Are you sure you want to cancel \"" + event.name + "\"",
+      actionPrimary: () => {
+        setIsLoading(true);
+
+        deleteEvent(event._id)
+          .then(res => {
+            setEventsData(res.data);
+            setInitialEventsData(res.data);
+            setIsLoading(false);
+          });
       }
-    });
-  }
-  async function onViewParticipantsClick(event) {
-    confirmAlert({
-      customUI: ({ onClose }) => {
-        return (
-          <div className='custom-ui'>
-            <h1>Participants:</h1>
-            {event.participants.map((user, index) => (
-              <div key={index} className="">
-                {user.name}
-              </div>
-            ))}
-            <div className="alert-buttons">
-              <button onClick={onClose}>Close</button>
-            </div>
-          </div>
-        );
-      }
-    });
-  }
+    }
 
-  async function onCancelClick(event) {
-    confirmAlert({
-      customUI: ({ onClose }) => {
-        return (
-          <div className='custom-ui'>
-            <h1>Cancel event</h1>
-            <p>Are you sure you want to cancel this event?</p>
-            <div className="alert-buttons">
-              <button
-                onClick={() => {
-                  setIsLoading(true)
-                  deleteEvent(event._id)
-                    .then(res => {
-                      setEventsData(res.data);
-                      setInitialEventsData(res.data);
-                      setIsLoading(false);
-                    });
-                  onClose();
-                }}
-              >
-                Yes
-              </button>
-              <button onClick={onClose}>No</button>
-            </div>
-          </div>
-        );
-      }
-    });
+    showConfirmAlert(alertProps);
   }
-
 
   function showContent() {
     return (
@@ -246,18 +201,23 @@ const EventsList = (props) => {
                   </div>
                   <div className="card-event-right">
                     <span>Date: {getDisplayDate(event.date)} @ {event.time}</span>
-                    <div>Participants: {event.participants.length} / {event.quota} <button onClick={(e) => {
+                    <div className="btn-view-participants" onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      onViewParticipantsClick(event)
-                    }}>View List</button>
+                      onViewParticipantsClick(event.participants);
+                    }}>
+                      Participants: <progress id="participants" className="progress-participants" value={event.participants.length} max={event.quota}></progress> {event.participants.length} / {event.quota}
                     </div>
-                    <progress id="participants" className="progress-participants" value={event.participants.length} max={event.quota}></progress>
-                    {/* <div className="card__image"><img src={userData.picture.medium}/></div> */}
-                    {showGoing(event) && <div className="going"><GoingIcon className="going-icon" /><span>Going</span></div>}
+                    <div>Location: {event.location}</div>
+                    {showGoing(event) && <div className="going"><GoingIcon className="going-icon" /><span style={{ fontSize: "larger" }}>Going</span></div>}
                   </div>
                 </div>
                 <div className="card-event-footer">
+                  {showGoing(event) && <div className="btn-event-subscribe btn-outline" onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onUnsubscribeClick(event)
+                  }}>UNSUBSCRIBE</div>}
                   {showSubscribeButton(event) && <div className="btn-event-subscribe" onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
@@ -272,7 +232,7 @@ const EventsList = (props) => {
               </div>
             ))}
           </Scrollbars>
-        </div>
+        </div >
       </div >
     );
   }

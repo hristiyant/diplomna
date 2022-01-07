@@ -7,7 +7,7 @@ import moment from 'moment';
 import { BADMINTON, BASKETBALL, BOX, FOOTBALL, GOLF, HANDBALL, HOCKEY, RUGBY, RUNNING, SWIMMING, TABLE_TENNIS, TENNIS, TRIATHLON, VOLLEYBALL } from "../eventTypes";
 
 import { createEvent } from "../../../actions/eventActions";
-import { showAlert } from "../../custom/CustomAlertBox";
+import { HEADER_REQUEST_FAILED_TEXT, showUnableToFetchAlert, TITLE_OOPS_TEXT, TITLE_REQUEST_FAILED_TEXT } from "../../custom/CustomAlertBox";
 import "./CreateEvent.css";
 
 const CreateEvent = (props) => {
@@ -33,7 +33,7 @@ const CreateEvent = (props) => {
 
     const submit = (eventData) => {
         createEvent(eventData)
-            .then(props.history.push("/events"))
+            // .then(props.history.push("/events"))
             .catch(err => {
                 onCreateEvenetFailed(eventData)
             });
@@ -41,17 +41,17 @@ const CreateEvent = (props) => {
 
     const onCreateEvenetFailed = (eventData) => {
         const alertProps = {
+            header: HEADER_REQUEST_FAILED_TEXT,
+            title: TITLE_OOPS_TEXT,
             message: "Failed to create event \"" + eventData.name + "\".",
             buttonPrimaryText: "RETRY",
-            buttonSecondaryText: "DASHBOARD"
+            buttonSecondaryText: "DASHBOARD",
+            actionPrimary: () => submit(eventData),
+            actionSecondary: () => props.history.push("/dashboard")
         }
 
         return (
-            showAlert(
-                alertProps,
-                function () { submit(eventData) },
-                function () { props.history.push("/events") }
-            )
+            showUnableToFetchAlert(alertProps)
         );
     }
 

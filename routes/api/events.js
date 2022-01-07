@@ -37,7 +37,9 @@ router.get("/get-all", (req, res) => {
             { path: "participants", select: "name imageUrl" }
         ])
         .exec()
-        .then(response => res.send(response))
+        .then(response => {
+            res.send(response)
+        })
         .catch(error => {
             res.statusMessage = error;
             res.sendStatus(400);
@@ -61,7 +63,42 @@ router.post("/subscribe", async (req, res) => {
         );
 
         // Then fetching the updated list of events
-        let response = await Event.find();
+        let response = await Event.find()
+            .populate([
+                { path: "createdBy", select: "name imageUrl" },
+                { path: "participants", select: "name imageUrl" }
+            ])
+            .exec();
+
+        res.send(response);
+    } catch (error) {
+        res.statusMessage = error;
+        res.sendStatus(400);
+    }
+});
+
+//@route POST events/unsubscribe
+//@desc Subscribe to an event
+//@access Public
+router.post("/unsubscribe", async (req, res) => {
+    const eventID = req.body.params.eventID;
+    const subscriberID = req.body.params.userID;
+
+    try {
+        // First, unsubscribing to the event
+        await Event.findOneAndUpdate(
+            { _id: eventID },
+            { $pull: { participants: subscriberID } },
+            { new: true }
+        );
+
+        // Then fetching the updated list of events
+        let response = await Event.find()
+            .populate([
+                { path: "createdBy", select: "name imageUrl" },
+                { path: "participants", select: "name imageUrl" }
+            ])
+            .exec();
 
         res.send(response);
     } catch (error) {
