@@ -27,6 +27,19 @@ export const subscribeToEvent = async (userID, eventID) => {
   return res;
 }
 
+// Unsubscribe to an Event
+export const unsubscribeToEvent = async (userID, eventID) => {
+  let res = await axios
+    .post("api/events/unsubscribe", {
+      params: {
+        eventID: eventID,
+        userID: userID
+      }
+    });
+
+  return res;
+}
+
 // Delete an Event
 export const deleteEvent = async (eventID) => {
   let res = await axios

@@ -1,16 +1,17 @@
 .custom-alert-container {
+    margin: 0;
+    padding: 0;
     border: 2px solid #ac5b54;
     border-radius: 5px;
-    background: black;
+    background: #ac5b54;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
 }
 
 .custom-alert-container-header {
-    padding: 0 10px;
-    width: 100%;
     height: 45px;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -18,25 +19,25 @@
 }
 
 .custom-alert-container-header h1 {
-    margin: 0;
-    padding-left: 10px;
+    margin: 0 10px;
     font-size: large;
     letter-spacing: 1px;
     color: white;
 }
 
-.custom-alert-container span {
-    font-size: x-large;
-    color: white;
-}
-
 .custom-alert-container-body {
-    margin: 10px 10px;
-    border-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
     background: black;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+}
+
+.icon-close {
+    color: white !important;
+    font-size: x-large;
+    padding-right: 10px;
 }
 
 .alert-close.anticon {
@@ -50,12 +51,14 @@
 }
 
 .body-title {
-    margin: 20px;
+    width: 100%;
+    padding: 20px;
     text-align: center;
     color: white;
 }
 
 .body-message {
+    width: 100%;
     text-align: center;
     color: white;
 }
@@ -66,6 +69,14 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
+}
+
+.container-users-list-row {
+    margin: 10px 20px;
+    color: white;
+    font-size: large;
+    display: flex;
+    align-items: center;
 }
 
 .options-button {
