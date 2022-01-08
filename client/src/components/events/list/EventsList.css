@@ -104,7 +104,7 @@
 .container-events.cards-grid {
     height: 100%;
     overflow: auto;
-    display: block;
+    display: flex;
     width: 100%;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1rem;

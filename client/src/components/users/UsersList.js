@@ -129,17 +129,17 @@ const UsersList = (props) => {
                 <div className="top-bar">
                     <input className="search-box-users" onInput={filterUsers} placeholder="Search..." />
                 </div>
-                <div className="container-users cards-grid">
-                    <Scrollbars className="my-scrollbar" style={{ width: "100%", height: "100%" }}
-                        renderTrackVertical={props => <div {...props} className="track-vertical" />}
-                        renderThumbVertical={props => <div {...props} className="thumb-vertical" />}
-                        renderView={props => <div {...props} className="view" />}
-                    >
+                <Scrollbars className="my-scrollbar" style={{ width: "100%", height: "100%" }}
+                    renderTrackVertical={props => <div {...props} className="track-vertical" />}
+                    renderThumbVertical={props => <div {...props} className="thumb-vertical" />}
+                    renderView={props => <div {...props} className="view" />}
+                >
+                    <div className="container-users cards-grid">
                         {usersData.map((user, index) => {
                             return <UserCard key={index} user={user} loggedInUser={props.auth.user} />
                         })}
-                    </Scrollbars>
-                </div >
+                    </div >
+                </Scrollbars>
             </div >
         );
     }

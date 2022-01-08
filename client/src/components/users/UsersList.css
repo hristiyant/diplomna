@@ -39,9 +39,9 @@
 .container-users.cards-grid {
     height: 100%;
     overflow: auto;
-    display: block;
+    display: grid;
     width: 100%;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: 50% 50%;
     gap: 1rem;
     align-items: center;
 }

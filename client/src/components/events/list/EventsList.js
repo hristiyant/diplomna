@@ -25,7 +25,6 @@ const EventsList = (props) => {
 
   useEffect(() => {
     let isSubscribed = true;
-    // setIsLoading(true);
 
     getEvents().then(res => {
       if (isSubscribed) {
@@ -193,12 +192,12 @@ const EventsList = (props) => {
             </div>
           </div>
         </div>
-        <div className="container-events cards-grid">
-          <Scrollbars className="my-scrollbar" style={{ width: "100%", height: "100%" }}
-            renderTrackVertical={props => <div {...props} className="track-vertical" />}
-            renderThumbVertical={props => <div {...props} className="thumb-vertical" />}
-            renderView={props => <div {...props} className="view" />}
-          >
+        <Scrollbars className="my-scrollbar" style={{ width: "100%", height: "100%" }}
+          renderTrackVertical={props => <div {...props} className="track-vertical" />}
+          renderThumbVertical={props => <div {...props} className="thumb-vertical" />}
+          renderView={props => <div {...props} className="view" />}
+        >
+          <div className="container-events cards-grid">
             {eventsData.map((event, index) => (
               <div key={index} className="card-event">
                 <div className="card-event-header">
@@ -243,8 +242,8 @@ const EventsList = (props) => {
                 </div>
               </div>
             ))}
-          </Scrollbars>
-        </div >
+          </div >
+        </Scrollbars>
       </div >
     );
   }
