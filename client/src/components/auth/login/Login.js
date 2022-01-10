@@ -7,7 +7,7 @@ import classnames from "classnames";
 import { Input } from "antd";
 
 import { clearERROR, loginUser } from "../../../actions/authActions";
-import { showLoginFailedAlert } from "../../custom/CustomAlertBox";
+import { MESSAGE_NOT_ABLE_TO_LOGIN, showLoginFailedAlert } from "../../custom/CustomAlertBox";
 
 import "./Login.css";
 
@@ -43,7 +43,7 @@ class Login extends Component {
     }
 
     if (nextProps.errors.loginFailed) {
-      showLoginFailedAlert();
+      showLoginFailedAlert({ message: MESSAGE_NOT_ABLE_TO_LOGIN });
     }
 
     if (nextProps.errors) {
@@ -73,7 +73,7 @@ class Login extends Component {
       <div className="login-container">
         <div className="login-container-header">
           <h2 style={{ color: "white" }}>
-            <b>Login</b> below
+            <b>Log in</b> below
           </h2>
           <p className="grey-text text-darken-1">
             Don't have an account? <Link to="/register">Register</Link>
@@ -120,7 +120,7 @@ class Login extends Component {
           type="submit"
           className="button-login"
         >
-          Login
+          LOG IN
         </button>
       </div>
     );

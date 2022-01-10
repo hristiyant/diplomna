@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../../actions/authActions";
+
 import { Avatar } from "antd"
-import { UserOutlined, ImportOutlined, ExportOutlined, UnorderedListOutlined, TeamOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { UserOutlined, ExportOutlined, UnorderedListOutlined, TeamOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 
 import { ReactComponent as CloseMenu } from "../../../assets/x.svg";
 import { ReactComponent as MenuIcon } from "../../../assets/menu.svg";
@@ -60,7 +61,7 @@ const Navbar = (props) => {
                     <button className="profile-button" data-dropdown-button onClick={() => {
                         handleClickProfile();
                     }}>
-                        <Avatar size="large" className="profile-button-avatar" src={props.auth.user.imageUrl} alt="" />
+                        <Avatar size="large" className="profile-button-avatar" src={props.auth.user.imageUrl} alt="" icon={<UserOutlined />} />
                         <div className="profile-button-name" data-dropdown-button>{props.auth.user.name.split(" ")[0]}</div>
                         <img className="dropdown-icon" src={DownIcon} alt="" data-dropdown-button style={clickProfile ? { opacity: "0" } : { opacity: "1" }} />
                     </button>
@@ -101,7 +102,7 @@ const Navbar = (props) => {
         menuOption =
             <div className="nav-profile-options">
                 <Link className="option-profile" to="/login">
-                    <ImportOutlined style={{ fontSize: "large" }} /> LOG IN
+                    LOG IN
                 </Link>
                 <Link to="/register">
                     REGISTER
@@ -113,7 +114,7 @@ const Navbar = (props) => {
                 <hr className="option mobile-option" style={{ backgroundColor: "white", width: "80%", height: ".5px", padding: "0px" }} />
                 <li className="option mobile-option" onClick={closeMobileMenu}>
                     <Link to="/login">
-                        <ImportOutlined style={{ fontSize: "large" }} /> LOG IN
+                        LOG IN
                     </Link>
                 </li>
                 <li className="option mobile-option" onClick={closeMobileMenu}>
