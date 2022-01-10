@@ -6,7 +6,12 @@ import io from "socket.io-client";
 
 import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { Provider } from "react-redux";
-import store from "./store";
+
+// import store from "./store";
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk"
+import { composeWithDevTools } from 'redux-devtools-extension'
+import allReducers from "./reducers/index";
 
 import FriendRequests from "./components/users/friend-requests/FriendRequests";
 import Navbar from "./components/layout/navbar/Navbar";
@@ -24,6 +29,8 @@ import UploadProfileImage from "./components/users/profile/UploadProfileImage";
 import "./App.css";
 import "./styles/css/antd.css"
 
+const composedEnhancer = composeWithDevTools(applyMiddleware(thunk))
+const store = createStore(allReducers, composedEnhancer)
 const ENDPOINT = "http://localhost:4000";
 
 // Check for token to keep user logged in
@@ -63,7 +70,8 @@ export default function App() {
           <div className="full-screen-container">
             <Route exact path="/" component={Landing} />
             <Route exact path="/register" component={Register} />
-            <Route exact path="/login" component={Login} />
+            <Route exact path="/login" render={props => <Login {...props} />} />
+            {/* <Route exact path="/login" component={Login} /> */}
             <Route exact path="/create-event" component={CreateEvent} />
             <Route exact path="/profile" component={UserProfile} />
             {/* <Route exact path="/profile" component={UploadProfileImage} /> */}

@@ -10,11 +10,14 @@ const Dashboard = (props) => {
 
   const onLogoutClick = e => {
     e.preventDefault();
+
     props.logoutUser();
+    props.history.push("/login");
   };
 
   const onCreateEventClick = e => {
     e.preventDefault();
+
     props.history.push("/create-event");
   }
 

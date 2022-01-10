@@ -78,12 +78,17 @@ const UserCard = ({ user, loggedInUser }) => {
         </div>
     )
 }
+
 const UsersList = (props) => {
     const [initialUsersData, setInitialUsersData] = useState([]);
     const [usersData, setUsersData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        if (!props.auth.isAuthenticated) {
+            props.history.push("/login");
+        }
+
         (async () => {
             let userData;
 
@@ -99,7 +104,7 @@ const UsersList = (props) => {
             setUsersData(userData);
             setIsLoading(false);
         })();
-    }, []);
+    }, [props]);
 
     const filterUsers = user => {
         const value = user.target.value.toLowerCase();

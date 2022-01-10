@@ -24,6 +24,10 @@ const EventsList = (props) => {
   const [isChecked, setIsChecked] = useState(true);
 
   useEffect(() => {
+    if (!props.auth.isAuthenticated) {
+      props.history.push("/login");
+    }
+    
     let isSubscribed = true;
     // setIsLoading(true);
 

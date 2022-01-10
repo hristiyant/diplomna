@@ -6,7 +6,7 @@
     align-self: center;
     height: 70%;
     width: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.8);
     border-radius: 5px;
 }
 
@@ -30,26 +30,31 @@
 }
 
 .red-text {
-    color: #ac5c54;
+    color: tomato;
 }
 
-.input-field {
+.login-container .login-input-field {
     height: 40px;
     margin: 25px;
     width: 300px;
 }
 
+.login-container .login-input-field div, span {
+    margin: 0px !important;
+}
+
 .button-login {
     width: 150px;
+    margin: 15px;
     cursor: pointer;
-    border-style: none;
-    border-radius: 3px;
-    letter-spacing: 1.5px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    letter-spacing: 2px;
     font-size: large;
     color: white;
     background: #ac5c54;
 }
 
 .button-login:hover {
-    background: tomato;
+    border: 2px solid rgba(245, 245, 245, 0.541);
 }
