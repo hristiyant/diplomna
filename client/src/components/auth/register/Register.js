@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { registerUser } from "../../../actions/authActions";
 import classnames from "classnames";
 
 import { Input } from "antd"
+
+import { clearERROR, registerUser } from "../../../actions/authActions";
+import { MESSAGE_NOT_ABLE_TO_REGISTER, showLoginFailedAlert } from "../../custom/CustomAlertBox";
 
 import "./Register.css"
 
@@ -21,28 +23,7 @@ class Register extends Component {
     };
   }
 
-  componentDidMount() {
-    // If logged in and user navigates to Register page, should redirect them to dashboard
-    if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/dashboard");
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.errors) {
-      this.setState({
-        errors: nextProps.errors
-      });
-    }
-  }
-
-  onChange = e => {
-    this.setState({ [e.target.id]: e.target.value });
-  };
-
-  onSubmit = e => {
-    e.preventDefault();
-
+  registerUser = async () => {
     const newUser = {
       name: this.state.name,
       email: this.state.email,
@@ -51,6 +32,57 @@ class Register extends Component {
     };
 
     this.props.registerUser(newUser, this.props.history);
+  }
+
+  componentDidMount() {
+    // If logged in and user navigates to Register page, should redirect them to dashboard
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.auth.isAuthenticated) {
+      nextProps.history.push("/dashboard");
+    }
+
+    if (nextProps.errors.loginFailed) {
+      showLoginFailedAlert({ message: MESSAGE_NOT_ABLE_TO_REGISTER });
+    }
+
+    if (nextProps.errors) {
+      return ({
+        errors: nextProps.errors
+      });
+    }
+  }
+
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.errors) {
+  //     this.setState({
+  //       errors: nextProps.errors
+  //     });
+  //   }
+  // }
+
+  onChange = e => {
+    this.props.clearERROR();
+
+    this.setState({ [e.target.id]: e.target.value });
+  };
+
+  onSubmit = e => {
+    e.preventDefault();
+
+    this.registerUser();
+    // const newUser = {
+    //   name: this.state.name,
+    //   email: this.state.email,
+    //   password: this.state.password,
+    //   password2: this.state.password2
+    // };
+
+    // this.props.registerUser(newUser, this.props.history);
   };
 
   render() {
@@ -59,9 +91,9 @@ class Register extends Component {
     return (
       <div className="register-container">
         <div className="register-container-header" style={{ paddingLeft: "11.250px" }}>
-          <h4 style={{ color: "white" }}>
+          <h2 style={{ color: "white" }}>
             <b>Register</b> below
-          </h4>
+          </h2>
           <p className="grey-text text-darken-1">
             Already have an account? <Link to="/login">Log in</Link>
           </p>
@@ -129,7 +161,7 @@ class Register extends Component {
           type="submit"
           className="button-sign-up"
         >
-          Sign up
+          REGISTER
         </button>
       </div>
     );
@@ -138,6 +170,7 @@ class Register extends Component {
 
 Register.propTypes = {
   registerUser: PropTypes.func.isRequired,
+  clearERROR: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
@@ -149,5 +182,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { registerUser }
+  { registerUser, clearERROR }
 )(withRouter(Register));

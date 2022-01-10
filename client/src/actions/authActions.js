@@ -4,6 +4,13 @@ import jwt_decode from "jwt-decode";
 
 import { CLEAR_ERRORS, GET_ERRORS, SET_CURRENT_USER, USER_LOADING } from "./types";
 
+// Clear errors in store
+export const clearERROR = () => dispatch => {
+  dispatch({
+    type: CLEAR_ERRORS,
+  })
+};
+
 // Get User Info
 export const getUser = async (userID) => {
   const res = await axios
@@ -24,24 +31,28 @@ export const getAllUsers = async () => {
 }
 
 // Register User
-export const registerUser = (userData, history) => dispatch => {
-  axios
-    .post("/api/users/register", userData)
-    .then(res => history.push("/login"))
-    .catch(err =>
+export const registerUser = (userData, history) => async dispatch => {
+  try {
+    await axios.post("/api/users/register", userData)
+
+    // Upon registering, redirect to login page
+    history.push("/login")
+
+  } catch (err) {
+    if (typeof err.response.data === 'string') {
+      dispatch({
+        type: GET_ERRORS,
+        payload: { loginFailed: err.response.data }
+      })
+    } else {
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data
       })
-    );
+    }
+  }
 };
 
-// Clear errors in store
-export const clearERROR = () => dispatch => {
-  dispatch({
-    type: CLEAR_ERRORS,
-  })
-};
 
 // Login - get user token
 export const loginUser = userData => async dispatch => {
