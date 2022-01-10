@@ -27,13 +27,17 @@ const FriendRequests = (props) => {
     }
 
     useEffect(() => {
+        if (!props.auth.isAuthenticated) {
+            props.history.push("/login");
+        }
+
         getFriendRequests(props.auth.user.id)
             .then(res => {
                 setData(res.data);
                 setAllRequests(res.data);
                 setIsLoading(false);
             });
-    }, [])
+    }, [props])
 
     const filterCards = event => {
         const value = event.target.value.toLowerCase();

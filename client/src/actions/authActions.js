@@ -2,7 +2,7 @@ import axios from "axios";
 import setAuthToken from "../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 
-import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING } from "./types";
+import { CLEAR_ERRORS, GET_ERRORS, SET_CURRENT_USER, USER_LOADING } from "./types";
 
 // Get User Info
 export const getUser = async (userID) => {
@@ -17,10 +17,10 @@ export const getUser = async (userID) => {
 };
 
 //Get List of All Users
-export const getAllUsers = dispatch => {
-  return axios
-    .get("api/users/get-all-users")
-    .then(res => res.data)
+export const getAllUsers = async () => {
+  let res = await axios.get("api/users/get-all-users");
+
+  return res.data;
 }
 
 // Register User
@@ -36,29 +36,42 @@ export const registerUser = (userData, history) => dispatch => {
     );
 };
 
-// Login - get user token
-export const loginUser = userData => dispatch => {
-  axios
-    .post("/api/users/login", userData)
-    .then(res => {
-      // Save to localStorage
+// Clear errors in store
+export const clearERROR = () => dispatch => {
+  dispatch({
+    type: CLEAR_ERRORS,
+  })
+};
 
-      // Set token to localStorage
-      const { token } = res.data;
-      localStorage.setItem("jwtToken", token);
-      // Set token to Auth header
-      setAuthToken(token);
-      // Decode token to get user data
-      const decoded = jwt_decode(token);
-      // Set current user
-      dispatch(setCurrentUser(decoded));
-    })
-    .catch(err =>
+// Login - get user token
+export const loginUser = userData => async dispatch => {
+  try {
+    let res = await axios.post("/api/users/login", userData);
+
+    // Save to localStorage
+    // Set token to localStorage
+    const { token } = res.data;
+    localStorage.setItem("jwtToken", token);
+    // Set token to Auth header
+    setAuthToken(token);
+    // Decode token to get user data
+    const decoded = jwt_decode(token);
+    // Set current user
+    dispatch(setCurrentUser(decoded));
+
+  } catch (err) {
+    if (typeof err.response.data === 'string') {
+      dispatch({
+        type: GET_ERRORS,
+        payload: { loginFailed: err.response.data }
+      })
+    } else {
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data
       })
-    );
+    }
+  }
 };
 
 // Set logged in user
@@ -93,7 +106,7 @@ export const getFriendRequests = async userID => {
       params: {
         id: userID
       }
-    })
+    });
 
   return res;
 }
@@ -113,7 +126,6 @@ export const deleteFriendRequest = async (toUserID, fromUserID) => {
 
 // Create friend request
 export const createFriendRequest = async (fromUser, toUser) => {
-  // console.log("creating friend request from user " + fromUser + " to user " + toUser);
   const res = await axios
     .post("/api/users/create-friend-request", {
       params: {
@@ -140,8 +152,8 @@ export const addFriends = async (requestSenderID, requestReceiverID, friendReque
 }
 
 // Remove user from friends
-export const removeFriends = (userID, friendID) => {
-  let res = axios
+export const removeFriends = async (userID, friendID) => {
+  let res = await axios
     .post("/api/users/remove-friend", {
       params: {
         userID: userID,
@@ -154,8 +166,6 @@ export const removeFriends = (userID, friendID) => {
 
 // Set profile pic url from firebase storage
 export const setProfileImage = async (userID, imageUrl) => {
-  console.log("userID :" + JSON.stringify(userID))
-  console.log("imageUrl :" + JSON.stringify(imageUrl))
   let res = await axios
     .post("api/users/set-profile-pic", {
       params: {

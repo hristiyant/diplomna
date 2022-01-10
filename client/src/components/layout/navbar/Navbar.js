@@ -58,7 +58,6 @@ const Navbar = (props) => {
             <div className="nav-profile-options" data-dropdown-button>
                 <div className="dropdown">
                     <button className="profile-button" data-dropdown-button onClick={() => {
-                        console.log(clickProfile);
                         handleClickProfile();
                     }}>
                         <Avatar size="large" className="profile-button-avatar" src={props.auth.user.imageUrl} alt="" />

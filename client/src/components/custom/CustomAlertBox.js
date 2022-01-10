@@ -9,10 +9,40 @@ export const HEADER_REQUEST_FAILED_TEXT = "Request Failed";
 export const HEADER_CONFIRM_TEXT = "Confirm";
 export const TITLE_OOPS_TEXT = "Oops... Something went wrong!";
 export const MESSAGE_UNABLE_TO_FETCH_TEXT = "Unable to fetch records. Please try again in a few moments...";
+export const MESSAGE_NOT_ABLE_TO_LOGIN = "Unable to log in. Please try again in a few moments...";
 export const BTN_YES_TEXT = "Yes";
 export const BTN_NO_TEXT = "No";
 export const BTN_RETRY_TEXT = "RETRY";
 export const BTN_DASHBOARD_TEXT = "DASHBOARD";
+
+export const showLoginFailedAlert = () => {
+    return confirmAlert({
+        customUI: ({ onClose }) => {
+            return (
+                <div className='custom-alert-container'>
+                    <div className="custom-alert-container-header">
+                        <h1>{HEADER_REQUEST_FAILED_TEXT}</h1>
+                        <CloseOutlined className="icon-close" onClick={onClose} style={{ color: 'white' }} />
+                    </div>
+                    <div className="custom-alert-container-body">
+                        <div className="body-title">
+                            <FrownFilled style={{ fontSize: "x-large" }} />
+                            <h1 style={{ color: "white" }}>{TITLE_OOPS_TEXT}</h1>
+                        </div>
+                        <div className="body-message">
+                            <div>{MESSAGE_NOT_ABLE_TO_LOGIN}</div>
+                        </div>
+                        <div className="body-options">
+                            <button className="options-button" onClick={() => {
+                                onClose();
+                            }}>OK</button>
+                        </div>
+                    </div>
+                </div >
+            );
+        }
+    });
+}
 
 export const showUnableToFetchAlert = props => {
     return confirmAlert({
