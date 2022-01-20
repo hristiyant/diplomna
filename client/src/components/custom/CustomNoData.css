@@ -1,0 +1,34 @@
+.custom-no-data-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.75);
+}
+
+.custom-no-data-image {
+    width: 15%;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.custom-no-data-message {
+    color: white;
+    font-size: x-large;
+}
+
+@media (max-width: 800px) {
+    .custom-no-data-image {
+        width: 30%;
+        height: auto;
+        margin-bottom: 15px;
+    }
+
+    .custom-no-data-message {
+        color: white;
+        font-size: medium;
+    }
+}

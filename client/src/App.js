@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 import io from "socket.io-client";
@@ -54,6 +54,7 @@ if (localStorage.jwtToken) {
 }
 
 export default function App() {
+  var isLoggedIn = localStorage.getItem("jwtToken")
 
   useEffect(() => {
     // const socket = io(ENDPOINT);
@@ -68,17 +69,15 @@ export default function App() {
         <div className="App">
           <Navbar />
           <div className="full-screen-container">
-            <Route exact path="/" component={Landing} />
-            <Route exact path="/register" component={Register} />
+            <Route exact path="/" component={isLoggedIn ? () => (<Redirect to="/dashboard" />) : Landing} />
             <Route exact path="/login" render={props => <Login {...props} />} />
-            {/* <Route exact path="/login" component={Login} /> */}
-            <Route exact path="/create-event" component={CreateEvent} />
-            <Route exact path="/profile" component={UserProfile} />
-            {/* <Route exact path="/profile" component={UploadProfileImage} /> */}
-            <Route exact path="/users" component={UsersList} />
-            <Route exact path="/friend-requests" component={FriendRequests} />
-            <Route exact path="/events" component={RecordList} />
+            <Route exact path="/register" component={Register} />
             <Switch>
+              <PrivateRoute exact path="/events" component={RecordList} />
+              <PrivateRoute exact path="/users" component={UsersList} />
+              <PrivateRoute exact path="/create-event" component={CreateEvent} />
+              <PrivateRoute exact path="/friend-requests" component={FriendRequests} />
+              <PrivateRoute exact path="/profile" component={UserProfile} />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
             </Switch>
           </div>

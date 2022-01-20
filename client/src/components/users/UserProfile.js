@@ -5,7 +5,7 @@ import Loader from "react-loader-spinner";
 import { Avatar } from 'antd'
 
 import { getUser, setProfileImage } from "../../actions/authActions";
-import { storage } from "../../firebase/firebase"
+import { storage } from "../../firebase/firebase";
 
 import "./userProfile.css"
 
@@ -16,15 +16,11 @@ const UserProfile = (props) => {
     const [file, setFile] = useState(null);
 
     useEffect(() => {
-        if (!props.auth.isAuthenticated) {
-            props.history.push("/login");
-        } else {
-            getUser(props.auth.user.id)
-                .then(res => {
-                    setUser(res);
-                    setIsLoading(false);
-                });
-        }
+        getUser(props.auth.user.id)
+            .then(res => {
+                setUser(res);
+                setIsLoading(false);
+            });
     }, [props.auth.user.id])
 
     function showLoader() {
@@ -58,13 +54,16 @@ const UserProfile = (props) => {
         uploadTask.on("state_changed", console.log, console.error, () => {
             ref
                 .getDownloadURL()
-                .then((url) => {
+                .then(async (url) => {
                     setFile(null);
-                    setProfileImage(props.auth.user.id, url)
-                        .then(res => {
-                            setUser(res.data)
-                            setIsLoading(false)
-                        })
+                    let res = await setProfileImage(props.auth.user.id, url)
+
+                    setUser(prevState => ({
+                        ...prevState,
+                        imageUrl: res
+                    }));
+
+                    setIsLoading(false);
                 });
         });
     }

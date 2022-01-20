@@ -1,6 +1,9 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
+import User from "./User.js";
+import Location from "./Location.js";
 
+// Model for events
 const EventSchema = new Schema({
     name: {
         type: String,
@@ -8,7 +11,7 @@ const EventSchema = new Schema({
     },
     createdBy: {
         type: Schema.Types.ObjectId,
-        ref: "users",
+        ref: User,
         required: true
     },
     type: {
@@ -16,20 +19,17 @@ const EventSchema = new Schema({
         required: true
     },
     date: {
-        type: String,
-        required: true
-    },
-    time: {
-        type: String,
+        type: Date,
         required: true
     },
     location: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: Location,
         required: true
     },
     participants: {
         type: [Schema.Types.ObjectId],
-        ref: "users"
+        ref: User
     },
     quota: {
         type: Number,
@@ -37,4 +37,6 @@ const EventSchema = new Schema({
     }
 });
 
-module.exports = Event = mongoose.model("events", EventSchema);
+const Event = mongoose.model("events", EventSchema);
+
+export default Event;

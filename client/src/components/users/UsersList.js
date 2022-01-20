@@ -85,10 +85,6 @@ const UsersList = (props) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (!props.auth.isAuthenticated) {
-            props.history.push("/login");
-        }
-
         (async () => {
             let userData;
 

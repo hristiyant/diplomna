@@ -1,11 +1,15 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
-// Model for friend requests
-const FriendRequestSchema = new Schema({
+// Model for invitations
+const InvitationSchema = new Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  type: {
+    type: String,
+    required: true
   },
   fromUser: {
     type: Schema.Types.ObjectId,
@@ -14,7 +18,7 @@ const FriendRequestSchema = new Schema({
   }
 })
 
-// DB model for user entries
+// Model for users
 const UserSchema = new Schema({
   name: {
     type: String,
@@ -28,25 +32,24 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  date: {
-    type: Date,
-    default: Date.now
+  phone: {
+    type: String,
+    required: true
+  },
+  imageUrl: {
+    type: String
   },
   friends: {
     type: [Schema.Types.ObjectId],
     ref: "users",
     default: []
   },
-  friendRequests: {
-    type: [FriendRequestSchema],
+  invitations: {
+    type: [InvitationSchema],
     default: []
   },
-  imageUrl: {
-    type: String
-  }
 });
 
-module.exports = {
-  userSchema: UserSchema,
-  userModel: mongoose.model("users", UserSchema)
-}
+const User = mongoose.model("users", UserSchema);
+
+export default User;

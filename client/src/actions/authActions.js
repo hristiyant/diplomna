@@ -16,7 +16,7 @@ export const getUser = async (userID) => {
   const res = await axios
     .get("/api/users/", {
       params: {
-        id: userID
+        userID: userID
       }
     })
 
@@ -177,13 +177,12 @@ export const removeFriends = async (userID, friendID) => {
 
 // Set profile pic url from firebase storage
 export const setProfileImage = async (userID, imageUrl) => {
-  let res = await axios
-    .post("api/users/set-profile-pic", {
-      params: {
-        userID: userID,
-        imageUrl: imageUrl
-      }
-    });
+  const params = new URLSearchParams([["userID", userID], ["imageUrl", imageUrl]]);
 
-  return res;
+  let res = await axios
+    .put("api/users/set-profile-pic", null, {
+      params
+    });
+    
+  return res.data;
 }

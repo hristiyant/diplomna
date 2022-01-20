@@ -24,15 +24,12 @@ const EventsList = (props) => {
   const [isChecked, setIsChecked] = useState(true);
 
   useEffect(() => {
-    if (!props.auth.isAuthenticated) {
-      props.history.push("/login");
-    }
-    
     let isSubscribed = true;
     // setIsLoading(true);
 
     getEvents().then(res => {
       if (isSubscribed) {
+        console.log("EVENTS: " + JSON.stringify(res.data))
         setEventsData(res.data);
         setInitialEventsData(res.data);
         setIsLoading(false);
@@ -224,7 +221,7 @@ const EventsList = (props) => {
                     }}>
                       Participants: <progress id="participants" className="progress-participants" value={event.participants.length} max={event.quota}></progress> {event.participants.length} / {event.quota}
                     </div>
-                    <div>Location: {event.location}</div>
+                    <div>Location: {event.location.name}</div>
                     {showGoing(event) && <div className="going"><GoingIcon className="going-icon" /><span style={{ fontSize: "larger" }}>Going</span></div>}
                   </div>
                 </div>

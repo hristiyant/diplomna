@@ -9,7 +9,7 @@ const Landing = (props) => {
     if (props.auth.isAuthenticated) {
       props.history.push("/dashboard");
     }
-  }, [])
+  })
 
   return (
     <div className="container-landing">

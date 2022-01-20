@@ -11,12 +11,6 @@ import { HEADER_REQUEST_FAILED_TEXT, showUnableToFetchAlert, TITLE_OOPS_TEXT, TI
 import "./CreateEvent.css";
 
 const CreateEvent = (props) => {
-    useEffect(() => {
-        if (!props.auth.user.id) {
-            props.history.push("/dashboard")
-        }
-    }, [props.auth.user.id, props.history]);
-
     const onFinish = (values) => {
         const eventData = {
             name: values.name,
