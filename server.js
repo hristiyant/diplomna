@@ -1,11 +1,12 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const passport = require("passport");
-const { Server } = require("socket.io");
+import express from "express";
+import mongoose from "mongoose";
+import bodyParser from "body-parser";
+import passport from "passport";
+// const { Server } = require("socket.io");
 
-const users = require("./routes/api/users");
-const events = require("./routes/api/events");
+import users from "./routes/api/users.js";
+import events from "./routes/api/events.js";
+import locations from "./routes/api/locations.js";
 
 const app = express();
 
@@ -18,12 +19,12 @@ app.use(
 app.use(bodyParser.json());
 
 // DB Config
-const db = require("./config/keys").mongoURI;
+import { mongoSettings } from "./config/keys.js"
 
 // Connect to MongoDB
 mongoose
   .connect(
-    db,
+    mongoSettings.mongoURI,
     { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
   )
   .then(() => console.log("MongoDB successfully connected"))
@@ -32,12 +33,14 @@ mongoose
 // Passport middleware
 app.use(passport.initialize());
 
-// Passport config
-require("./config/passport")(passport);
+// Apply passport config
+import applyPassportConfig from "./config/passport.js";
+applyPassportConfig(passport);
 
 // Routes
 app.use("/api/users", users);
 app.use("/api/events", events);
+app.use("/api/locations", locations);
 
 const port = process.env.PORT || 5000; // process.env.port is Heroku's port if I choose to deploy the app there
 
@@ -59,3 +62,5 @@ app.listen(port, () => console.log(`Server up and running on port ${port} !`));
 // });
 
 // io.listen(4000);
+
+export default app;

@@ -1,74 +1,108 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
+const router = Router();
 
 //Load Event model
-const Event = require("../../models/Event");
+import Event from "../../models/Event.js";
 
 //@route POST events/create
 //@desc Create an event
 //@access Public
-router.post("/create", (req, res) => {
-    const newEvent = new Event({
-        name: req.body.name,
-        createdBy: req.body.createdBy,
-        type: req.body.type,
-        quota: req.body.quota,
-        date: req.body.date,
-        time: req.body.time,
-        location: req.body.location,
-        participants: [req.body.createdBy]
-    });
+router.post("/create", async (req, res) => {
+    const newDate = new Date(req.body.date);
+    const now = new Date();
 
-    newEvent.save()
-        .then(response => res.send(response))
-        .catch(error => {
+    // Event date validation
+    if (newDate < now) {
+        res.sendStatus(400).json({ datenotallowed: "Date cannot be in the past" });
+    } else {
+        const newEvent = new Event({
+            name: req.body.name,
+            createdBy: req.body.createdBy,
+            type: req.body.type,
+            date: req.body.date,
+            location: req.body.location,
+            participants: [req.body.createdBy],
+            quota: req.body.quota
+        });
+
+        try {
+            let response = await newEvent.save();
+
+            res.send(response);
+        } catch (error) {
             res.statusMessage = error;
             res.sendStatus(400);
-        });
+        }
+    }
 });
 
 //@route GET events/get-all
 //@desc Get all events
 //@access Public
-router.get("/get-all", (req, res) => {
-    Event.find()
-        .populate([
-            { path: "createdBy", select: "name imageUrl" },
-            { path: "participants", select: "name imageUrl" }
-        ])
-        .exec()
-        .then(response => {
-            res.send(response)
-        })
-        .catch(error => {
-            res.statusMessage = error;
-            res.sendStatus(400);
-        });
+router.get("/get-all", async (req, res) => {
+    try {
+        let response = await Event.find()
+            .populate([
+                { path: "createdBy", select: "name imageUrl phone" },
+                { path: "participants", select: "name imageUrl phone" },
+                { path: "location", select: "name phone coordinates" }
+
+            ]);
+
+        res.send(response);
+    } catch (error) {
+        res.statusMessage = error;
+        res.sendStatus(400);
+    }
+});
+
+//@route GET events/upcoming-for
+//@desc Get the first 5 events, that user is attending, starting from the nearest one in time
+//@access Public
+router.get("/upcoming-for", async (req, res) => {
+    const userID = req.query.userID;
+    console.log(userID)
+
+    try {
+        let response = await Event.find({ participants: { _id: userID } })
+            .sort({ date: "ascending" })
+            .limit(5)
+            .populate([
+                { path: "createdBy", select: "name imageUrl phone" },
+                { path: "participants", select: "name imageUrl phone" },
+                { path: "location", select: "name phone coordinates" }
+            ]);
+
+        res.send(response);
+    } catch (error) {
+        res.statusMessage = error;
+        res.sendStatus(400);
+    }
 });
 
 
-//@route POST events/subscribe
+//@route PUT events/subscribe
 //@desc Subscribe to an event
 //@access Public
-router.post("/subscribe", async (req, res) => {
-    const eventID = req.body.params.eventID;
-    const subscriberID = req.body.params.userID;
+router.put("/subscribe", async (req, res) => {
+    const eventID = req.query.eventID;
+    const userID = req.query.userID;
 
     try {
         // First, subscribing to the event
         await Event.findOneAndUpdate(
             { _id: eventID },
-            { $push: { participants: subscriberID } },
+            { $push: { participants: userID } },
             { new: true }
         );
 
         // Then fetching the updated list of events
         let response = await Event.find()
             .populate([
-                { path: "createdBy", select: "name imageUrl" },
-                { path: "participants", select: "name imageUrl" }
+                { path: "createdBy", select: "name imageUrl phone" },
+                { path: "participants", select: "name imageUrl phone" },
+                { path: "location", select: "name phone coordinates" }
             ])
-            .exec();
 
         res.send(response);
     } catch (error) {
@@ -77,28 +111,28 @@ router.post("/subscribe", async (req, res) => {
     }
 });
 
-//@route POST events/unsubscribe
-//@desc Subscribe to an event
+//@route PUT events/unsubscribe
+//@desc Unsubscribe to an event
 //@access Public
-router.post("/unsubscribe", async (req, res) => {
-    const eventID = req.body.params.eventID;
-    const subscriberID = req.body.params.userID;
+router.put("/unsubscribe", async (req, res) => {
+    const eventID = req.query.eventID;
+    const userID = req.query.userID;
 
     try {
         // First, unsubscribing to the event
         await Event.findOneAndUpdate(
             { _id: eventID },
-            { $pull: { participants: subscriberID } },
+            { $pull: { participants: userID } },
             { new: true }
         );
 
         // Then fetching the updated list of events
         let response = await Event.find()
             .populate([
-                { path: "createdBy", select: "name imageUrl" },
-                { path: "participants", select: "name imageUrl" }
-            ])
-            .exec();
+                { path: "createdBy", select: "name imageUrl phone" },
+                { path: "participants", select: "name imageUrl phone" },
+                { path: "location", select: "name phone coordinates" }
+            ]);
 
         res.send(response);
     } catch (error) {
@@ -107,11 +141,11 @@ router.post("/unsubscribe", async (req, res) => {
     }
 });
 
-//@route POST events/delete-event
+//@route DELETE events/delete
 //@desc Delete an event
 //@access Public
-router.post("/delete-event", async (req, res) => {
-    const eventID = req.body.params.eventID;
+router.delete("/delete", async (req, res) => {
+    const eventID = req.query.eventID;
 
     try {
         // Frist, deleting the event
@@ -119,9 +153,11 @@ router.post("/delete-event", async (req, res) => {
 
         // Then fetching the updated list of events
         let response = await Event.find()
-            .populate({
-                path: "createdBy"
-            });
+            .populate([
+                { path: "createdBy", select: "name imageUrl phone" },
+                { path: "participants", select: "name imageUrl phone" },
+                { path: "location", select: "name phone coordinates" }
+            ]);
 
         res.send(response);
     } catch (error) {
@@ -130,4 +166,4 @@ router.post("/delete-event", async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

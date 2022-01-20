@@ -1,41 +1,64 @@
-const express = require("express");
-const router = express.Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const keys = require("../../config/keys");
-const passport = require("passport");
+import { Router } from "express";
+const router = Router();
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { mongoSettings } from "../../config/keys.js";
 
 //Load input validation
-const validateRegisterInput = require("../../validation/register");
-const validateLoginInput = require("../../validation/login");
+import validateRegisterInput from "../../validation/register.js";
+import validateLoginInput from "../../validation/login.js";
 
 //Load User model
-const { userModel } = require("../../models/User");
+import User from "../../models/User.js";
 
-//@route GET users/get-user-by-id
+//@route GET users/
 //@desc Get user by id
 //@access Public
-router.get("/", (req, res) => {
-    const userID = req.query.id;
-    // console.log("ID FROM PARAMS: " + JSON.stringify(req.params.id));
-    userModel.findById(userID, function (err, user) { console.log(user) })
-        .then(user => res.json(user));
+router.get("/", async (req, res) => {
+    const userID = req.query.userID;
+
+    try {
+        let response = await User.findById(userID)
+            .populate([
+                { path: "friends", select: "name imageUrl phone" },
+                { path: "invitations", select: "date type fromUser" }
+            ]);
+
+        if (!response) {
+            return res.sendStatus(404);
+        }
+
+        res.send(response);
+    } catch (error) {
+        res.statusMessage = error;
+        res.sendStatus(400);
+    }
+
 });
 
-//@route GET users/get-all-users
+//@route GET users/get-all
 //@desc Get all users
 //@access Public
-router.get("/get-all-users", (req, res) => {
-    userModel.find()
-        .then(users => res.json(users));
+router.get("/get-all", async (req, res) => {
+    try {
+        let response = await User.find()
+            .populate([
+                { path: "friends", select: "name imageUrl phone" },
+                { path: "invitations", select: "date type fromUser" }
+            ]);
+
+        res.send(response);
+    } catch (error) {
+        res.statusMessage = error;
+        res.sendStatus(400);
+    }
 });
 
 //@route POST users/register
 //@desc Register user
 //@access Public
-router.post("/register", (req, res) => {
+router.post("/register", async (req, res) => {
     //Form validation
-
     const { errors, isValid } = validateRegisterInput(req.body);
 
     //Check validation
@@ -43,25 +66,30 @@ router.post("/register", (req, res) => {
         return res.status(400).json(errors);
     }
 
-    userModel.findOne({ email: req.body.email }).then(user => {
+    await User.findOne({ email: req.body.email }).then(user => {
         if (user) {
             return res.status(400).json({ email: "Email already exists" });
         } else {
-            const newUser = new userModel({
+            const newUser = new User({
                 name: req.body.name,
                 email: req.body.email,
-                password: req.body.password
+                password: req.body.password,
+                phone: req.body.phone
             });
 
             //Hash password before saving it to the database
             bcrypt.genSalt(10, (err, salt) => {
-                bcrypt.hash(newUser.password, salt, (err, hash) => {
+                bcrypt.hash(newUser.password, salt, async (err, hash) => {
                     if (err) throw err;
                     newUser.password = hash;
-                    newUser
-                        .save()
-                        .then(user => res.json(user))
-                        .catch(err => console.log(err));
+                    try {
+                        let response = await newUser.save();
+
+                        res.send(response);
+                    } catch (error) {
+                        res.statusMessage = error;
+                        res.sendStatus(400);
+                    }
                 });
             });
         }
@@ -84,7 +112,7 @@ router.post("/login", (req, res) => {
     const password = req.body.password;
 
     //Find user by email
-    userModel.findOne({ email }).then(user => {
+    User.findOne({ email }).then(user => {
         //Check if user exists
         if (!user) {
             return res.status(400).json({ emailnotfound: "Email not found" });
@@ -104,7 +132,7 @@ router.post("/login", (req, res) => {
                 //Sign token
                 jwt.sign(
                     payload,
-                    keys.secretOrKey,
+                    mongoSettings.secretOrKey,
                     {
                         expiresIn: 31556926 //1 year in seconds
                     },
@@ -124,135 +152,158 @@ router.post("/login", (req, res) => {
     });
 });
 
-router.post("/set-profile-pic", (req, res) => {
-    var userID = req.body.params.userID;
-    var imageUrl = req.body.params.imageUrl;
-
-    userModel.findOneAndUpdate(
-        { _id: userID },
-        { $set: { imageUrl: imageUrl } },
-        { new: true },
-        function (error, result) {
-            if (error) {
-                // console.log(error);
-                res.send(error);
-            } else {
-                // console.log(success);
-                res.send(result);
-            }
-        }
-    );
-})
-
-//@route POST users/create-friend-request
-//@desc Create a friend request
+//@route PUT users/set-profile-pic
+//@desc Set user's imageURL in db
 //@access Public
-router.post("/create-friend-request", (req, res) => {
-    var fromUser = req.body.params.fromUser;
-    var _id = req.body.params.toUser;
+router.put("/set-profile-pic", async (req, res) => {
+    var userID = req.query.userID;
+    var imageUrl = req.query.imageUrl;
+    console.log(req.query)
+    try {
+        let response = await User.findOneAndUpdate(
+            { _id: userID },
+            { $set: { imageUrl: imageUrl } },
+            { new: true });
 
-    var newFriendRequest = {
-        fromUser: fromUser
+        res.send(response.imageUrl);
+    } catch (error) {
+        res.statusMessage = error;
+        res.sendStatus(400);
+    }
+});
+
+//@route PUT users/send-invitation-to
+//@desc Send invitation to user
+//@access Public
+router.put("/send-invitation", async (req, res) => {
+    const fromUser = req.query.fromUser;
+    const toUser = req.query.toUser;
+    const type = req.query.type;
+
+
+    var newInvitation = {
+        fromUser: fromUser,
+        type: type
     }
 
-    userModel.findOne({ _id })
-        .then(user => {
-            //Check if friend request exists
-            if (user.friendRequests.some(e => e.fromUser == fromUser)) {
-                return res.status(400).json({ alreadyexists: "Friend request already exists" });
-            }
+    try {
+        let user = await User.findById(toUser);
 
-            userModel.findOneAndUpdate(
-                { _id: _id },
-                { $push: { friendRequests: newFriendRequest } },
-                { new: true },
-                function (error, result) {
-                    if (error) {
-                        // console.log(error);
-                        res.send(error);
-                    } else {
-                        // console.log(success);
-                        res.send(result);
-                    }
-                }
-            );
-        });
+        console.log(user)
+        //Check if friend request exists
+        if (user.invitations.some(e => e.fromUser == fromUser)) {
+            return res.status(400).json({ alreadyexists: "Invitation already exists" });
+        }
+        try {
+            let response = await User.findOneAndUpdate(
+                { _id: toUser },
+                { $push: { invitations: newInvitation } },
+                { new: true });
+
+            res.send(response);
+        } catch (error) {
+            res.statusMessage = error;
+            res.sendStatus(400);
+        }
+    } catch (error) {
+        res.statusMessage = error;
+        res.sendStatus(400);
+    }
 });
 
-//@route POST users/delete-friend-request
-//@desc Delete a friend request
+//@route DELETE users/delete-invitation
+//@desc Delete an invitation
 //@access Public
-router.post("/delete-friend-request", async (req, res) => {
-    const toUserID = req.body.params.toUserID;
-    const fromUserID = req.body.params.fromUserID;
+router.delete("/delete-invitation", async (req, res) => {
+    const fromUser = req.query.fromUser;
+    const toUser = req.query.toUser;
 
-    let response = await userModel.findOneAndUpdate(
-        { _id: toUserID },
-        { $pull: { friendRequests: { fromUser: fromUserID } } },
-        { new: true }
-    );
+    try {
+        let response = await User.findOneAndUpdate(
+            { _id: toUser },
+            { $pull: { invitations: { fromUser: fromUser } } },
+            { new: true }
+        );
 
-    res.send(response);
+        res.send(response);
+    } catch (error) {
+        res.statusMessage = error;
+        res.sendStatus(400);
+    }
 });
 
-//@route GET users/get-friend-requests
-//@desc Get all friend requests for user
+//@route GET users/get-invitations-for
+//@desc Get all invitations for user
 //@access Public
-router.get("/get-friend-requests", async (req, res) => {
-    let response = await userModel.findById(req.query.id)
-        .populate({
-            path: "friendRequests.fromUser"
-        });
+router.get("/get-invitations-for", async (req, res) => {
+    const userID = req.query.userID;
 
+    try {
+        let response = await User.findById(userID)
+            .populate({
+                path: "invitations.fromUser", select: "name imageUrl phone"
+            });
 
-    res.send(response.friendRequests);
+        res.send(response.invitations);
+    } catch (error) {
+        res.statusMessage = error;
+        res.sendStatus(400);
+    }
 });
 
-//@route POST users/add-friend
+//@route PUT users/accept
 //@desc Add one user to another one's friends list
 //@access Public
-router.post("/add-friend", async (req, res) => {
-    const sender = req.body.params.requestSenderID;
-    const receiver = req.body.params.requestReceiverID;
-    const request = req.body.params.friendRequestID;
+router.put("/accept", async (req, res) => {
+    const fromUser = req.query.fromUser;
+    const toUser = req.query.toUser;
+    const invitationID = req.query.invitationID;
 
-    // const receiver = await userModel.findById(req.body.params.requestReceiverID);
+    try {
+        await User.findOneAndUpdate(
+            { _id: fromUser },
+            { $push: { friends: toUser } },
+            { new: true }
+        );
 
-    await userModel.findOneAndUpdate(
-        { _id: sender },
-        { $push: { friends: receiver } },
-        { new: true }
-    );
+        let response = await User.findOneAndUpdate(
+            { _id: toUser },
+            { $push: { friends: fromUser }, $pull: { invitations: { _id: invitationID } } },
+            { new: true }
+        );
 
-    let response = await userModel.findOneAndUpdate(
-        { _id: receiver },
-        { $push: { friends: sender }, $pull: { friendRequests: { _id: request } } },
-        { new: true }
-    );
-
-    res.send(response.friendRequests);
+        res.send(response.invitations);
+    } catch (error) {
+        res.statusMessage = error;
+        res.sendStatus(400);
+    }
 });
 
-//@route POST users/remove-friend
-//@desc Remove one user from another one's friends list
+//@route PUT users/remove-friend
+//@desc Remove friend relationship between two users
 //@access Public
-router.post("/remove-friend", async (req, res) => {
-    const user = req.body.params.userID;
-    const friend = req.body.params.friendID;
+router.put("/remove-friend", async (req, res) => {
+    const userID = req.query.userID;
+    const friendID = req.query.friendID;
 
-    await userModel.findOneAndUpdate(
-        { _id: user },
-        { $pull: { friends: friend } },
-        { new: true }
-    );
+    try {
+        await User.findOneAndUpdate(
+            { _id: userID },
+            { $pull: { friends: friendID } },
+            { new: true }
+        );
 
-    let response = await userModel.findOneAndUpdate(
-        { _id: friend },
-        { $pull: { friends: user } },
-        { new: true }
-    );
+        let response = await User.findOneAndUpdate(
+            { _id: friendID },
+            { $pull: { friends: userID } },
+            { new: true }
+        );
 
-    res.send(response);
+        res.send(response);
+    } catch (error) {
+        res.statusMessage = error;
+        res.sendStatus(400);
+    }
 });
 
-module.exports = router;
+export default router;

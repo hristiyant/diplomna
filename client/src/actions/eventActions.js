@@ -1,12 +1,13 @@
 import axios from "axios";
+import { SET_UPCOMING_EVENTS } from "./types";
 
-// Create Event
+// Create event
 export const createEvent = async (eventData) => {
   await axios
     .post("/api/events/create", eventData)
 };
 
-// Get List of All Events
+// Get list of all events
 export const getEvents = () => {
   let res = axios
     .get("/api/events/get-all")
@@ -14,7 +15,7 @@ export const getEvents = () => {
   return res;
 };
 
-// Subscribe to an Event
+// Subscribe to an event
 export const subscribeToEvent = async (userID, eventID) => {
   let res = await axios
     .post("api/events/subscribe", {
@@ -27,7 +28,7 @@ export const subscribeToEvent = async (userID, eventID) => {
   return res;
 }
 
-// Unsubscribe to an Event
+// Unsubscribe to an event
 export const unsubscribeToEvent = async (userID, eventID) => {
   let res = await axios
     .post("api/events/unsubscribe", {
@@ -40,7 +41,7 @@ export const unsubscribeToEvent = async (userID, eventID) => {
   return res;
 }
 
-// Delete an Event
+// Delete an event
 export const deleteEvent = async (eventID) => {
   let res = await axios
     .post("api/events/delete-event", {
@@ -51,3 +52,19 @@ export const deleteEvent = async (eventID) => {
 
   return res;
 }
+
+// Get upcoming events
+export const getUpcomingEvents = async userID => {
+  console.log("METOHD CALLED")
+  const params = new URLSearchParams([["userID", userID]]);
+
+  let res = await axios
+    .get("/api/events/upcoming-for", { params });
+
+  // console.log(res)
+  // dispatch({
+  //   type: SET_UPCOMING_EVENTS,
+  //   payload: res.data
+  // });
+  return res;
+};

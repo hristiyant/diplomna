@@ -27,10 +27,6 @@ const FriendRequests = (props) => {
     }
 
     useEffect(() => {
-        if (!props.auth.isAuthenticated) {
-            props.history.push("/login");
-        }
-
         getFriendRequests(props.auth.user.id)
             .then(res => {
                 setData(res.data);
