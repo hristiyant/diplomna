@@ -43,7 +43,7 @@ router.get("/get-all", async (req, res) => {
     try {
         let response = await User.find()
             .populate([
-                { path: "friends", select: "name imageUrl phone" },
+                { path: "friends", select: "name imageUrl phone email" },
                 { path: "invitations", select: "date type fromUser" }
             ]);
 
@@ -112,44 +112,52 @@ router.post("/login", (req, res) => {
     const password = req.body.password;
 
     //Find user by email
-    User.findOne({ email }).then(user => {
-        //Check if user exists
-        if (!user) {
-            return res.status(400).json({ emailnotfound: "Email not found" });
-        }
-
-        //Check password
-        bcrypt.compare(password, user.password).then(isMatch => {
-            if (isMatch) {
-                //User matched
-                //Create JWT payload
-                const payload = {
-                    id: user.id,
-                    name: user.name,
-                    imageUrl: user.imageUrl
-                };
-
-                //Sign token
-                jwt.sign(
-                    payload,
-                    mongoSettings.secretOrKey,
-                    {
-                        expiresIn: 31556926 //1 year in seconds
-                    },
-                    (err, token) => {
-                        res.json({
-                            success: true,
-                            token: "Bearrer " + token
-                        });
-                    }
-                );
-            } else {
-                return res
-                    .status(400)
-                    .json({ passwordincorrect: "Password incorrect" });
+    User.findOne({ email })
+        .populate([
+            { path: "friends", select: "name imageUrl phone email" },
+            { path: "invitations", select: "date type fromUser" }
+        ])
+        .then(user => {
+            //Check if user exists
+            if (!user) {
+                return res.status(400).json({ emailnotfound: "Email not found" });
             }
+
+            //Check password
+            bcrypt.compare(password, user.password).then(isMatch => {
+                if (isMatch) {
+                    //User matched
+                    //Create JWT payload
+                    console.log("User data: " + JSON.stringify(user));
+                    const payload = {
+                        id: user.id,
+                        name: user.name,
+                        imageUrl: user.imageUrl,
+                        friends: user.friends,
+                        invitations: user.invitations
+                    };
+
+                    //Sign token
+                    jwt.sign(
+                        payload,
+                        mongoSettings.secretOrKey,
+                        {
+                            expiresIn: 31556926 //1 year in seconds
+                        },
+                        (err, token) => {
+                            res.json({
+                                success: true,
+                                token: "Bearrer " + token
+                            });
+                        }
+                    );
+                } else {
+                    return res
+                        .status(400)
+                        .json({ passwordincorrect: "Password incorrect" });
+                }
+            });
         });
-    });
 });
 
 //@route PUT users/set-profile-pic

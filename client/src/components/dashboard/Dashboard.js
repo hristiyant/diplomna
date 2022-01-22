@@ -27,7 +27,7 @@ const Dashboard = (props) => {
 
       let res = await getUpcomingEvents(user.id);
       setUpcomingEvents(res.data)
-      console.log(res)
+      // console.log(res)
       setIsLoading(false);
     } catch (error) {
       console.log(JSON.stringify(error));
@@ -44,6 +44,7 @@ const Dashboard = (props) => {
   }, [user.id])
 
   useEffect(() => {
+    // console.log("PROPS: " + JSON.stringify(user));
     fetchData();
   }, [fetchData])
 
