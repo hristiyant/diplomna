@@ -17,6 +17,7 @@ class Register extends Component {
     this.state = {
       name: "",
       email: "",
+      phone: "",
       password: "",
       password2: "",
       errors: {}
@@ -27,6 +28,7 @@ class Register extends Component {
     const newUser = {
       name: this.state.name,
       email: this.state.email,
+      phone: this.state.phone,
       password: this.state.password,
       password2: this.state.password2
     };
@@ -35,6 +37,8 @@ class Register extends Component {
   }
 
   componentDidMount() {
+    this.props.clearERROR();
+
     // If logged in and user navigates to Register page, should redirect them to dashboard
     if (this.props.auth.isAuthenticated) {
       this.props.history.push("/dashboard");
@@ -57,14 +61,6 @@ class Register extends Component {
     }
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.errors) {
-  //     this.setState({
-  //       errors: nextProps.errors
-  //     });
-  //   }
-  // }
-
   onChange = e => {
     this.props.clearERROR();
 
@@ -75,14 +71,6 @@ class Register extends Component {
     e.preventDefault();
 
     this.registerUser();
-    // const newUser = {
-    //   name: this.state.name,
-    //   email: this.state.email,
-    //   password: this.state.password,
-    //   password2: this.state.password2
-    // };
-
-    // this.props.registerUser(newUser, this.props.history);
   };
 
   render() {
@@ -95,11 +83,11 @@ class Register extends Component {
             <b>Register</b> below
           </h2>
           <p className="grey-text text-darken-1">
-            Already have an account? <Link to="/login">Log in</Link>
+            Already have an account?&ensp;<Link to="/login">Log in</Link>
           </p>
         </div>
-        <form noValidate onSubmit={this.onSubmit}>
-          <div className="input-field">
+        <form noValidate onSubmit={this.onSubmit} style={{ width: "100%", maxWidth: "400px" }}>
+          <div className="register-input-field">
             <Input
               placeholder="Name"
               onChange={this.onChange}
@@ -113,7 +101,7 @@ class Register extends Component {
             />
             <span className="red-text">{errors.name}</span>
           </div>
-          <div className="input-field">
+          <div className="register-input-field">
             <Input
               placeholder="Email"
               onChange={this.onChange}
@@ -127,7 +115,21 @@ class Register extends Component {
             />
             <span className="red-text">{errors.email}</span>
           </div>
-          <div className="input-field">
+          <div className="register-input-field">
+            <Input
+              placeholder="Phone"
+              onChange={this.onChange}
+              value={this.state.phone}
+              error={errors.phone}
+              id="phone"
+              type="tel"
+              className={classnames("", {
+                invalid: errors.phone
+              })}
+            />
+            <span className="red-text">{errors.phone}</span>
+          </div>
+          <div className="register-input-field">
             <Input.Password
               placeholder="Password"
               onChange={this.onChange}
@@ -141,7 +143,7 @@ class Register extends Component {
             />
             <span className="red-text">{errors.password}</span>
           </div>
-          <div className="input-field">
+          <div className="register-input-field">
             <Input.Password
               placeholder="Confirm Password"
               onChange={this.onChange}
@@ -159,7 +161,8 @@ class Register extends Component {
         <button
           onClick={this.onSubmit}
           type="submit"
-          className="button-sign-up"
+          className="btn-dashboard register"
+          disabled={!this.state.name || !this.state.email || !this.state.phone || !this.state.password || !this.state.password2}
         >
           REGISTER
         </button>

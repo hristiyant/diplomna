@@ -7,6 +7,7 @@ export default function validateRegisterInput(data) {
     //Convert empty fields to an empty string so we can use validator functions
     data.name = !isEmpty(data.name) ? data.name : "";
     data.email = !isEmpty(data.email) ? data.email : "";
+    data.phone = !isEmpty(data.phone) ? data.phone : "";
     data.password = !isEmpty(data.password) ? data.password : "";
     data.password2 = !isEmpty(data.password2) ? data.password2 : "";
 
@@ -22,7 +23,18 @@ export default function validateRegisterInput(data) {
         errors.email = "Email is invalid";
     }
 
+    //Phone checks
+    if (Validator.isEmpty(data.phone)) {
+        errors.phone = "Phone field is required";
+    } else if (!Validator.isMobilePhone(data.phone)) {
+        errors.phone = "Phone is invalid";
+    }
+
     //Password checks
+    if (!Validator.isLength(data.password, 6, 32)) {
+        errors.password = "Password length must be between 6 and 32 characters";
+    }
+
     if (Validator.isEmpty(data.password)) {
         errors.password = "Password field is required";
     }
