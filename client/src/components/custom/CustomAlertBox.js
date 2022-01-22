@@ -1,7 +1,8 @@
 import React from "react";
 import { confirmAlert } from 'react-confirm-alert';
 import { Avatar } from 'antd';
-import { FrownFilled, CloseOutlined, QuestionOutlined, UserOutlined } from "@ant-design/icons"
+import { FrownFilled, CloseOutlined, QuestionOutlined, UserOutlined, PhoneOutlined } from "@ant-design/icons";
+import MapContainer from "../map/Map";
 
 import "./CustomAlertBox.css"
 
@@ -90,7 +91,7 @@ export const showConfirmAlert = (props) => {
                     </div>
                     <div className="custom-alert-container-body">
                         <div className="body-title">
-                            <QuestionOutlined style={{ fontSize: "x-large" }} />
+                            <QuestionOutlined style={{ fontSize: "xxx-large" }} />
                             <h1 style={{ color: "white" }}>{props.title}</h1>
                         </div>
                         <div className="body-message">
@@ -117,7 +118,7 @@ export const showUsersListAlert = props => {
     return confirmAlert({
         customUI: ({ onClose }) => {
             return (
-                <div className="custom-alert-container ">
+                <div className="custom-alert-container">
                     <div className="custom-alert-container-header">
                         <h1>{props.title}</h1>
                         <CloseOutlined className="icon-close" fill="white" onClick={onClose} />
@@ -132,7 +133,10 @@ export const showUsersListAlert = props => {
                                     size={50}
                                     src={user.imageUrl}
                                     icon={<UserOutlined />} />
-                                <div style={{ marginLeft: "10px" }}>{user.name}</div>
+                                <div style={{ marginLeft: "10px" }} className="participant-details">
+                                    <div >{user.name}</div>
+                                    <div style={{ fontSize: "small" }}><PhoneOutlined /> {user.phone}</div>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -141,3 +145,28 @@ export const showUsersListAlert = props => {
         }
     });
 }
+
+export const showLocationDetailsAlert = props => {
+    const location = props.data;
+    const loc = {
+        address: 'Test Address',
+        lat: 42.64448952472993,
+        lng: 23.350921683560923,
+    }
+    return confirmAlert({
+        customUI: ({ onClose }) => {
+            return (
+                <div className="custom-alert-container "
+                    style={{ width: "100%", height: "100%" }}>
+                    <div className="custom-alert-container-header">
+                        <h1>{props.title}</h1>
+                        <CloseOutlined className="icon-close" fill="white" onClick={onClose} />
+                    </div>
+                    <MapContainer location={location} />
+                </div>
+            );
+        }
+    });
+}
+
+// google maps api key: AIzaSyAwZT5u_ammCrCPJvbzvW29QNzvCUHu5Q0

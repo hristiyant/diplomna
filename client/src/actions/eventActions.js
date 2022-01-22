@@ -30,25 +30,21 @@ export const subscribeToEvent = async (userID, eventID) => {
 
 // Unsubscribe to an event
 export const unsubscribeToEvent = async (userID, eventID) => {
+  const paramsObject = { eventID: eventID, userID: userID }
+  const params = new URLSearchParams(paramsObject);
+
   let res = await axios
-    .post("api/events/unsubscribe", {
-      params: {
-        eventID: eventID,
-        userID: userID
-      }
-    });
+    .delete("api/events/unsubscribe", { params });
 
   return res;
 }
 
 // Delete an event
 export const deleteEvent = async (eventID) => {
+  const params = new URLSearchParams([["eventID", eventID]]);
+
   let res = await axios
-    .post("api/events/delete-event", {
-      params: {
-        eventID: eventID
-      }
-    });
+    .delete("api/events/delete", { params });
 
   return res;
 }
