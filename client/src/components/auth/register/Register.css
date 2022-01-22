@@ -4,10 +4,9 @@
     justify-content: center;
     align-items: center;
     align-self: center;
-    height: 80%;
+    height: 100%;
     width: 100%;
     background: rgba(0, 0, 0, 0.75);
-    border-radius: 5px;
 }
 
 .register-container-header {
@@ -33,31 +32,60 @@
     color: tomato;
 }
 
-.input-field {
-    height: 40px;
-    margin: 25px;
-    width: 300px;
+.register-container .register-input-field {
+    height: 45px;
+    margin: 35px 5px;
+    max-width: 100%;
+    min-width: 180px;
+}
+
+.register-container .register-input-field div, span {
+    margin: 0px !important;
+}
+
+.ant-input {
+    height: 45px;
+    border: 3px solid transparent !important;
 }
 
 .ant-input.invalid {
-    border-color: tomato;
+    border: 3px solid tomato !important;
 }
 
-.button-sign-up {
-    margin-top: 30px;
-    padding: 5px 30px;
-    align-self: center;
-    border: none;
-    border-radius: 5px;
-    background: #ac5c54;
-    color: white;
-    font-size: larger;
-    letter-spacing: 2px;
-    cursor: pointer;
-    border: 2px solid transparent;
+#name {
+    height: 45px;
 }
 
-.button-sign-up:hover {
-    border: 2px solid rgba(245, 245, 245, 0.541);
-    background: #ac5b54;
+#email {
+    height: 45px;
+}
+
+#password {
+    height: 30px;
+}
+
+#password2 {
+    height: 30px;
+}
+
+.ant-input-password {
+    height: 45px !important;
+    border: 3px solid transparent !important;
+}
+
+.ant-input-password.invalid {
+    border: 3px solid tomato !important;
+}
+
+.btn-dashboard.register {
+    width: 175px;
+}
+
+.btn-dashboard.register:disabled {
+    background: rgba(199, 146, 137, 0.3);
+}
+
+.btn-dashboard.register:disabled {
+    border: 1px solid transparent;
+    cursor: not-allowed;
 }
