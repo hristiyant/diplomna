@@ -31,7 +31,6 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    // If logged in and user navigates to Login page, should redirect them to dashboard
     if (this.props.auth.isAuthenticated) {
       this.props.history.push("/dashboard");
     }
@@ -76,10 +75,10 @@ class Login extends Component {
             <b>Log in</b> below
           </h2>
           <p className="grey-text text-darken-1">
-            Don't have an account? <Link to="/register">Register</Link>
+            Don't have an account?&ensp;<Link to="/register">Register</Link>
           </p>
         </div>
-        <form noValidate onSubmit={this.onSubmit}>
+        <form noValidate onSubmit={this.onSubmit} style={{ width: "100%", maxWidth: "400px" }}>
           <div className="login-input-field">
             <Input
               placeholder="Email"
@@ -118,7 +117,8 @@ class Login extends Component {
         <button
           onClick={this.onSubmit}
           type="submit"
-          className="button-login"
+          className="btn-dashboard login"
+          disabled={!this.state.email || !this.state.password}
         >
           LOG IN
         </button>

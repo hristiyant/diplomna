@@ -22,7 +22,6 @@ const Navbar = (props) => {
     const [clickProfile, setClickProfile] = useState(false);
     const handleClickProfile = () => setClickProfile(!clickProfile);
     const closeProfileMenu = () => setClickProfile(false);
-    const options = props.auth.isAuthenticated ? showAuthenticatedOptions(clickProfile) : showDefaultOptions();
 
     var menuOption;
     var menuOptionMobile;
@@ -127,6 +126,7 @@ const Navbar = (props) => {
 
     return (
         <div className="header">
+            {props.auth.isAuthenticated ? showAuthenticatedOptions(clickProfile) : showDefaultOptions()}
             <div className="logo-container">
                 <Link to="/dashboard">
                     <b>My</b>
