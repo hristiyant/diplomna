@@ -15,7 +15,7 @@ import allReducers from "./reducers/index";
 
 import FriendRequests from "./components/users/friend-requests/FriendRequests";
 import Navbar from "./components/layout/navbar/Navbar";
-import Landing from "./components/layout/Landing";
+import Landing from "./components/layout/landing/Landing";
 import Dashboard from "./components/dashboard/Dashboard";
 import Register from "./components/auth/register/Register";
 import Login from "./components/auth/login/Login";
