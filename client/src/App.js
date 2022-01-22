@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
-import io from "socket.io-client";
+// import io from "socket.io-client";
 
 import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { Provider } from "react-redux";
@@ -24,14 +24,13 @@ import PrivateRoute from "./components/private-route/PrivateRoute";
 import RecordList from "./components/events/list/EventsList";
 import UsersList from "./components/users/UsersList";
 import UserProfile from "./components/users/UserProfile";
-import UploadProfileImage from "./components/users/profile/UploadProfileImage";
 
 import "./App.css";
 import "./styles/css/antd.css"
 
 const composedEnhancer = composeWithDevTools(applyMiddleware(thunk))
 const store = createStore(allReducers, composedEnhancer)
-const ENDPOINT = "http://localhost:4000";
+// const ENDPOINT = "http://localhost:4000";
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
