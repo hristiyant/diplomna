@@ -61,7 +61,6 @@ router.get("/get-all", async (req, res) => {
 //@access Public
 router.get("/upcoming-for", async (req, res) => {
     const userID = req.query.userID;
-    console.log(userID)
 
     try {
         let response = await Event.find({ participants: { _id: userID } })
@@ -70,7 +69,10 @@ router.get("/upcoming-for", async (req, res) => {
             .populate([
                 { path: "createdBy", select: "name imageUrl phone" },
                 { path: "participants", select: "name imageUrl phone" },
-                { path: "location", select: "name phone coordinates" }
+                {
+                    path: "location", select: "name manager phone coordinates",
+                    populate: { path: "manager", select: "name email phone" }
+                }
             ]);
 
         res.send(response);
@@ -111,10 +113,10 @@ router.put("/subscribe", async (req, res) => {
     }
 });
 
-//@route PUT events/unsubscribe
+//@route DELETE events/unsubscribe
 //@desc Unsubscribe to an event
 //@access Public
-router.put("/unsubscribe", async (req, res) => {
+router.delete("/unsubscribe", async (req, res) => {
     const eventID = req.query.eventID;
     const userID = req.query.userID;
 

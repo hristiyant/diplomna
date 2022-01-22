@@ -1,62 +1,122 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Scrollbars } from "react-custom-scrollbars";
+import Loader from "react-loader-spinner";
 
 import { Avatar } from 'antd';
 import { UserOutlined, ExportOutlined, PlusOutlined } from "@ant-design/icons"
 
+import { HEADER_REQUEST_FAILED_TEXT, MESSAGE_UNABLE_TO_FETCH_TEXT, showUnableToFetchAlert, showConfirmAlert, showUsersListAlert, showLocationDetailsAlert, TITLE_OOPS_TEXT } from "../../components/custom/CustomAlertBox"
 import { showNoData } from "../custom/CustomNoData";
 import { logoutUser } from "../../actions/authActions";
-import { getUpcomingEvents } from "../../actions/eventActions";
+import { getUpcomingEvents, unsubscribeToEvent, deleteEvent } from "../../actions/eventActions";
 import { getDisplayDate } from "../../utils/DateUtils";
 import { getEventTypeIcon } from "../../utils/EventTypeIconSelector"
-import { ReactComponent as GoingIcon } from "../../assets/tick.svg";
 
 import "./Dashboard.css"
 
 const Dashboard = (props) => {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { user } = props.auth;
 
-  useEffect(() => {
-    (async () => {
-      let userData;
+  const fetchData = useCallback(async () => {
+    try {
+      setIsLoading(true);
 
-      try {
-        let res = await getUpcomingEvents(user.id)
-
-        setUpcomingEvents(res.data)
-        console.log(res)
-      } catch (error) {
-        console.log(error);
-        userData = [];
+      let res = await getUpcomingEvents(user.id);
+      setUpcomingEvents(res.data)
+      console.log(res)
+      setIsLoading(false);
+    } catch (error) {
+      console.log(JSON.stringify(error));
+      const alertProps = {
+        header: HEADER_REQUEST_FAILED_TEXT,
+        title: TITLE_OOPS_TEXT,
+        message: MESSAGE_UNABLE_TO_FETCH_TEXT,
+        actionPrimary: () => fetchData(),
+        actionSecondary: () => { }
       }
+      showUnableToFetchAlert(alertProps);
+      // userData = [];
+    }
+  }, [user.id])
 
-      // setInitialUsersData(userData);
-      // setUsersData(userData);
-      // setIsLoading(false);
-    })();
-    // fetchData()
-    // console.log("RESPONSE: " + JSON.stringify(props.events))
-    // setUpcomingEvents(props.events)
-  }, [])
-
-  const fetchData = async () => {
-    // await props.getUpcomingEvents(user.id);
-  }
+  useEffect(() => {
+    fetchData();
+  }, [fetchData])
 
   const onLogoutClick = e => {
-    e.preventDefault();
-
     props.logoutUser();
     props.history.push("/login");
   };
 
   const onCreateEventClick = e => {
-    e.preventDefault();
-
     props.history.push("/create-event");
+  }
+
+  function showLoader() {
+    return (<Loader
+      type="MutatingDots"
+      color="tomato"
+      secondaryColor="white"
+      height={100}
+      width={100}
+      timeout={10000}
+    />)
+  }
+
+  function showCancelEventButton(event) {
+    return (user.id === event.createdBy._id);
+  }
+
+  function onViewParticipantsClick(participants) {
+    const alertProps = {
+      data: participants,
+      title: "Participants"
+    }
+
+    showUsersListAlert(alertProps);
+  }
+
+  function onViewLocationClick(location) {
+    const alertProps = {
+      data: location,
+      title: "Location"
+    }
+
+    showLocationDetailsAlert(alertProps);
+  }
+
+  function onUnsubscribeClick(event) {
+    const alertProps = {
+      message: "Are you sure you want unsubscribe from \"" + event.name + "\"",
+      actionPrimary: async () => {
+        setIsLoading(true);
+
+        await unsubscribeToEvent(user.id, event._id);
+
+        fetchData();
+      }
+    }
+
+    showConfirmAlert(alertProps);
+  }
+
+  function onCancelClick(event) {
+    const alertProps = {
+      message: "Are you sure you want to cancel \"" + event.name + "\"",
+      actionPrimary: async () => {
+        setIsLoading(true);
+
+        await deleteEvent(event._id);
+
+        fetchData();
+      }
+    }
+
+    showConfirmAlert(alertProps);
   }
 
   const showUpcomingEvents = () => {
@@ -80,34 +140,34 @@ const Dashboard = (props) => {
                   <div>{event.createdBy.name}</div>
                 </div>
                 <div className="card-event-right">
-                  <span>Date: {getDisplayDate(event.date)} @ {event.time}</span>
+                  <span>Date: {getDisplayDate(event.date)}</span>
                   <div className="btn-view-participants" onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    // onViewParticipantsClick(event.participants);
+                    onViewParticipantsClick(event.participants);
                   }}>
                     Participants: <progress id="participants" className="progress-participants" value={event.participants.length} max={event.quota}></progress> {event.participants.length} / {event.quota}
                   </div>
-                  <div>Location: {event.location.name}</div>
-                  {/* {showGoing(event) && <div className="going"><GoingIcon className="going-icon" /><span style={{ fontSize: "larger" }}>Going</span></div>} */}
+                  <div className="btn-view-participants" onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onViewLocationClick(event.location);
+                  }}>
+                    Location: {event.location.name}
+                  </div>
                 </div>
               </div>
               <div className="card-event-footer">
-                {/* {showGoing(event) && <div className="btn-event-subscribe btn-outline" onClick={(e) => {
+                <div className="btn-dashboard" onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  onUnsubscribeClick(event)
-                }}>UNSUBSCRIBE</div>} */}
-                {/* {showSubscribeButton(event) && <div className="btn-event-subscribe" onClick={(e) => {
+                  onUnsubscribeClick(event);
+                }}>UNSUBSCRIBE</div>
+                {showCancelEventButton(event) && <div className="btn-dashboard" onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  onSubscribeClick(event);
-                }}>SUBSCRIBE</div>} */}
-                {/* {showCancelEventButton(event) && <div className="btn-event-subscribe btn-outline" onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  onCancelClick(event)
-                }}>CANCEL EVENT</div>} */}
+                  onCancelClick(event);
+                }}>CANCEL EVENT</div>}
               </div>
             </div>
           ))}
@@ -134,9 +194,9 @@ const Dashboard = (props) => {
             <PlusOutlined />CREATE EVENT
           </button>
         </div>
-        <h3 style={{ color: "white", textAlign: "center", marginTop:"1rem" }}>Upcoming events:</h3>
+        <h3 style={{ color: "white", textAlign: "center", marginTop: "1rem" }}>Upcoming events:</h3>
       </div>
-      {!upcomingEvents.length ? showNoData() : showUpcomingEvents()}
+      {isLoading ? showLoader() : !upcomingEvents.length ? showNoData() : showUpcomingEvents()}
     </div>
   );
 }
