@@ -10,7 +10,7 @@
 
 .container-dashboard-header {
     width: 100%;
-    padding: 1rem;
+    padding-top: 1rem;
     background: rgba(0, 0, 0, 0.75);
     /* background: #ac5c54; */
 }

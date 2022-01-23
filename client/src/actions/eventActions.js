@@ -1,5 +1,4 @@
 import axios from "axios";
-import { SET_UPCOMING_EVENTS } from "./types";
 
 // Create event
 export const createEvent = async (eventData) => {

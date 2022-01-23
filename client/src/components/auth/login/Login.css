@@ -39,9 +39,9 @@
     min-width: 180px;
 }
 
-.login-container .login-input-field div, span {
+/* .login-container .login-input-field div, span {
     margin: 0px !important;
-}
+} */
 
 .ant-input {
     height: 45px;

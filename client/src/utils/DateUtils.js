@@ -30,6 +30,6 @@ export const getDisplayDate = (date) => {
     newDate.getDate() + " " +
     Months[newDate.getMonth()] + " " +
     newDate.getFullYear().toString() + " @ " +
-    newDate.getUTCHours() + ":" +
-    newDate.getUTCMinutes();
+    newDate.getHours() + ":" +
+    newDate.getMinutes();
 }

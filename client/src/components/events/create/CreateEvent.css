@@ -1,5 +1,5 @@
 .create-event-container {
-    padding: 50px;
+    padding: 30px 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -11,66 +11,75 @@
 }
 
 .create-event-title {
-    border-bottom: 1px solid white;
     padding: 0 70px;
-    margin-bottom: 30px;
     color: white;
     text-align: center;
     font-size: x-large;
-    font-weight: normal;
-    letter-spacing: 1px;
 }
 
-.form {
-    width: 50%;
-    display: flex;
-    flex-direction: column;
+.create-event-input-field {
+    height: 45px;
+    margin: 35px 5px;
+    max-width: 100%;
+    min-width: 180px;
 }
 
-.form .form-item {
-    padding: 5px;
-    display: flex;
-    justify-content: center;
+.ant-input .ant-select-selector {
+    height: 45px;
+    border: 3px solid transparent !important;
 }
 
-.form .form-item .ant-form-item-control-input .form-item-input {
-    min-width: 200px;
-    max-width: 300px;
+.ant-select-selector {
+    height: 45px !important;
+    border: 3px solid transparent !important;
 }
 
-.form .form-item .ant-form-item-control-input .form-item-quota {
-    max-width: 70px;
+.ant-select-selection-placeholder {
+    line-height: 40px !important;
 }
 
-.form .form-item .ant-form-item-label label {
-    color: white;
-    font-size: large;
-    padding-right: 5px;
+.ant-select-selection-item {
+    line-height: 40px !important;
 }
 
-.form button {
-    margin-top: 30px;
-    padding: 5px 30px;
-    align-self: center;
-    border: none;
-    border-radius: 5px;
-    background: #ac5c54;
-    color: white;
-    font-size: larger;
-    letter-spacing: 2px;
-    cursor: pointer;
-    border: 2px solid transparent;
+.ant-input-number {
+    line-height: 40px !important;
 }
 
-.form button:hover {
-    border: 2px solid rgba(245, 245, 245, 0.541);
-    background: #ac5b54;
+.ant-picker {
+    height: 45px !important;
+    border: 3px solid transparent !important;
 }
 
-@media (max-width: 800px) {
-    .form {
-        width: 70%;
-        display: flex;
-        flex-direction: column;
-    }
+.ant-cascader {
+    width: 100% !important;
+}
+
+.ant-input.invalid {
+    border: 3px solid tomato !important;
+}
+
+#name {
+    height: 45px;
+}
+
+#location {
+    height: 45px;
+}
+
+#date {
+    height: 45px;
+}
+
+.btn-dashboard.create-event {
+    width: 175px;
+}
+
+.btn-dashboard.create-event:disabled {
+    background: rgba(199, 146, 137, 0.3);
+}
+
+.btn-dashboard.create-event:disabled {
+    border: 1px solid transparent;
+    cursor: not-allowed;
 }

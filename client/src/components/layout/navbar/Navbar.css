@@ -130,6 +130,7 @@
   width: 20px;
   display: flex !important;
   justify-content: center;
+  color: black !important;
 }
 
 .profile-button-avatar>img {
