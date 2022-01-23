@@ -11,7 +11,6 @@ const LocationSchema = new Schema({
     manager: {
         type: Schema.Types.ObjectId,
         ref: User,
-        required: true
     },
     phone: {
         type: String,

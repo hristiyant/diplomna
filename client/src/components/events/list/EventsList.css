@@ -171,9 +171,9 @@
     padding-left: 1rem;
 }
 
-.card-event-right div, span {
+/* .card-event-right div, span {
     margin: 5px 0px;
-}
+} */
 
 .progress-participants[value] {
     -webkit-appearance: none;

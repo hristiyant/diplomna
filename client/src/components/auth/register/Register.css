@@ -39,9 +39,9 @@
     min-width: 180px;
 }
 
-.register-container .register-input-field div, span {
+/* .register-container .register-input-field div, span {
     margin: 0px !important;
-}
+} */
 
 .ant-input {
     height: 45px;

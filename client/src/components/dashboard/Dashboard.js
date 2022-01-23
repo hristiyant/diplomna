@@ -137,7 +137,7 @@ const Dashboard = (props) => {
               <div className="card-event-body">
                 <div className="card-event-left">
                   <div>Created by:</div>
-                  <Avatar className="avatar-created-by" shape="circle" src={event.createdBy.imageUrl} size="large" icon={<UserOutlined />} />
+                  <Avatar className="profile-button-avatar" shape="circle" src={event.createdBy.imageUrl} size="large" icon={<UserOutlined />} />
                   <div>{event.createdBy.name}</div>
                 </div>
                 <div className="card-event-right">
