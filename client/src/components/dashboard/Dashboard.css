@@ -35,7 +35,7 @@
     border-radius: 5px;
     letter-spacing: 1.5px;
     background: #ac5c54;
-    border: 1px solid #ac5c54;
+    border: 1px solid transparent;
     color: white;
     transition: transform .1s ease;
 }

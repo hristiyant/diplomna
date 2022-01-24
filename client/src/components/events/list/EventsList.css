@@ -12,6 +12,7 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
+    padding: 5px;
     background: rgba(0, 0, 0, 0.75);
 }
 
@@ -130,7 +131,7 @@
 }
 
 .card-event-header {
-    margin: 0.5rem;
+    /* margin: 0.5rem; */
     padding-left: 1rem;
     font-size: x-large;
 }
@@ -220,7 +221,9 @@
     margin: 0.5rem;
     padding: .3em .75em;
     --reject-btn-color: #ac5c54;
-    --color: hsl(123, 100%, 31%);
+    /* --color: hsl(123, 100%, 31%); */
+    --color: hsl(123deg 70% 28%);
+    /* 123deg 70% 28% */
     background: var(--color);
     border-radius: 5px;
     cursor: pointer;

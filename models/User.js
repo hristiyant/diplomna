@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
+// import Event from "./Event.js";
 
 // Model for invitations
 const InvitationSchema = new Schema({
@@ -10,6 +11,10 @@ const InvitationSchema = new Schema({
   type: {
     type: String,
     required: true
+  },
+  event: {
+    type: Schema.Types.ObjectId,
+    ref: "events",
   },
   fromUser: {
     type: Schema.Types.ObjectId,

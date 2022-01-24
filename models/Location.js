@@ -10,7 +10,7 @@ const LocationSchema = new Schema({
     },
     manager: {
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: User
     },
     phone: {
         type: String,

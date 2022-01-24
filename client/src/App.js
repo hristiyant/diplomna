@@ -75,7 +75,7 @@ export default function App() {
               <PrivateRoute exact path="/events" component={RecordList} />
               <PrivateRoute exact path="/users" component={UsersList} />
               <PrivateRoute exact path="/create-event" component={CreateEvent} />
-              <PrivateRoute exact path="/friend-requests" component={FriendRequests} />
+              <PrivateRoute exact path="/invitations" component={FriendRequests} />
               <PrivateRoute exact path="/profile" component={UserProfile} />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
             </Switch>

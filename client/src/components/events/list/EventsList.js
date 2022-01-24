@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -6,7 +6,7 @@ import Loader from "react-loader-spinner";
 import { Scrollbars } from "react-custom-scrollbars";
 
 import { Avatar } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { UserOutlined, PlusOutlined } from '@ant-design/icons';
 
 import { HEADER_REQUEST_FAILED_TEXT, MESSAGE_UNABLE_TO_FETCH_TEXT, showConfirmAlert, showUnableToFetchAlert, showUsersListAlert, TITLE_OOPS_TEXT } from "../../custom/CustomAlertBox";
 
@@ -23,23 +23,34 @@ const EventsList = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isChecked, setIsChecked] = useState(true);
 
-  useEffect(() => {
-    let isSubscribed = true;
-    // setIsLoading(true);
+  const fetchEvents = useCallback(async () => {
+    try {
+      setIsLoading(true);
 
-    getEvents().then(res => {
-      if (isSubscribed) {
-        console.log("EVENTS: " + JSON.stringify(res.data))
-        setEventsData(res.data);
-        setInitialEventsData(res.data);
-        setIsLoading(false);
+      let res = await getEvents();
+      setEventsData(res.data);
+      setInitialEventsData(res.data);
+      console.log(JSON.stringify(res.data));
+      setIsLoading(false);
+    } catch (error) {
+      const alertProps = {
+        header: HEADER_REQUEST_FAILED_TEXT,
+        title: TITLE_OOPS_TEXT,
+        message: MESSAGE_UNABLE_TO_FETCH_TEXT,
+        buttonPrimaryText: "RETRY",
+        buttonSecondaryText: "DASHBOARD",
+        actionPrimary: () => {
+          fetchEvents()
+        },
+        actionSecondary: () => props.history.push("/dashboard")
       }
-    }).catch(err => onFailedToFetch());
-
-    return () => {
-      isSubscribed = false;
+      showUnableToFetchAlert(alertProps);
     }
-  }, [onFailedToFetch]);
+  }, [props.history])
+
+  useEffect(() => {
+    fetchEvents()
+  }, [fetchEvents]);
 
   const filterEvents = event => {
     const value = event.target.value.toLowerCase();
@@ -64,8 +75,10 @@ const EventsList = (props) => {
         );
         break;
       case "GOING":
-        filteredEvents = initialEventsData.filter(event =>
-          (`${event.participants}`.includes(props.auth.user.id))
+        filteredEvents = initialEventsData.filter(
+          event => event.participants.every(
+            participant => participant._id === props.auth.user.id
+          )
         );
         break;
       default: // case "ALL"
@@ -100,6 +113,12 @@ const EventsList = (props) => {
     return !(showGoing(event) || event.participants.length === event.quota);
   }
 
+  const onCreateEventClick = e => {
+    e.preventDefault();
+
+    props.history.push("/create-event");
+  }
+
   function onSubscribeClick(event) {
     setIsLoading(true);
 
@@ -118,30 +137,6 @@ const EventsList = (props) => {
         setEventsData(res.data);
         setIsLoading(false);
       });
-  }
-
-  function onFailedToFetch() {
-    setIsLoading(true);
-
-    const alertProps = {
-      header: HEADER_REQUEST_FAILED_TEXT,
-      title: TITLE_OOPS_TEXT,
-      message: MESSAGE_UNABLE_TO_FETCH_TEXT,
-      buttonPrimaryText: "RETRY",
-      buttonSecondaryText: "DASHBOARD",
-      actionPrimary: () => {
-        getEvents().then(res => {
-          setIsLoading(true);
-
-          setEventsData(res.data);
-          setInitialEventsData(res.data);
-          setIsLoading(false);
-        }).catch(err => onFailedToFetch());
-      },
-      actionSecondary: () => props.history.push("/dashboard")
-    }
-
-    showUnableToFetchAlert(alertProps);
   }
 
   function onViewParticipantsClick(participants) {
@@ -175,7 +170,11 @@ const EventsList = (props) => {
     return (
       <div className="container-events" >
         <div className="side-bar">
-          <Link to="/create-event" className="link-create-new-event">CREATE NEW EVENT</Link>
+          <button type="submit" className="btn-dashboard" style={{ margin: "5px" }}
+            onClick={onCreateEventClick}
+          >
+            <PlusOutlined />CREATE EVENT
+          </button>
           <input className="search-box-events" onInput={filterEvents} placeholder="Search..." />
           <div className="filter">
             <div className="input-group-events" onChange={onInputChanged}>
@@ -213,7 +212,7 @@ const EventsList = (props) => {
                     <div>{event.createdBy.name}</div>
                   </div>
                   <div className="card-event-right">
-                    <span>Date: {getDisplayDate(event.date)} @ {event.time}</span>
+                    <span>Date: {getDisplayDate(event.date)}</span>
                     <div className="btn-view-participants" onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
@@ -226,17 +225,17 @@ const EventsList = (props) => {
                   </div>
                 </div>
                 <div className="card-event-footer">
-                  {showGoing(event) && <div className="btn-event-subscribe btn-outline" onClick={(e) => {
+                  {showGoing(event) && <div className="btn-dashboard" onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     onUnsubscribeClick(event)
                   }}>UNSUBSCRIBE</div>}
-                  {showSubscribeButton(event) && <div className="btn-event-subscribe" onClick={(e) => {
+                  {showSubscribeButton(event) && <div className="btn-dashboard" style={{ background: "hsl(123deg 70% 28%)" }} onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     onSubscribeClick(event);
                   }}>SUBSCRIBE</div>}
-                  {showCancelEventButton(event) && <div className="btn-event-subscribe btn-outline" onClick={(e) => {
+                  {showCancelEventButton(event) && <div className="btn-dashboard" onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     onCancelClick(event)

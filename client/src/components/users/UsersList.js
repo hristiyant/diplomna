@@ -9,7 +9,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { Scrollbars } from "react-custom-scrollbars";
 
-import { getAllUsers, createFriendRequest, removeFriends, deleteFriendRequest } from "../../actions/authActions"
+import { getAllUsers, createFriendRequest, removeFriends } from "../../actions/authActions"
 
 import "./UsersList.css"
 
@@ -37,9 +37,9 @@ const UserCard = ({ user, loggedInUser }) => {
     }
 
     async function onCancelRequestClick(user) {
-        let res = await deleteFriendRequest(user._id, loggedInUser.id)
+        // let res = await deleteFriendRequest(user._id, loggedInUser.id)
 
-        setCurrentUser(res.data);
+        // setCurrentUser(res.data);
     }
 
     function showUser(user) {
@@ -72,7 +72,7 @@ const UserCard = ({ user, loggedInUser }) => {
                 {checkIfRequestSent(currentUser) && <div className="btn-user-add-friend btn-outline" onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    onCancelRequestClick(currentUser);
+                    // onCancelRequestClick(currentUser);
                 }}><CloseOutlined style={{ fontSize: "15px", paddingRight: "5px" }} />Cancel Request</div>}
             </div>
         </div>

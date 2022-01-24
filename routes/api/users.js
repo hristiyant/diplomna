@@ -10,6 +10,7 @@ import validateLoginInput from "../../validation/login.js";
 
 //Load User model
 import User from "../../models/User.js";
+import Event from "../../models/Event.js";
 
 //@route GET users/
 //@desc Get user by id
@@ -115,7 +116,14 @@ router.post("/login", (req, res) => {
     User.findOne({ email })
         .populate([
             { path: "friends", select: "name imageUrl phone email" },
-            { path: "invitations", select: "date type fromUser" }
+            {
+                path: "invitations", select: "date type fromUser ",
+                populate: [
+                    { path: "fromUser", select: "name" },
+                    { path: "event", select: "name date location" }
+                ]
+            }
+
         ])
         .then(user => {
             //Check if user exists
@@ -184,10 +192,10 @@ router.put("/set-profile-pic", async (req, res) => {
 //@desc Send invitation to user
 //@access Public
 router.put("/send-invitation", async (req, res) => {
-    const fromUser = req.query.fromUser;
     const toUser = req.query.toUser;
-    const type = req.query.type;
-
+    const fromUser = req.body.fromUser;
+    const type = req.body.type;
+    const event = !req.body.event ? "" : req.body.event;
 
     var newInvitation = {
         fromUser: fromUser,
@@ -197,11 +205,21 @@ router.put("/send-invitation", async (req, res) => {
     try {
         let user = await User.findById(toUser);
 
-        console.log(user)
         //Check if friend request exists
-        if (user.invitations.some(e => e.fromUser == fromUser)) {
-            return res.status(400).json({ alreadyexists: "Invitation already exists" });
+        switch (type) {
+            case "EVENT":
+                if (user.invitations.some(e => e.event == event)) {
+                    return res.status(400).json({ alreadyexistss: "error" });
+                }
+                newInvitation.event = event;
+                break;
+            case "FRIEND_REQUEST":
+                if (user.invitations.some(e => e.type === "FRIEND_REQUEST" && e.fromUser == fromUser)) {
+                    return res.status(400).json({ alreadyexists: "Invitation already exists" });
+                }
+                break;
         }
+
         try {
             let response = await User.findOneAndUpdate(
                 { _id: toUser },
@@ -214,6 +232,7 @@ router.put("/send-invitation", async (req, res) => {
             res.sendStatus(400);
         }
     } catch (error) {
+        console.log("StatusMessage: " + res.statusMessage);
         res.statusMessage = error;
         res.sendStatus(400);
     }
@@ -225,15 +244,16 @@ router.put("/send-invitation", async (req, res) => {
 router.delete("/delete-invitation", async (req, res) => {
     const fromUser = req.query.fromUser;
     const toUser = req.query.toUser;
+    const invitation = req.query.invitation
 
     try {
         let response = await User.findOneAndUpdate(
             { _id: toUser },
-            { $pull: { invitations: { fromUser: fromUser } } },
+            { $pull: { invitations: { fromUser: fromUser, _id: invitation } } },
             { new: true }
         );
 
-        res.send(response);
+        res.send(response.invitations);
     } catch (error) {
         res.statusMessage = error;
         res.sendStatus(400);
@@ -259,10 +279,10 @@ router.get("/get-invitations-for", async (req, res) => {
     }
 });
 
-//@route PUT users/accept
+//@route PUT users/accept-friend
 //@desc Add one user to another one's friends list
 //@access Public
-router.put("/accept", async (req, res) => {
+router.put("/accept-friend", async (req, res) => {
     const fromUser = req.query.fromUser;
     const toUser = req.query.toUser;
     const invitationID = req.query.invitationID;
@@ -277,6 +297,37 @@ router.put("/accept", async (req, res) => {
         let response = await User.findOneAndUpdate(
             { _id: toUser },
             { $push: { friends: fromUser }, $pull: { invitations: { _id: invitationID } } },
+            { new: true }
+        );
+
+        res.send(response.invitations);
+    } catch (error) {
+        res.statusMessage = error;
+        res.sendStatus(400);
+    }
+});
+
+//@route PUT users/accept-friend
+//@desc Add one user to another one's friends list
+//@access Public
+router.put("/accept-event", async (req, res) => {
+    const fromUser = req.query.fromUser;
+    const toUser = req.query.toUser;
+    const invitationID = req.query.invitationID;
+    const event = req.query.event;
+
+    console.log(JSON.stringify(req.query));
+
+    try {
+        await Event.findOneAndUpdate(
+            { _id: event },
+            { $push: { participants: toUser } },
+            { new: true }
+        );
+
+        let response = await User.findOneAndUpdate(
+            { _id: toUser },
+            { $pull: { invitations: { _id: invitationID } } },
             { new: true }
         );
 
