@@ -6,7 +6,7 @@ import Loader from "react-loader-spinner";
 import { Scrollbars } from "react-custom-scrollbars";
 
 import { Avatar, Radio } from 'antd';
-import { UserOutlined, PlusOutlined } from '@ant-design/icons';
+import { UserOutlined, PlusOutlined,CheckOutlined } from '@ant-design/icons';
 
 import { HEADER_REQUEST_FAILED_TEXT, MESSAGE_UNABLE_TO_FETCH_TEXT, showConfirmAlert, showUnableToFetchAlert, showUsersListAlert, TITLE_OOPS_TEXT } from "../../custom/CustomAlertBox";
 
@@ -210,7 +210,7 @@ const EventsList = (props) => {
                       Participants: <progress id="participants" className="progress-participants" value={event.participants.length} max={event.quota}></progress> {event.participants.length} / {event.quota}
                     </div>
                     <div>Location: {event.location.name}</div>
-                    {showGoing(event) && <div className="going"><GoingIcon className="going-icon" /><span style={{ fontSize: "larger" }}>Going</span></div>}
+                    {showGoing(event) && <div className="going"><CheckOutlined style={{ color: "greenyellow" }} /><span >&nbsp;Going</span></div>}
                   </div>
                 </div>
                 <div className="card-event-footer">

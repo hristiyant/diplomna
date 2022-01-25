@@ -5,69 +5,13 @@ import Loader from "react-loader-spinner";
 import { Scrollbars } from "react-custom-scrollbars";
 
 import { Avatar, message } from 'antd'
-import { UserOutlined, UserAddOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { UserOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { getUser, removeFriends, setProfileImage } from "../../actions/authActions";
 import { storage } from "../../firebase/firebase";
 
 import "./userProfile.css"
 import { HEADER_REQUEST_FAILED_TEXT, MESSAGE_UNABLE_TO_FETCH_TEXT, showConfirmAlert, showUnableToFetchAlert, TITLE_OOPS_TEXT } from "../custom/CustomAlertBox";
-
-// const UserCard = ({ user, loggedInUser }) => {
-//     const [currentUser, setCurrentUser] = useState(user);
-
-//     // function checkIfRequestSent(user) {
-//     //     return user.friendRequests.some(request => request.fromUser === loggedInUser.id);
-//     // }
-
-//     // function checkIfFriends(user) {
-//     //     return user.friends.includes(loggedInUser.id);
-//     // }
-
-//     // async function onAddFriendClick(user) {
-//     //     let res = await createFriendRequest(loggedInUser.id, user._id);
-
-//     //     setCurrentUser(res);
-//     // }
-
-//     async function onRemoveFriendClick(user) {
-//         let res = await removeFriends(loggedInUser.id, user._id);
-
-//         setCurrentUser(res.data);
-//     }
-
-//     async function onCancelRequestClick(user) {
-//         // let res = await deleteFriendRequest(user._id, loggedInUser.id)
-
-//         // setCurrentUser(res.data);
-//     }
-
-//     function showUser(user) {
-//         console.log(user._id + "   " + loggedInUser.id);
-//         return user._id !== loggedInUser.id;
-//     }
-
-//     return (showUser(currentUser) &&
-//         <div className="card-user">
-//             <div className="card-user-body">
-//                 <div className="card-user-body-left">
-//                     <Avatar className="avatar" shape="circle" src={currentUser.imageUrl} size={64} icon={<UserOutlined />} />
-//                 </div>
-//                 <div className="card-user-body-right">
-//                     <div className="card-user-header">{currentUser.name}</div>
-//                     <div>{currentUser.phone}</div>
-//                 </div>
-//             </div>
-//             <div className="card-event-footer">
-//                 <div className="btn-dashboard secondary" onClick={(e) => {
-//                     e.stopPropagation();
-//                     e.preventDefault();
-//                     onRemoveFriendClick(currentUser);
-//                 }}><CloseOutlined style={{ fontSize: "15px", paddingRight: "5px" }} />Remove</div>
-//             </div>
-//         </div>
-//     )
-// }
 
 const UserProfile = (props) => {
     const [user, setUser] = useState({});
@@ -81,7 +25,6 @@ const UserProfile = (props) => {
 
             let res = await getUser(props.auth.user.id);
             setUser(res);
-            // console.log(res)
             setIsLoading(false);
         } catch (error) {
             console.log(JSON.stringify(error));
@@ -93,7 +36,6 @@ const UserProfile = (props) => {
                 actionSecondary: () => { }
             }
             showUnableToFetchAlert(alertProps);
-            // userData = [];
         }
     }, [props.auth.user.id])
 
@@ -166,13 +108,9 @@ const UserProfile = (props) => {
         }
 
         showConfirmAlert(alertProps);
-        // let res = await removeFriends(props.auth.user.id, user._id);
-
-        // setUser(res.data);
     }
 
     function displayUserCard() {
-        console.log(JSON.stringify(user.friends));
         return (
             <div className="profile">
                 <div className="profileInfo">

@@ -194,10 +194,12 @@ router.put("/set-profile-pic", async (req, res) => {
 //@access Public
 router.put("/send-invitation", async (req, res) => {
     const toUser = req.query.toUser;
-    const fromUser = req.body.fromUser;
-    const type = req.body.type;
-    const event = !req.body.event ? "" : req.body.event;
+    const fromUser = req.query.fromUser;
+    const type = req.query.type;
+    const event = !req.query.event ? "" : req.query.event;
 
+    console.log(req.query);
+    // return
     var newInvitation = {
         fromUser: fromUser,
         type: type
@@ -242,15 +244,17 @@ router.put("/send-invitation", async (req, res) => {
 //@route DELETE users/delete-invitation
 //@desc Delete an invitation
 //@access Public
-router.delete("/delete-invitation", async (req, res) => {
+router.delete("/delete-friend-request", async (req, res) => {
     const fromUser = req.query.fromUser;
     const toUser = req.query.toUser;
-    const invitation = req.query.invitation
+    const type = "FRIEND_REQUEST";
 
+    // console.log(req.query);
+    // return
     try {
         let response = await User.findOneAndUpdate(
             { _id: toUser },
-            { $pull: { invitations: { fromUser: fromUser, _id: invitation } } },
+            { $pull: { invitations: { fromUser: fromUser, type: type } } },
             { new: true }
         );
 

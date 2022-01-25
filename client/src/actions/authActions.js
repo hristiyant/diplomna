@@ -24,7 +24,7 @@ export const getUser = async (userID) => {
 
 //Get List of All Users
 export const getAllUsers = async () => {
-  let res = await axios.get("api/users/get-all-users");
+  let res = await axios.get("api/users/get-all");
 
   return res.data;
 }
@@ -123,10 +123,10 @@ export const getInvitations = async userID => {
 }
 
 // Delete invitation
-export const deleteInvitation = async (toUser, fromUser, invitation) => {
-  const params = new URLSearchParams([["toUser", toUser], ["fromUser", fromUser], ["invitation", invitation]]);
+export const deleteInvitation = async (toUser, fromUser) => {
+  const params = new URLSearchParams([["toUser", toUser], ["fromUser", fromUser]]);
   let res = await axios
-    .delete("/api/users/delete-invitation", {
+    .delete("/api/users/delete-friend-request", {
       params
     });
 
@@ -135,13 +135,9 @@ export const deleteInvitation = async (toUser, fromUser, invitation) => {
 
 // Create friend request
 export const createFriendRequest = async (fromUser, toUser) => {
+  const params = new URLSearchParams([["fromUser", fromUser], ["toUser", toUser], ["type", "FRIEND_REQUEST"]]);
   const res = await axios
-    .post("/api/users/create-friend-request", null, {
-      params: {
-        fromUser: fromUser,
-        toUser: toUser
-      }
-    });
+    .put("/api/users/send-invitation", null, { params });
 
   return res.data;
 }
