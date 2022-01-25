@@ -181,7 +181,8 @@ router.put("/set-profile-pic", async (req, res) => {
             { $set: { imageUrl: imageUrl } },
             { new: true });
 
-        res.send(response.imageUrl);
+        // res.send(response.imageUrl);
+        res.send(response)
     } catch (error) {
         res.statusMessage = error;
         res.sendStatus(400);
@@ -346,13 +347,16 @@ router.put("/remove-friend", async (req, res) => {
     const friendID = req.query.friendID;
 
     try {
-        await User.findOneAndUpdate(
+        let response = await User.findOneAndUpdate(
             { _id: userID },
             { $pull: { friends: friendID } },
             { new: true }
-        );
+        ).populate([
+            { path: "friends", select: "name imageUrl phone email" },
+            { path: "invitations", select: "date type fromUser" }
+        ]);
 
-        let response = await User.findOneAndUpdate(
+        await User.findOneAndUpdate(
             { _id: friendID },
             { $pull: { friends: userID } },
             { new: true }

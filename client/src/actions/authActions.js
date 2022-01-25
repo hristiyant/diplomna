@@ -13,13 +13,12 @@ export const clearERROR = () => dispatch => {
 
 // Get User Info
 export const getUser = async (userID) => {
-  const res = await axios
-    .get("/api/users/", {
-      params: {
-        userID: userID
-      }
-    })
+  const params = new URLSearchParams([["userID", userID]]);
 
+  const res = await axios
+    .get("/api/users/", { params });
+
+  console.log(JSON.stringify(res));
   return res.data;
 };
 
@@ -172,13 +171,10 @@ export const acceptEventInvitation = async (fromUser, toUser, invitationID, even
 
 // Remove user from friends
 export const removeFriends = async (userID, friendID) => {
+  const params = new URLSearchParams([["userID", userID], ["friendID", friendID]]);
+
   let res = await axios
-    .post("/api/users/remove-friend", {
-      params: {
-        userID: userID,
-        friendID: friendID
-      }
-    });
+    .put("/api/users/remove-friend", null, { params });
 
   return res;
 }
@@ -191,6 +187,6 @@ export const setProfileImage = async (userID, imageUrl) => {
     .put("api/users/set-profile-pic", null, {
       params
     });
-
-  return res.data;
+  // console.log(res.data.imageUrl);
+  return res.data.imageUrl;
 }

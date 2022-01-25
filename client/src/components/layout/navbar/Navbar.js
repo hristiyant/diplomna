@@ -46,7 +46,7 @@ const Navbar = (props) => {
         return () => {
             window.removeEventListener("click", handleEvent)
         }
-    }, [props.auth])
+    }, [props.auth.user.imageUrl])
 
     function onLogoutClick(e) {
         e.preventDefault()

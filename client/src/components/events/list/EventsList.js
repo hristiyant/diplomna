@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import Loader from "react-loader-spinner";
 import { Scrollbars } from "react-custom-scrollbars";
 
-import { Avatar } from 'antd';
+import { Avatar, Radio } from 'antd';
 import { UserOutlined, PlusOutlined } from '@ant-design/icons';
 
 import { HEADER_REQUEST_FAILED_TEXT, MESSAGE_UNABLE_TO_FETCH_TEXT, showConfirmAlert, showUnableToFetchAlert, showUsersListAlert, TITLE_OOPS_TEXT } from "../../custom/CustomAlertBox";
@@ -18,10 +18,10 @@ import { ReactComponent as GoingIcon } from "../../../assets/tick.svg";
 import "./EventsList.css";
 
 const EventsList = (props) => {
+  const [value, setValue] = useState(1);
   const [initialEventsData, setInitialEventsData] = useState([]);
   const [eventsData, setEventsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isChecked, setIsChecked] = useState(true);
 
   const fetchEvents = useCallback(async () => {
     try {
@@ -61,20 +61,17 @@ const EventsList = (props) => {
     setEventsData(filteredEvents);
   }
 
-  const onInputChanged = event => {
-    setIsChecked(false);
-
-    const value = event.target.value;
-    console.log(value)
+  const onChange = e => {
+    setIsLoading(true);
     var filteredEvents;
 
-    switch (value) {
-      case "CREATED":
+    switch (e.target.value) {
+      case 2:
         filteredEvents = initialEventsData.filter(event =>
           (`${event.createdBy._id}` === props.auth.user.id)
         );
         break;
-      case "GOING":
+      case 3:
         filteredEvents = initialEventsData.filter(
           event => event.participants.every(
             participant => participant._id === props.auth.user.id
@@ -82,13 +79,14 @@ const EventsList = (props) => {
         );
         break;
       default: // case "ALL"
-        setIsChecked(true);
         filteredEvents = initialEventsData;
         break;
     }
 
     setEventsData(filteredEvents);
-  }
+    setValue(e.target.value);
+    setIsLoading(false)
+  };
 
   function showLoader() {
     return (<Loader
@@ -175,23 +173,14 @@ const EventsList = (props) => {
           >
             <PlusOutlined />CREATE EVENT
           </button>
-          <input className="search-box-events" onInput={filterEvents} placeholder="Search..." />
-          <div className="filter">
-            <div className="input-group-events" onChange={onInputChanged}>
-              <div className="radio-item">
-                <input id="all" type="radio" value="ALL" name="event-filter" defaultChecked={isChecked} />
-                <label htmlFor="all">All</label>
-              </div>
-              <div className="radio-item">
-                <input id="created" type="radio" value="CREATED" name="event-filter" />
-                <label htmlFor="created">Created by me</label>
-              </div>
-              <div className="radio-item">
-                <input id="going" type="radio" value="GOING" name="event-filter" />
-                <label htmlFor="going">Going</label>
-              </div>
-            </div>
-          </div>
+          {/* <div className="event-filters"> */}
+          <input className="search-box-events" onInput={filterEvents} placeholder="Search by name..." />
+          <Radio.Group className="radio-group-events"onChange={onChange} value={value}>
+            <Radio className="invitations-radio" value={1}>All</Radio>
+            <Radio className="invitations-radio" value={2}>Created by me</Radio>
+            <Radio className="invitations-radio" value={3}>Going</Radio>
+          </Radio.Group>
+          {/* </div> */}
         </div>
         <div className="container-events cards-grid">
           <Scrollbars className="my-scrollbar" style={{ width: "100%", height: "100%" }}

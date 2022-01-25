@@ -1,13 +1,73 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Loader from "react-loader-spinner";
-import { Avatar } from 'antd'
+import { Scrollbars } from "react-custom-scrollbars";
 
-import { getUser, setProfileImage } from "../../actions/authActions";
+import { Avatar, message } from 'antd'
+import { UserOutlined, UserAddOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
+
+import { getUser, removeFriends, setProfileImage } from "../../actions/authActions";
 import { storage } from "../../firebase/firebase";
 
 import "./userProfile.css"
+import { HEADER_REQUEST_FAILED_TEXT, MESSAGE_UNABLE_TO_FETCH_TEXT, showConfirmAlert, showUnableToFetchAlert, TITLE_OOPS_TEXT } from "../custom/CustomAlertBox";
+
+// const UserCard = ({ user, loggedInUser }) => {
+//     const [currentUser, setCurrentUser] = useState(user);
+
+//     // function checkIfRequestSent(user) {
+//     //     return user.friendRequests.some(request => request.fromUser === loggedInUser.id);
+//     // }
+
+//     // function checkIfFriends(user) {
+//     //     return user.friends.includes(loggedInUser.id);
+//     // }
+
+//     // async function onAddFriendClick(user) {
+//     //     let res = await createFriendRequest(loggedInUser.id, user._id);
+
+//     //     setCurrentUser(res);
+//     // }
+
+//     async function onRemoveFriendClick(user) {
+//         let res = await removeFriends(loggedInUser.id, user._id);
+
+//         setCurrentUser(res.data);
+//     }
+
+//     async function onCancelRequestClick(user) {
+//         // let res = await deleteFriendRequest(user._id, loggedInUser.id)
+
+//         // setCurrentUser(res.data);
+//     }
+
+//     function showUser(user) {
+//         console.log(user._id + "   " + loggedInUser.id);
+//         return user._id !== loggedInUser.id;
+//     }
+
+//     return (showUser(currentUser) &&
+//         <div className="card-user">
+//             <div className="card-user-body">
+//                 <div className="card-user-body-left">
+//                     <Avatar className="avatar" shape="circle" src={currentUser.imageUrl} size={64} icon={<UserOutlined />} />
+//                 </div>
+//                 <div className="card-user-body-right">
+//                     <div className="card-user-header">{currentUser.name}</div>
+//                     <div>{currentUser.phone}</div>
+//                 </div>
+//             </div>
+//             <div className="card-event-footer">
+//                 <div className="btn-dashboard secondary" onClick={(e) => {
+//                     e.stopPropagation();
+//                     e.preventDefault();
+//                     onRemoveFriendClick(currentUser);
+//                 }}><CloseOutlined style={{ fontSize: "15px", paddingRight: "5px" }} />Remove</div>
+//             </div>
+//         </div>
+//     )
+// }
 
 const UserProfile = (props) => {
     const [user, setUser] = useState({});
@@ -15,13 +75,31 @@ const UserProfile = (props) => {
     const [visible, setVisible] = useState(false);
     const [file, setFile] = useState(null);
 
-    useEffect(() => {
-        getUser(props.auth.user.id)
-            .then(res => {
-                setUser(res);
-                setIsLoading(false);
-            });
+    const fetchData = useCallback(async () => {
+        try {
+            setIsLoading(true);
+
+            let res = await getUser(props.auth.user.id);
+            setUser(res);
+            // console.log(res)
+            setIsLoading(false);
+        } catch (error) {
+            console.log(JSON.stringify(error));
+            const alertProps = {
+                header: HEADER_REQUEST_FAILED_TEXT,
+                title: TITLE_OOPS_TEXT,
+                message: MESSAGE_UNABLE_TO_FETCH_TEXT,
+                actionPrimary: () => fetchData(),
+                actionSecondary: () => { }
+            }
+            showUnableToFetchAlert(alertProps);
+            // userData = [];
+        }
     }, [props.auth.user.id])
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData])
 
     function showLoader() {
         return (
@@ -68,17 +146,76 @@ const UserProfile = (props) => {
         });
     }
 
+    function onRemoveFriendClick(user) {
+        const alertProps = {
+            message: "Are you sure you want to remove \"" + user.name + "\" from friends",
+            actionPrimary: async () => {
+                setIsLoading(true);
+
+                let res = await removeFriends(props.auth.user.id, user._id);
+
+                setUser(res.data);
+                setIsLoading(false);
+                message.success({
+                    content: "Successfully removed " + user.name + " from friends",
+                    style: {
+                        marginTop: "65px"
+                    }
+                }, 4);
+            }
+        }
+
+        showConfirmAlert(alertProps);
+        // let res = await removeFriends(props.auth.user.id, user._id);
+
+        // setUser(res.data);
+    }
+
     function displayUserCard() {
+        console.log(JSON.stringify(user.friends));
         return (
             <div className="profile">
                 <div className="profileInfo">
+                    <h1 className="profileInfoName" style={{ color: "white" }}>{user.name}</h1>
+                    <div className="profileInfoDetails">
+                        <span className="profileInfoEmail">{user.email}</span>
+                        <span className="profileInfoEmail">{user.phone}</span>
+                    </div>
                     <img className="profileUserImage" src={user.imageUrl} onClick={onImageClick} alt="" />
-                    {visible && <form onSubmit={handleUpload}>
+                    {visible && <form className="form-change-pic" onSubmit={handleUpload}>
                         <input type="file" onChange={handleChange} />
-                        <button disabled={!file}>upload to firebase</button>
+                        <button className="btn-dashboard upload" disabled={!file}>Upload</button>
                     </form>}
-                    <h4 className="profileInfoName">{user.name}</h4>
-                    <span className="profileInfoEmail">{user.email}</span>
+                </div>
+                <div className="profileFriends">
+                    <Scrollbars className="my-scrollbar" style={{ width: "100%", height: "100%" }}
+                        renderTrackVertical={props => <div {...props} className="track-vertical" />}
+                        renderThumbVertical={props => <div {...props} className="thumb-vertical" />}
+                        renderView={props => <div {...props} className="view" />}
+                    >
+                        {user.friends.map((user, index) => {
+                            return (
+                                <div className="card-user" key={index}>
+                                    <div className="card-user-body">
+                                        <div className="card-user-body-left">
+                                            <Avatar className="avatar" shape="circle" src={user.imageUrl} size={64} icon={<UserOutlined />} />
+                                        </div>
+                                        <div className="card-user-body-right">
+                                            <div className="card-user-header">{user.name}</div>
+                                            <div>{user.phone}</div>
+                                        </div>
+                                    </div>
+                                    <div className="card-event-footer">
+                                        <div className="btn-dashboard secondary" onClick={(e) => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                            onRemoveFriendClick(user);
+                                        }}><CloseOutlined style={{ fontSize: "15px", paddingRight: "5px" }} />Remove</div>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </Scrollbars>
                 </div>
             </div>
         );
