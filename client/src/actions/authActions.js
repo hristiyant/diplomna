@@ -123,8 +123,8 @@ export const getInvitations = async userID => {
 }
 
 // Delete invitation
-export const deleteInvitation = async (toUser, fromUser) => {
-  const params = new URLSearchParams([["toUser", toUser], ["fromUser", fromUser]]);
+export const deleteInvitation = async (toUser, fromUser, requestID) => {
+  const params = new URLSearchParams([["toUser", toUser], ["fromUser", fromUser], ["requestID", requestID]]);
   let res = await axios
     .delete("/api/users/delete-friend-request", {
       params

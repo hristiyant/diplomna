@@ -247,16 +247,22 @@ router.put("/send-invitation", async (req, res) => {
 router.delete("/delete-friend-request", async (req, res) => {
     const fromUser = req.query.fromUser;
     const toUser = req.query.toUser;
-    const type = "FRIEND_REQUEST";
+    const requestID = req.query.requestID
 
     // console.log(req.query);
     // return
     try {
         let response = await User.findOneAndUpdate(
             { _id: toUser },
-            { $pull: { invitations: { fromUser: fromUser, type: type } } },
+            { $pull: { invitations: { fromUser: fromUser, _id: requestID } } },
             { new: true }
-        );
+        ).populate([
+            { path: "invitations.fromUser", select: "name imageUrl phone" },
+            {
+                path: "invitations.event", select: "name date location",
+                populate: { path: "location", select: "name manager phone coordinates" }
+            }
+        ]);
 
         res.send(response.invitations);
     } catch (error) {
@@ -273,9 +279,13 @@ router.get("/get-invitations-for", async (req, res) => {
 
     try {
         let response = await User.findById(userID)
-            .populate({
-                path: "invitations.fromUser", select: "name imageUrl phone"
-            });
+            .populate([
+                { path: "invitations.fromUser", select: "name imageUrl phone" },
+                {
+                    path: "invitations.event", select: "name date location",
+                    populate: { path: "location", select: "name manager phone coordinates" }
+                }
+            ]);
 
         res.send(response.invitations);
     } catch (error) {

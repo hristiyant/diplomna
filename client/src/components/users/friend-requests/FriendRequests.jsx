@@ -1,15 +1,16 @@
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import Loader from "react-loader-spinner";
 import { Scrollbars } from "react-custom-scrollbars";
-import { Avatar, Radio } from 'antd';
+import { Avatar, message, Radio } from 'antd';
 import { UserOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { getInvitations, deleteInvitation, acceptFriendRequest, acceptEventInvitation } from "../../../actions/authActions";
 import { getDisplayDate } from "../../../utils/DateUtils";
 
 import "./FriendRequests.css"
+import { HEADER_REQUEST_FAILED_TEXT, MESSAGE_UNABLE_TO_FETCH_TEXT, showLocationDetailsAlert, showUnableToFetchAlert, TITLE_OOPS_TEXT } from "../../custom/CustomAlertBox";
 
 const FriendRequests = (props) => {
     const { user } = props.auth;
@@ -22,29 +23,63 @@ const FriendRequests = (props) => {
     async function onAcceptClick(request) {
         if (request.type === "FRIEND_REQUEST") {
             let response = await acceptFriendRequest(request.fromUser._id, props.auth.user.id, request._id);
-            setData(response.data.filter(request => request.type === "FRIEND_REQUEST"));
+            fetchData();
+            message.success({
+                content: "Invitation accepted",
+                style: {
+                    fontSize: "x-large"
+                }
+            }, 5);
         } else {
             console.log(request.event);
             let response = await acceptEventInvitation(request.fromUser._id, props.auth.user.id, request._id, request.event);
-            setData(response.data.filter(request => request.type === "EVENT"));
+            fetchData();
+            fetchData();
+            message.success({
+                content: "Invitation accepted",
+                style: {
+                    fontSize: "x-large"
+                }
+            }, 5);
         }
     }
 
     async function onRejectClick(request) {
         let response = await deleteInvitation(props.auth.user.id, request.fromUser._id, request._id);
-        setData(response.data);
+        fetchData();
+        message.success({
+            content: "Invitation rejected",
+            style: {
+                fontSize: "x-large"
+            }
+        }, 5);
     }
 
+    const fetchData = useCallback(async () => {
+        try {
+            setIsLoading(true);
+
+            let res = await getInvitations(user.id)
+            setData(res.data.filter(request => request.type === "FRIEND_REQUEST"));
+            setAllRequests(res.data);
+            setIsLoading(false);
+        } catch (error) {
+            console.log(JSON.stringify(error));
+            const alertProps = {
+                header: HEADER_REQUEST_FAILED_TEXT,
+                title: TITLE_OOPS_TEXT,
+                message: MESSAGE_UNABLE_TO_FETCH_TEXT,
+                actionPrimary: () => fetchData(),
+                actionSecondary: () => { }
+            }
+            showUnableToFetchAlert(alertProps);
+            // userData = [];
+        }
+    }, [user.id])
+
     useEffect(() => {
-        console.log("USE EFFECT");
-        setIsLoading(true)
-        getInvitations(props.auth.user.id)
-            .then(res => {
-                setData(res.data.filter(request => request.type === "FRIEND_REQUEST"));
-                setAllRequests(res.data);
-                setIsLoading(false);
-            });
-    }, [props])
+        fetchData()
+    }, [fetchData])
 
     function showLoader() {
         return (<Loader
@@ -72,12 +107,50 @@ const FriendRequests = (props) => {
         setIsLoading(false)
     };
 
-    function showEventInvitationCard(invitation) {
-        return (
-            <div className="invitation-event-container">
-                <div>{invitation.name}</div>
-                <div>{invitation.fromUser}</div>
+    function onViewLocationClick(location) {
+        const alertProps = {
+            data: location,
+            title: "Location"
+        }
 
+        showLocationDetailsAlert(alertProps);
+    }
+
+    function showEventInvitationCard(invitation, index) {
+        console.log(invitation);
+        return (
+            <div key={index} className="card-requests">
+                <div style={{ margin: "10px", fontSize: "large" }}>Event Invitation</div>
+                <div className="card-requests-body">
+                    <div className="card-requests-body-left">
+                        <Avatar id="by-avatar" className="avatar-created-by" shape="circle" src={invitation.fromUser.imageUrl} size={64} icon={<UserOutlined />} />
+                    </div>
+                    <div className="card-requests-body-right">
+                        <div className="card-requests-header">{invitation.fromUser.name}</div>
+                        <span>{getDisplayDate(invitation.date)}</span>
+                        <div className="card-requests-header">For event:</div>
+                        <div>{invitation.event.name}</div>
+                        <div>{getDisplayDate(invitation.event.date)}</div>
+                        <div className="btn-view-participants" onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            onViewLocationClick(invitation.event.location);
+                        }}>{invitation.event.location.name}</div>
+                        {/* <span>{invitation.date}</span> */}
+                    </div>
+                </div>
+                <div className="card-requests-footer">
+                    <button className="btn-accept" onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        onAcceptClick(invitation)
+                    }}><CheckOutlined style={{ fontSize: "15px", paddingRight: "5px" }} />Accept</button>
+                    <button className="btn-accept btn-outline" onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        onRejectClick(invitation)
+                    }}><CloseOutlined style={{ fontSize: "15px", paddingRight: "5px" }} />Reject</button>
+                </div>
             </div>
         );
     }
@@ -111,6 +184,14 @@ const FriendRequests = (props) => {
         )
     }
 
+    function showInvitationCard(invitation, index) {
+        if (invitation.type === "FRIEND_REQUEST") {
+            return showFriendRequestCard(invitation, index);
+        } else {
+            return showEventInvitationCard(invitation, index)
+        }
+    }
+
     function showContent() {
         return (< div className="container-friend-requests" >
             <div className="top-bar">
@@ -128,31 +209,7 @@ const FriendRequests = (props) => {
                     renderView={props => <div {...props} className="view" />}
                 >
                     {data.map((request, index) => (
-                        showFriendRequestCard(request, index)
-                        // <div key={index} className="card-requests">
-                        //     <div>{request.type}</div>
-                        //     <div className="card-requests-body">
-                        //         <div className="card-requests-body-left">
-                        //             <Avatar className="avatar-created-by" shape="circle" src={request.fromUser.imageUrl} size={64} icon={<UserOutlined />} />
-                        //         </div>
-                        //         <div className="card-requests-body-right">
-                        //             <div className="card-requests-header">{request.fromUser.name}</div>
-                        //             <span>{getDisplayDate(request.date)}</span>
-                        //         </div>
-                        //     </div>
-                        //     <div className="card-requests-footer">
-                        //         <button className="btn-accept" onClick={(e) => {
-                        //             e.stopPropagation();
-                        //             e.preventDefault();
-                        //             onAcceptClick(request)
-                        //         }}><CheckOutlined style={{ fontSize: "15px", paddingRight: "5px" }} />Accept</button>
-                        //         <button className="btn-accept btn-outline" onClick={(e) => {
-                        //             e.stopPropagation();
-                        //             e.preventDefault();
-                        //             onRejectClick(request)
-                        //         }}><CloseOutlined style={{ fontSize: "15px", paddingRight: "5px" }} />Reject</button>
-                        //     </div>
-                        // </div>
+                        showInvitationCard(request, index)
                     ))}
                 </Scrollbars>
             </div>

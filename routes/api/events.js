@@ -45,8 +45,10 @@ router.get("/get-all", async (req, res) => {
             .populate([
                 { path: "createdBy", select: "name imageUrl phone" },
                 { path: "participants", select: "name imageUrl phone" },
-                { path: "location", select: "name phone coordinates" }
-
+                {
+                    path: "location", select: "name manager phone coordinates",
+                    populate: { path: "manager", select: "name email phone" }
+                }
             ]);
 
         res.send(response);
@@ -103,7 +105,10 @@ router.put("/subscribe", async (req, res) => {
             .populate([
                 { path: "createdBy", select: "name imageUrl phone" },
                 { path: "participants", select: "name imageUrl phone" },
-                { path: "location", select: "name phone coordinates" }
+                {
+                    path: "location", select: "name manager phone coordinates",
+                    populate: { path: "manager", select: "name email phone" }
+                }
             ])
 
         res.send(response);
@@ -133,7 +138,10 @@ router.delete("/unsubscribe", async (req, res) => {
             .populate([
                 { path: "createdBy", select: "name imageUrl phone" },
                 { path: "participants", select: "name imageUrl phone" },
-                { path: "location", select: "name phone coordinates" }
+                {
+                    path: "location", select: "name manager phone coordinates",
+                    populate: { path: "manager", select: "name email phone" }
+                }
             ]);
 
         res.send(response);
@@ -158,7 +166,10 @@ router.delete("/delete", async (req, res) => {
             .populate([
                 { path: "createdBy", select: "name imageUrl phone" },
                 { path: "participants", select: "name imageUrl phone" },
-                { path: "location", select: "name phone coordinates" }
+                {
+                    path: "location", select: "name manager phone coordinates",
+                    populate: { path: "manager", select: "name email phone" }
+                }
             ]);
 
         res.send(response);

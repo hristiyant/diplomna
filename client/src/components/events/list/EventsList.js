@@ -5,10 +5,10 @@ import PropTypes from "prop-types";
 import Loader from "react-loader-spinner";
 import { Scrollbars } from "react-custom-scrollbars";
 
-import { Avatar, Radio } from 'antd';
-import { UserOutlined, PlusOutlined,CheckOutlined } from '@ant-design/icons';
+import { Avatar, message, Radio } from 'antd';
+import { UserOutlined, PlusOutlined, CheckOutlined } from '@ant-design/icons';
 
-import { HEADER_REQUEST_FAILED_TEXT, MESSAGE_UNABLE_TO_FETCH_TEXT, showConfirmAlert, showUnableToFetchAlert, showUsersListAlert, TITLE_OOPS_TEXT } from "../../custom/CustomAlertBox";
+import { HEADER_REQUEST_FAILED_TEXT, MESSAGE_UNABLE_TO_FETCH_TEXT, showConfirmAlert, showLocationDetailsAlert, showUnableToFetchAlert, showUsersListAlert, TITLE_OOPS_TEXT } from "../../custom/CustomAlertBox";
 
 import { getEvents, subscribeToEvent, unsubscribeToEvent, deleteEvent } from "../../../actions/eventActions";
 import { getEventTypeIcon } from "../../../utils/EventTypeIconSelector"
@@ -117,24 +117,41 @@ const EventsList = (props) => {
     props.history.push("/create-event");
   }
 
-  function onSubscribeClick(event) {
+  async function onSubscribeClick(event) {
     setIsLoading(true);
 
-    subscribeToEvent(props.auth.user.id, event._id)
-      .then(res => {
-        setEventsData(res.data);
-        setIsLoading(false);
-      });
+    let res = await subscribeToEvent(props.auth.user.id, event._id)
+    setEventsData(res.data);
+    setInitialEventsData(res.data);
+    setIsLoading(false)
+    message.success({
+      content: "Subscribed to " + event.name,
+      style: {
+        fontSize: "x-large"
+      }
+    }, 5);
   }
 
-  function onUnsubscribeClick(event) {
-    setIsLoading(true);
+  async function onUnsubscribeClick(event) {
+    const alertProps = {
+      message: "Are you sure you want unsubscribe from \"" + event.name + "\"",
+      actionPrimary: async () => {
+        setIsLoading(true);
 
-    unsubscribeToEvent(props.auth.user.id, event._id)
-      .then(res => {
+        let res = await unsubscribeToEvent(props.auth.user.id, event._id)
         setEventsData(res.data);
+        setInitialEventsData(res.data);
         setIsLoading(false);
-      });
+        message.success({
+          content: "Unsubscribed from " + event.name,
+          style: {
+            fontSize: "x-large"
+          }
+        }, 5);
+      }
+    }
+
+    showConfirmAlert(alertProps);
   }
 
   function onViewParticipantsClick(participants) {
@@ -146,18 +163,31 @@ const EventsList = (props) => {
     showUsersListAlert(alertProps);
   }
 
+  function onViewLocationClick(location) {
+    const alertProps = {
+      data: location,
+      title: "Location"
+    }
+
+    showLocationDetailsAlert(alertProps);
+  }
+
   function onCancelClick(event) {
     const alertProps = {
       message: "Are you sure you want to cancel \"" + event.name + "\"",
-      actionPrimary: () => {
+      actionPrimary: async () => {
         setIsLoading(true);
 
-        deleteEvent(event._id)
-          .then(res => {
-            setEventsData(res.data);
-            setInitialEventsData(res.data);
-            setIsLoading(false);
-          });
+        let res = await deleteEvent(event._id);
+        setEventsData(res.data);
+        setInitialEventsData(res.data);
+        setIsLoading(false);
+        message.success({
+          content: "Successfully canceled " + event.name,
+          style: {
+            fontSize: "x-large"
+          }
+        }, 5);
       }
     }
 
@@ -175,7 +205,7 @@ const EventsList = (props) => {
           </button>
           {/* <div className="event-filters"> */}
           <input className="search-box-events" onInput={filterEvents} placeholder="Search by name..." />
-          <Radio.Group className="radio-group-events"onChange={onChange} value={value}>
+          <Radio.Group className="radio-group-events" onChange={onChange} value={value}>
             <Radio className="invitations-radio" value={1}>All</Radio>
             <Radio className="invitations-radio" value={2}>Created by me</Radio>
             <Radio className="invitations-radio" value={3}>Going</Radio>
@@ -209,7 +239,13 @@ const EventsList = (props) => {
                     }}>
                       Participants: <progress id="participants" className="progress-participants" value={event.participants.length} max={event.quota}></progress> {event.participants.length} / {event.quota}
                     </div>
-                    <div>Location: {event.location.name}</div>
+                    <div className="btn-view-participants" onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onViewLocationClick(event.location);
+                    }}>
+                      Location: {event.location.name}
+                    </div>
                     {showGoing(event) && <div className="going"><CheckOutlined style={{ color: "greenyellow" }} /><span >&nbsp;Going</span></div>}
                   </div>
                 </div>

@@ -240,9 +240,9 @@ const CreateEvent = (props) => {
             message.success({
                 content: "Event created",
                 style: {
-                    marginTop: "65px"
+                    fontSize:"x-large"
                 }
-            });
+            },5);
             props.history.push("/dashboard");
         } catch (error) {
             console.log(JSON.stringify(error));
@@ -250,9 +250,9 @@ const CreateEvent = (props) => {
             message.error({
                 content: "Failed to create event. Please check inputs or try again after a few moments.",
                 style: {
-                    marginTop: "65px"
+                    fontSize:"x-large"
                 }
-            }, 4);
+            }, 5);
         }
     }
 

@@ -5,7 +5,7 @@ import Loader from "react-loader-spinner";
 import { Scrollbars } from "react-custom-scrollbars";
 
 import { Avatar, message } from 'antd'
-import { UserOutlined, CloseOutlined } from '@ant-design/icons';
+import { UserOutlined, CloseOutlined, PhoneOutlined } from '@ant-design/icons';
 
 import { getUser, removeFriends, setProfileImage } from "../../actions/authActions";
 import { storage } from "../../firebase/firebase";
@@ -101,9 +101,9 @@ const UserProfile = (props) => {
                 message.success({
                     content: "Successfully removed " + user.name + " from friends",
                     style: {
-                        marginTop: "65px"
+                        fontSize:"x-large"
                     }
-                }, 4);
+                }, 5);
             }
         }
 
@@ -117,7 +117,7 @@ const UserProfile = (props) => {
                     <h1 className="profileInfoName" style={{ color: "white" }}>{user.name}</h1>
                     <div className="profileInfoDetails">
                         <span className="profileInfoEmail">{user.email}</span>
-                        <span className="profileInfoEmail">{user.phone}</span>
+                        <span className="profileInfoEmail"><PhoneOutlined /> {user.phone}</span>
                     </div>
                     <img className="profileUserImage" src={user.imageUrl} onClick={onImageClick} alt="" />
                     {visible && <form className="form-change-pic" onSubmit={handleUpload}>
@@ -140,7 +140,7 @@ const UserProfile = (props) => {
                                         </div>
                                         <div className="card-user-body-right">
                                             <div className="card-user-header">{user.name}</div>
-                                            <div>{user.phone}</div>
+                                            <div><PhoneOutlined /> {user.phone}</div>
                                         </div>
                                     </div>
                                     <div className="card-event-footer">

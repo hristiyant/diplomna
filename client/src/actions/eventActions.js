@@ -16,13 +16,11 @@ export const getEvents = () => {
 
 // Subscribe to an event
 export const subscribeToEvent = async (userID, eventID) => {
+  const paramsObject = { eventID: eventID, userID: userID }
+  const params = new URLSearchParams(paramsObject);
+
   let res = await axios
-    .post("api/events/subscribe", {
-      params: {
-        eventID: eventID,
-        userID: userID
-      }
-    });
+    .put("api/events/subscribe", null, { params });
 
   return res;
 }

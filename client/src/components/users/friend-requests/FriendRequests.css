@@ -12,6 +12,7 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
+    padding: 10px;
     background: rgba(0, 0, 0, 0.7);
 }
 
@@ -21,6 +22,7 @@
 
 .invitations-radio {
     color: white !important;
+    margin-bottom: 10px;
 }
 
 .container-friend-requests.cards-grid {

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Loader from "react-loader-spinner";
 import { Avatar, message } from 'antd'
-import { UserOutlined, UserAddOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { UserOutlined, UserAddOutlined, CheckOutlined, CloseOutlined, PhoneOutlined } from '@ant-design/icons';
 
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -78,31 +78,29 @@ const UsersList = (props) => {
     async function onAddFriendClick(user) {
         await createFriendRequest(props.auth.user.id, user._id);
 
+        fetchData(); 
         message.success({
             content: "Request has been sent",
             style: {
-                marginTop: "65px"
+                fontSize:"x-large"
             }
-        }, 4);
-        fetchData(); 
+        }, 5);
     }
 
     async function onCancelRequestClick(user){
         const alertProps = {
             message: "Are you sure you want to cancel the friend request",
             actionPrimary: async () => {
-                setIsLoading(true);
 
                 await deleteInvitation(user._id,props.auth.user.id);
 
                 fetchData();
-                setIsLoading(false);
                 message.success({
                     content: "Request has been canceled",
                     style: {
-                        marginTop: "65px"
+                        fontSize:"x-large"
                     }
-                }, 4);
+                }, 5);
             }
         }
 
@@ -116,19 +114,17 @@ const UsersList = (props) => {
         const alertProps = {
             message: "Are you sure you want to remove \"" + user.name + "\" from friends",
             actionPrimary: async () => {
-                setIsLoading(true);
 
                 await removeFriends(props.auth.user.id, user._id);
 
                 fetchData()
                 // setUser(res.data);
-                setIsLoading(false);
                 message.success({
                     content: "Successfully removed " + user.name + " from friends",
                     style: {
-                        marginTop: "65px"
+                        fontSize:"x-large"
                     }
-                }, 4);
+                }, 5);
             }
         }
 
@@ -159,7 +155,7 @@ const UsersList = (props) => {
                                     </div>
                                     <div className="card-user-body-right">
                                         <div className="card-user-header">{currentUser.name}</div>
-                                        <div>{currentUser.phone}</div>
+                                        <div><PhoneOutlined /> {currentUser.phone}</div>
                                         {checkIfFriends(currentUser) && <div className="friends"><CheckOutlined style={{ color: "greenyellow" }} />&nbsp;Friends</div>}
                                     </div>
                                 </div>
