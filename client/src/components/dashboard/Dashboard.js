@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Scrollbars } from "react-custom-scrollbars";
 import Loader from "react-loader-spinner";
 
-import { Avatar } from 'antd';
+import { Avatar, message } from 'antd';
 import { UserOutlined, ExportOutlined, PlusOutlined } from "@ant-design/icons"
 
 import { HEADER_REQUEST_FAILED_TEXT, MESSAGE_UNABLE_TO_FETCH_TEXT, showUnableToFetchAlert, showConfirmAlert, showUsersListAlert, showLocationDetailsAlert, TITLE_OOPS_TEXT } from "../../components/custom/CustomAlertBox"
@@ -96,9 +96,15 @@ const Dashboard = (props) => {
       actionPrimary: async () => {
         setIsLoading(true);
 
-        await unsubscribeToEvent(user.id, event._id);
-
+        await unsubscribeToEvent(user.id, event._id)
         fetchData();
+
+        message.success({
+          content: "Unsubscribed from " + event.name,
+          style: {
+            fontSize: "x-large"
+          }
+        }, 5);
       }
     }
 
@@ -112,8 +118,14 @@ const Dashboard = (props) => {
         setIsLoading(true);
 
         await deleteEvent(event._id);
-
         fetchData();
+        setIsLoading(false);
+        message.success({
+          content: "Successfully canceled " + event.name,
+          style: {
+            fontSize: "x-large"
+          }
+        }, 5);
       }
     }
 

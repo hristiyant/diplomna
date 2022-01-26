@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import Loader from "react-loader-spinner";
 import { Scrollbars } from "react-custom-scrollbars";
 
-import { Avatar } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { Avatar, message, Radio } from 'antd';
+import { UserOutlined, PlusOutlined, CheckOutlined } from '@ant-design/icons';
 
-import { HEADER_REQUEST_FAILED_TEXT, MESSAGE_UNABLE_TO_FETCH_TEXT, showConfirmAlert, showUnableToFetchAlert, showUsersListAlert, TITLE_OOPS_TEXT } from "../../custom/CustomAlertBox";
+import { HEADER_REQUEST_FAILED_TEXT, MESSAGE_UNABLE_TO_FETCH_TEXT, showConfirmAlert, showLocationDetailsAlert, showUnableToFetchAlert, showUsersListAlert, TITLE_OOPS_TEXT } from "../../custom/CustomAlertBox";
 
 import { getEvents, subscribeToEvent, unsubscribeToEvent, deleteEvent } from "../../../actions/eventActions";
 import { getEventTypeIcon } from "../../../utils/EventTypeIconSelector"
@@ -18,28 +18,39 @@ import { ReactComponent as GoingIcon } from "../../../assets/tick.svg";
 import "./EventsList.css";
 
 const EventsList = (props) => {
+  const [value, setValue] = useState(1);
   const [initialEventsData, setInitialEventsData] = useState([]);
   const [eventsData, setEventsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isChecked, setIsChecked] = useState(true);
+
+  const fetchEvents = useCallback(async () => {
+    try {
+      setIsLoading(true);
+
+      let res = await getEvents();
+      setEventsData(res.data);
+      setInitialEventsData(res.data);
+      console.log(JSON.stringify(res.data));
+      setIsLoading(false);
+    } catch (error) {
+      const alertProps = {
+        header: HEADER_REQUEST_FAILED_TEXT,
+        title: TITLE_OOPS_TEXT,
+        message: MESSAGE_UNABLE_TO_FETCH_TEXT,
+        buttonPrimaryText: "RETRY",
+        buttonSecondaryText: "DASHBOARD",
+        actionPrimary: () => {
+          fetchEvents()
+        },
+        actionSecondary: () => props.history.push("/dashboard")
+      }
+      showUnableToFetchAlert(alertProps);
+    }
+  }, [props.history])
 
   useEffect(() => {
-    let isSubscribed = true;
-    // setIsLoading(true);
-
-    getEvents().then(res => {
-      if (isSubscribed) {
-        console.log("EVENTS: " + JSON.stringify(res.data))
-        setEventsData(res.data);
-        setInitialEventsData(res.data);
-        setIsLoading(false);
-      }
-    }).catch(err => onFailedToFetch());
-
-    return () => {
-      isSubscribed = false;
-    }
-  }, [onFailedToFetch]);
+    fetchEvents()
+  }, [fetchEvents]);
 
   const filterEvents = event => {
     const value = event.target.value.toLowerCase();
@@ -50,32 +61,32 @@ const EventsList = (props) => {
     setEventsData(filteredEvents);
   }
 
-  const onInputChanged = event => {
-    setIsChecked(false);
-
-    const value = event.target.value;
-    console.log(value)
+  const onChange = e => {
+    setIsLoading(true);
     var filteredEvents;
 
-    switch (value) {
-      case "CREATED":
+    switch (e.target.value) {
+      case 2:
         filteredEvents = initialEventsData.filter(event =>
           (`${event.createdBy._id}` === props.auth.user.id)
         );
         break;
-      case "GOING":
-        filteredEvents = initialEventsData.filter(event =>
-          (`${event.participants}`.includes(props.auth.user.id))
+      case 3:
+        filteredEvents = initialEventsData.filter(
+          event => event.participants.every(
+            participant => participant._id === props.auth.user.id
+          )
         );
         break;
       default: // case "ALL"
-        setIsChecked(true);
         filteredEvents = initialEventsData;
         break;
     }
 
     setEventsData(filteredEvents);
-  }
+    setValue(e.target.value);
+    setIsLoading(false)
+  };
 
   function showLoader() {
     return (<Loader
@@ -100,48 +111,47 @@ const EventsList = (props) => {
     return !(showGoing(event) || event.participants.length === event.quota);
   }
 
-  function onSubscribeClick(event) {
-    setIsLoading(true);
+  const onCreateEventClick = e => {
+    e.preventDefault();
 
-    subscribeToEvent(props.auth.user.id, event._id)
-      .then(res => {
-        setEventsData(res.data);
-        setIsLoading(false);
-      });
+    props.history.push("/create-event");
   }
 
-  function onUnsubscribeClick(event) {
+  async function onSubscribeClick(event) {
     setIsLoading(true);
 
-    unsubscribeToEvent(props.auth.user.id, event._id)
-      .then(res => {
-        setEventsData(res.data);
-        setIsLoading(false);
-      });
+    let res = await subscribeToEvent(props.auth.user.id, event._id)
+    setEventsData(res.data);
+    setInitialEventsData(res.data);
+    setIsLoading(false)
+    message.success({
+      content: "Subscribed to " + event.name,
+      style: {
+        fontSize: "x-large"
+      }
+    }, 5);
   }
 
-  function onFailedToFetch() {
-    setIsLoading(true);
-
+  async function onUnsubscribeClick(event) {
     const alertProps = {
-      header: HEADER_REQUEST_FAILED_TEXT,
-      title: TITLE_OOPS_TEXT,
-      message: MESSAGE_UNABLE_TO_FETCH_TEXT,
-      buttonPrimaryText: "RETRY",
-      buttonSecondaryText: "DASHBOARD",
-      actionPrimary: () => {
-        getEvents().then(res => {
-          setIsLoading(true);
+      message: "Are you sure you want unsubscribe from \"" + event.name + "\"",
+      actionPrimary: async () => {
+        setIsLoading(true);
 
-          setEventsData(res.data);
-          setInitialEventsData(res.data);
-          setIsLoading(false);
-        }).catch(err => onFailedToFetch());
-      },
-      actionSecondary: () => props.history.push("/dashboard")
+        let res = await unsubscribeToEvent(props.auth.user.id, event._id)
+        setEventsData(res.data);
+        setInitialEventsData(res.data);
+        setIsLoading(false);
+        message.success({
+          content: "Unsubscribed from " + event.name,
+          style: {
+            fontSize: "x-large"
+          }
+        }, 5);
+      }
     }
 
-    showUnableToFetchAlert(alertProps);
+    showConfirmAlert(alertProps);
   }
 
   function onViewParticipantsClick(participants) {
@@ -153,18 +163,31 @@ const EventsList = (props) => {
     showUsersListAlert(alertProps);
   }
 
+  function onViewLocationClick(location) {
+    const alertProps = {
+      data: location,
+      title: "Location"
+    }
+
+    showLocationDetailsAlert(alertProps);
+  }
+
   function onCancelClick(event) {
     const alertProps = {
       message: "Are you sure you want to cancel \"" + event.name + "\"",
-      actionPrimary: () => {
+      actionPrimary: async () => {
         setIsLoading(true);
 
-        deleteEvent(event._id)
-          .then(res => {
-            setEventsData(res.data);
-            setInitialEventsData(res.data);
-            setIsLoading(false);
-          });
+        let res = await deleteEvent(event._id);
+        setEventsData(res.data);
+        setInitialEventsData(res.data);
+        setIsLoading(false);
+        message.success({
+          content: "Successfully canceled " + event.name,
+          style: {
+            fontSize: "x-large"
+          }
+        }, 5);
       }
     }
 
@@ -175,24 +198,19 @@ const EventsList = (props) => {
     return (
       <div className="container-events" >
         <div className="side-bar">
-          <Link to="/create-event" className="link-create-new-event">CREATE NEW EVENT</Link>
-          <input className="search-box-events" onInput={filterEvents} placeholder="Search..." />
-          <div className="filter">
-            <div className="input-group-events" onChange={onInputChanged}>
-              <div className="radio-item">
-                <input id="all" type="radio" value="ALL" name="event-filter" defaultChecked={isChecked} />
-                <label htmlFor="all">All</label>
-              </div>
-              <div className="radio-item">
-                <input id="created" type="radio" value="CREATED" name="event-filter" />
-                <label htmlFor="created">Created by me</label>
-              </div>
-              <div className="radio-item">
-                <input id="going" type="radio" value="GOING" name="event-filter" />
-                <label htmlFor="going">Going</label>
-              </div>
-            </div>
-          </div>
+          <button type="submit" className="btn-dashboard" style={{ margin: "5px" }}
+            onClick={onCreateEventClick}
+          >
+            <PlusOutlined />CREATE EVENT
+          </button>
+          {/* <div className="event-filters"> */}
+          <input className="search-box-events" onInput={filterEvents} placeholder="Search by name..." />
+          <Radio.Group className="radio-group-events" onChange={onChange} value={value}>
+            <Radio className="invitations-radio" value={1}>All</Radio>
+            <Radio className="invitations-radio" value={2}>Created by me</Radio>
+            <Radio className="invitations-radio" value={3}>Going</Radio>
+          </Radio.Group>
+          {/* </div> */}
         </div>
         <div className="container-events cards-grid">
           <Scrollbars className="my-scrollbar" style={{ width: "100%", height: "100%" }}
@@ -213,7 +231,7 @@ const EventsList = (props) => {
                     <div>{event.createdBy.name}</div>
                   </div>
                   <div className="card-event-right">
-                    <span>Date: {getDisplayDate(event.date)} @ {event.time}</span>
+                    <span>Date: {getDisplayDate(event.date)}</span>
                     <div className="btn-view-participants" onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
@@ -221,22 +239,28 @@ const EventsList = (props) => {
                     }}>
                       Participants: <progress id="participants" className="progress-participants" value={event.participants.length} max={event.quota}></progress> {event.participants.length} / {event.quota}
                     </div>
-                    <div>Location: {event.location.name}</div>
-                    {showGoing(event) && <div className="going"><GoingIcon className="going-icon" /><span style={{ fontSize: "larger" }}>Going</span></div>}
+                    <div className="btn-view-participants" onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onViewLocationClick(event.location);
+                    }}>
+                      Location: {event.location.name}
+                    </div>
+                    {showGoing(event) && <div className="going"><CheckOutlined style={{ color: "greenyellow" }} /><span >&nbsp;Going</span></div>}
                   </div>
                 </div>
                 <div className="card-event-footer">
-                  {showGoing(event) && <div className="btn-event-subscribe btn-outline" onClick={(e) => {
+                  {showGoing(event) && <div className="btn-dashboard" onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     onUnsubscribeClick(event)
                   }}>UNSUBSCRIBE</div>}
-                  {showSubscribeButton(event) && <div className="btn-event-subscribe" onClick={(e) => {
+                  {showSubscribeButton(event) && <div className="btn-dashboard" style={{ background: "hsl(123deg 70% 28%)" }} onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     onSubscribeClick(event);
                   }}>SUBSCRIBE</div>}
-                  {showCancelEventButton(event) && <div className="btn-event-subscribe btn-outline" onClick={(e) => {
+                  {showCancelEventButton(event) && <div className="btn-dashboard" onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     onCancelClick(event)

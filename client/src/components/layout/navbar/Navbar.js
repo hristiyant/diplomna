@@ -46,7 +46,7 @@ const Navbar = (props) => {
         return () => {
             window.removeEventListener("click", handleEvent)
         }
-    }, [props.auth])
+    }, [props.auth.user.imageUrl])
 
     function onLogoutClick(e) {
         e.preventDefault()
@@ -147,8 +147,8 @@ const Navbar = (props) => {
                         </Link>
                     </li>
                     <li className="option" onClick={closeMobileMenu}>
-                        <Link to="/friend-requests">
-                            <UsergroupAddOutlined style={{ fontSize: "large" }} /> REQUESTS
+                        <Link to="/invitations">
+                            <UsergroupAddOutlined style={{ fontSize: "large" }} /> INVITATIONS
                         </Link>
                     </li>
                     {menuOptionMobile}

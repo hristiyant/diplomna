@@ -1,6 +1,6 @@
 .container-events {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: flex-start;
     align-items: center;
     height: 100%;
@@ -8,10 +8,14 @@
 }
 
 .side-bar {
+    padding-top: 20px !important;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    height: 100%;
+    width: 600px;
+    gap: 15px;
+    padding: 5px;
     background: rgba(0, 0, 0, 0.75);
 }
 
@@ -40,8 +44,8 @@
 
 .search-box-events {
     height: 50px;
-    width: 30%;
-    min-width: 200px;
+    width: 350px;
+    /* min-width: 200px; */
     margin: 5px;
     padding-left: 1rem;
     background: rgba(0, 0, 0, 0.75);
@@ -51,54 +55,9 @@
     font-size: small;
 }
 
-.filter {
-    margin: 5px;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-
-.radio-item {
-    display: inline-block;
-    position: relative;
-    padding: 0 6px;
-    margin: 0 10px 0;
-}
-
-.radio-item label {
-    color: white;
-    font-weight: normal;
-    font-size: small;
-}
-
-.radio-item input[type='radio'] {
-    display: none;
-}
-
-.radio-item label:before {
-    content: " ";
-    display: inline-block;
-    position: relative;
-    top: 2px;
-    margin: 0 5px 0 0;
-    width: 15px;
-    height: 15px;
-    border-radius: 11px;
-    border: 2px solid white;
-    background-color: transparent;
-}
-
-.radio-item input[type=radio]:checked+label:after {
-    border-radius: 11px;
-    width: 9px;
-    height: 9px;
-    position: absolute;
-    top: 5px;
-    left: 9px;
-    content: " ";
-    display: block;
-    background: #ac5c54;
+.radio-group-events {
+    display: flex !important;
+    flex-direction: column !important;
 }
 
 .container-events.cards-grid {
@@ -130,7 +89,7 @@
 }
 
 .card-event-header {
-    margin: 0.5rem;
+    /* margin: 0.5rem; */
     padding-left: 1rem;
     font-size: x-large;
 }
@@ -199,6 +158,7 @@
 }
 
 .btn-view-participants {
+    width: fit-content;
     cursor: pointer;
     background: none;
     border-bottom: 1px solid transparent;
@@ -220,7 +180,9 @@
     margin: 0.5rem;
     padding: .3em .75em;
     --reject-btn-color: #ac5c54;
-    --color: hsl(123, 100%, 31%);
+    /* --color: hsl(123, 100%, 31%); */
+    --color: hsl(123deg 70% 28%);
+    /* 123deg 70% 28% */
     background: var(--color);
     border-radius: 5px;
     cursor: pointer;

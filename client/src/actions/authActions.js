@@ -13,19 +13,18 @@ export const clearERROR = () => dispatch => {
 
 // Get User Info
 export const getUser = async (userID) => {
-  const res = await axios
-    .get("/api/users/", {
-      params: {
-        userID: userID
-      }
-    })
+  const params = new URLSearchParams([["userID", userID]]);
 
+  const res = await axios
+    .get("/api/users/", { params });
+
+  console.log(JSON.stringify(res));
   return res.data;
 };
 
 //Get List of All Users
 export const getAllUsers = async () => {
-  let res = await axios.get("api/users/get-all-users");
+  let res = await axios.get("api/users/get-all");
 
   return res.data;
 }
@@ -111,25 +110,24 @@ export const logoutUser = () => dispatch => {
 };
 
 // Get all friend requests by user id
-export const getFriendRequests = async userID => {
+export const getInvitations = async userID => {
+  console.log("GETTING INVITATIONS");
   let res = await axios
-    .get("/api/users/get-friend-requests", {
+    .get("/api/users/get-invitations-for", {
       params: {
-        id: userID
+        userID: userID
       }
     });
 
   return res;
 }
 
-// Delete friend request by user id and request id
-export const deleteFriendRequest = async (toUserID, fromUserID) => {
+// Delete invitation
+export const deleteInvitation = async (toUser, fromUser, requestID) => {
+  const params = new URLSearchParams([["toUser", toUser], ["fromUser", fromUser], ["requestID", requestID]]);
   let res = await axios
-    .post("/api/users/delete-friend-request", {
-      params: {
-        toUserID: toUserID,
-        fromUserID: fromUserID
-      }
+    .delete("/api/users/delete-friend-request", {
+      params
     });
 
   return res;
@@ -137,26 +135,31 @@ export const deleteFriendRequest = async (toUserID, fromUserID) => {
 
 // Create friend request
 export const createFriendRequest = async (fromUser, toUser) => {
+  const params = new URLSearchParams([["fromUser", fromUser], ["toUser", toUser], ["type", "FRIEND_REQUEST"]]);
   const res = await axios
-    .post("/api/users/create-friend-request", {
-      params: {
-        fromUser: fromUser,
-        toUser: toUser
-      }
-    });
+    .put("/api/users/send-invitation", null, { params });
 
   return res.data;
 }
 
-// Add users as friends
-export const addFriends = async (requestSenderID, requestReceiverID, friendRequestID) => {
+// Accept friend request
+export const acceptFriendRequest = async (fromUser, toUser, invitationID) => {
+  const params = new URLSearchParams([["fromUser", fromUser], ["toUser", toUser], ["invitationID", invitationID]]);
   let res = await axios
-    .post("/api/users/add-friend", {
-      params: {
-        requestSenderID: requestSenderID,
-        requestReceiverID: requestReceiverID,
-        friendRequestID: friendRequestID
-      }
+    .put("/api/users/accept-friend", null, {
+      params
+    });
+
+  return res;
+}
+
+
+// Accept event invitation
+export const acceptEventInvitation = async (fromUser, toUser, invitationID, event) => {
+  const params = new URLSearchParams([["fromUser", fromUser], ["toUser", toUser], ["invitationID", invitationID], ["event", event]]);
+  let res = await axios
+    .put("/api/users/accept-event", null, {
+      params
     });
 
   return res;
@@ -164,13 +167,10 @@ export const addFriends = async (requestSenderID, requestReceiverID, friendReque
 
 // Remove user from friends
 export const removeFriends = async (userID, friendID) => {
+  const params = new URLSearchParams([["userID", userID], ["friendID", friendID]]);
+
   let res = await axios
-    .post("/api/users/remove-friend", {
-      params: {
-        userID: userID,
-        friendID: friendID
-      }
-    });
+    .put("/api/users/remove-friend", null, { params });
 
   return res;
 }
@@ -183,6 +183,6 @@ export const setProfileImage = async (userID, imageUrl) => {
     .put("api/users/set-profile-pic", null, {
       params
     });
-    
-  return res.data;
+  // console.log(res.data.imageUrl);
+  return res.data.imageUrl;
 }
